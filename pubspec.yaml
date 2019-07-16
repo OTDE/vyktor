@@ -1,0 +1,23 @@
+name: vyktor
+description: Find video game competitions near you!
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cached_network_image: '^1.1.0'
+  geolocator: '^5.1.0'
+  google_maps_flutter: '^0.5.19+2'
+  graphql: '^2.0.0'
+  url_launcher: '^5.1.0'
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
