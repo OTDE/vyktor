@@ -33,6 +33,8 @@ class MapPageState extends State<MapPage> {
       body: GoogleMap(
         mapType: MapType.hybrid,
         initialCameraPosition: _kGooglePlex,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
