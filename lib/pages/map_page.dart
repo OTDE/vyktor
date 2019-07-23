@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vyktor/models/map_data.dart';
 
 /// TODO:
 /// Markers
@@ -15,41 +17,67 @@ class MapPage extends StatefulWidget {
 class MapPageState extends State<MapPage> {
 
   Completer<GoogleMapController> _controller = Completer();
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  MarkerId selectedMarker;
+  MapDataProvider _provider = MapDataProvider();
+  MapData _mapData;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  @override
+  void initState() {
+    _provider.getCurrentMapData().then((mapData) {
+      _initializeData(mapData);
+      print(mapData.toString());
+    });
+
+    super.initState();
+  }
+
+  static final CameraPosition _testSocalPosition = CameraPosition(
+    target: LatLng(33.7454725,-117.86765300000002),
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body: GoogleMap(
         mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
+        initialCameraPosition: _testSocalPosition,
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
+        markers: Set<Marker>.of(markers.values),
       ),
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  void _initializeData(MapData mapData) {
+    _mapData = mapData;
+    _buildMarkerSet();
+  }
+
+  void _buildMarkerSet() {
+    for (Tournament tournament in _mapData.tournaments) {
+      MarkerId key = MarkerId(tournament.id.toString());
+      Marker value = Marker(
+          markerId: key,
+          position: LatLng(tournament.lat, tournament.lng),
+          infoWindow: InfoWindow(
+            title: tournament.name,
+            snippet: tournament.venueAddress,
+          ),
+          onTap: () {
+            _onMarkerTapped(key);
+          }
+      );
+      markers.putIfAbsent(key, () => value);
+    }
+  }
+
+  void _onMarkerTapped(MarkerId id) {
+
   }
 
 }

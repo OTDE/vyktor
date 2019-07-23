@@ -2,11 +2,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql/client.dart';
 import 'package:vyktor/services/graphql_client.dart';
 import 'dart:convert';
+import 'dart:async';
 
 const String APPLE_MAPS_URL_PREFIX = 'http://maps.apple.com/?daddr=';
 const String GOOGLE_MAPS_URL_PREFIX = 'https://google.com/maps/dir/?api=1&destination=';
 
 class MapDataProvider {
+
+  MapData _mostRecentState;
 
   static const String _tournamentLocationQuery = r'''
    query TournamentsByLocation($coordinates: String!, $radius: String!) {
@@ -34,7 +37,7 @@ class MapDataProvider {
     },
   ''';
 
-  Future<MapData> getCurrentMapData() {
+  Future<MapData> getCurrentMapData() async {
     return getGraphQLClient().query(_queryOptions()).then(_toMapData);
   }
 
@@ -54,22 +57,23 @@ class MapDataProvider {
     if (queryResult.hasErrors) {
       throw Exception();
     }
-    print(queryResult);
-    final tournamentList = queryResult.data["tournaments"]["nodes"] as List<Map<String, dynamic>>;
+
+    final tournamentList = queryResult.data["tournaments"]["nodes"] as List<dynamic>;
     List<Tournament> tournaments = tournamentList.map((tournament) => Tournament.fromJson(tournament)).toList();
 
-    return MapData(tournaments);
+    _mostRecentState = MapData(tournaments);
+    return _mostRecentState;
   }
+
+
 }
 
 class MapData {
-  List<Tournament> _tournaments;
-  Map<int, Marker> _markers;
+  List<Tournament> tournaments;
+  MapData([this.tournaments]);
 
-  MapData([this._tournaments]);
-
-  void toMarkers() {
-
+  Tournament getTournament(int id) {
+    return tournaments.singleWhere((tournament) => tournament.id == id);
   }
 }
 
