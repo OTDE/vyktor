@@ -74,6 +74,9 @@ class MapPageState extends State<MapPage> {
       );
       markers.putIfAbsent(key, () => value);
     }
+    setState(() {
+
+    });
   }
 
   void _onMarkerTapped(MarkerId id) {
