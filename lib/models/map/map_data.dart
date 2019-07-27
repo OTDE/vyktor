@@ -11,12 +11,6 @@ class MapDataProvider {
   MapData mostRecentState;
   Tournament selectedTournament;
 
-  void initialize(Position currentPosition) async {
-    await _buildMapState(currentPosition);
-    int defaultId = this.mostRecentState.tournaments[0].id;
-    this.setSelectedTournament(defaultId.toString());
-  }
-
   void refresh(Position currentPosition) async => await _buildMapState(currentPosition);
 
   void setSelectedTournament(String tournamentId) => selectedTournament = mostRecentState.getTournament(tournamentId);

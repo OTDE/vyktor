@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:vyktor/models/map_data.dart';
+import 'package:vyktor/models/map/map_data.dart';
 
 @immutable
 abstract class MapDataState extends Equatable {

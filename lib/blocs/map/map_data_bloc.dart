@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:vyktor/blocs/map_bloc/map_bloc_barrel.dart';
-import 'package:vyktor/models/map_data.dart';
+import 'map_bloc_barrel.dart';
+import 'package:vyktor/models/map/map_data.dart';
 
 class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
@@ -28,7 +28,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       InitializeMapData event
   ) async* {
     try {
-      mapDataProvider.initialize(event.currentPosition);
+      mapDataProvider.refresh(event.currentPosition);
       final MapData mapDataToView = mapDataProvider.mostRecentState;
       final Tournament tournamentToView = mapDataProvider.selectedTournament;
       yield MapDataLoaded(mapDataToView, tournamentToView);
@@ -44,7 +44,8 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     if(currentState is MapDataLoaded) {
       mapDataProvider.refresh(event.currentPosition);
       final MapData mapDataToView = mapDataProvider.mostRecentState;
-      final Tournament tournamentToView = mapDataProvider.selectedTournament;
+      final Tournament tournamentToView = mapDataProvider.selectedTournament
+          ?? mapDataProvider.mostRecentState.tournaments[0];
       yield MapDataLoaded(mapDataToView, tournamentToView);
     }
   }
