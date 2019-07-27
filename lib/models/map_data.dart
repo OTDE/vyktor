@@ -1,80 +1,51 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql/client.dart';
 import 'package:vyktor/services/graphql_client.dart';
-import 'dart:convert';
 import 'dart:async';
+import 'package:geolocator/geolocator.dart';
 
 const String APPLE_MAPS_URL_PREFIX = 'http://maps.apple.com/?daddr=';
 const String GOOGLE_MAPS_URL_PREFIX = 'https://google.com/maps/dir/?api=1&destination=';
 
 class MapDataProvider {
 
-  MapData _mostRecentState;
+  MapData mostRecentState;
+  Tournament selectedTournament;
 
-  static const String _tournamentLocationQuery = r'''
-   query TournamentsByLocation($coordinates: String!, $radius: String!) {
-      tournaments(query: {
-        filter: {
-          location: {
-            distanceFrom: $coordinates,
-            distance: $radius
-          }
-          regOpen: true
-        }
-      }) {
-        nodes {
-          id
-          name
-          slug
-          venueAddress
-          lat
-          lng
-          images(type:"profile"){
-            url
-          }
-        }
-      }
-    },
-  ''';
-
-  Future<MapData> getCurrentMapData() async {
-    return getGraphQLClient().query(_queryOptions()).then(_toMapData);
+  void initialize(Position currentPosition) async {
+    await _buildMapState(currentPosition);
+    int defaultId = this.mostRecentState.tournaments[0].id;
+    this.setSelectedTournament(defaultId.toString());
   }
 
+  void refresh(Position currentPosition) async => await _buildMapState(currentPosition);
 
-  QueryOptions _queryOptions() {
-    return QueryOptions(
-      document: _tournamentLocationQuery,
-      variables: <String, dynamic> {
-        "coordinates": "33.7454725,-117.86765300000002",
-        "radius": "50mi"
-      },
-    );
-  }
+  void setSelectedTournament(String tournamentId) => selectedTournament = mostRecentState.getTournament(tournamentId);
 
+  Future<void> _buildMapState(Position position) async => mostRecentState = await _refreshMapData();
+
+  Future<MapData> _refreshMapData() async => getGraphQLClient().query(queryOptions()).then(_toMapData);
 
   MapData _toMapData(QueryResult queryResult) {
     if (queryResult.hasErrors) {
       throw Exception();
     }
 
-    final tournamentList = queryResult.data["tournaments"]["nodes"] as List<dynamic>;
-    List<Tournament> tournaments = tournamentList.map((tournament) => Tournament.fromJson(tournament)).toList();
-
-    _mostRecentState = MapData(tournaments);
-    return _mostRecentState;
+    final tournamentList = queryResult.data["tournaments"]["nodes"] as List<
+        dynamic>;
+    List<Tournament> tournaments = tournamentList.map((tournament) =>
+        Tournament.fromJson(tournament)).toList();
+    return MapData(tournaments);
   }
-
 
 }
 
 class MapData {
+
   List<Tournament> tournaments;
   MapData([this.tournaments]);
 
-  Tournament getTournament(int id) {
-    return tournaments.singleWhere((tournament) => tournament.id == id);
-  }
+  Tournament getTournament(String id) => tournaments.singleWhere((tournament) => tournament.id == id as int);
+
 }
 
 class Tournament {
