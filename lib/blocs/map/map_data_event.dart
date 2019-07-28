@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 abstract class MapDataEvent extends Equatable {
@@ -26,7 +27,7 @@ class RefreshMapData extends MapDataEvent {
 }
 
 class UpdateSelectedTournament extends MapDataEvent {
-  final String markerId;
+  final MarkerId markerId;
 
   UpdateSelectedTournament(this.markerId) : super([markerId]);
 

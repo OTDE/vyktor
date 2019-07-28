@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vyktor/blocs/map/map_data_barrel.dart';
+import 'package:vyktor/models/map_data.dart';
+import 'package:geolocator/geolocator.dart';
 
 /// TODO:
 /// Connecting up the BLOC
@@ -17,6 +21,16 @@ class MapPageState extends State<MapPage> {
 
   @override
   void initState() {
+    var geolocator = Geolocator();
+    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+      .then((position) {
+        _initialPosition = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 10,
+        );
+      }
+    );
+    setState(() {});
     super.initState();
   }
 
@@ -25,45 +39,57 @@ class MapPageState extends State<MapPage> {
     zoom: 14.4746,
   );
 
+  CameraPosition _initialPosition;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _testSocalPosition,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
+    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    return BlocBuilder<MapDataBloc, MapDataState>(
+        builder: (context, state) {
+          if (state is MapDataLoaded) {
+            return GoogleMap(
+              mapType: MapType.hybrid,
+              initialCameraPosition: _initialPosition,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: _buildMarkerDataFrom(state.mapData, mapBloc),
+            );
+          } else {
+            return GoogleMap(
+              mapType: MapType.hybrid,
+              initialCameraPosition: _initialPosition,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            );
+          }
+        }
     );
   }
 
-  ///TODO: REBUILD ONCE BLOC CONNECTS TO THIS
-  // void _buildMarkerSet() {
-  //    for (Tournament tournament in _mapData.tournaments) {
-  //      MarkerId key = MarkerId(tournament.id.toString());
-  //      Marker value = Marker(
-  //          markerId: key,
-  //          position: LatLng(tournament.lat, tournament.lng),
-  //          infoWindow: InfoWindow(
-  //            title: tournament.name,
-  //            snippet: tournament.venueAddress,
-  //          ),
-  //          onTap: () {
-  //            _onMarkerTapped(key);
-  //          }
-  //      );
-  //      // markers.putIfAbsent(key, () => value);
-  //    }
-  //    setState(() {
-  //
-  //    });
-  //  }
-
-
-
-  // void _onMarkerTapped(MarkerId id) {}
+  Set<Marker> _buildMarkerDataFrom(MapData mapData, MapDataBloc mapBloc) {
+    var markerData = Set<Marker>();
+    for (Tournament tournament in mapData.tournaments) {
+      var id = MarkerId(tournament.id.toString());
+      var mapMarker = Marker(
+          markerId: id,
+          position: LatLng(tournament.lat, tournament.lng),
+          infoWindow: InfoWindow(
+            title: tournament.name,
+            snippet: tournament.venueAddress,
+          ),
+          onTap: () {
+            mapBloc.dispatch(UpdateSelectedTournament(id));
+          }
+      );
+      markerData.add(mapMarker);
+    }
+    return markerData;
+  }
 
 }

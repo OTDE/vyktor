@@ -56,6 +56,5 @@ GraphQLClient getGraphQLClient() {
     link: _link,
     cache: InMemoryCache(),
   );
-
   return _client;
 }
