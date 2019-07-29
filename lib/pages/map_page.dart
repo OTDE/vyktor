@@ -28,15 +28,16 @@ class MapPageState extends State<MapPage> {
           target: LatLng(position.latitude, position.longitude),
           zoom: 10,
         );
+        setState(() {});
       }
     );
-    setState(() {});
+
     super.initState();
   }
 
   static final CameraPosition _testSocalPosition = CameraPosition(
     target: LatLng(33.7454725,-117.86765300000002),
-    zoom: 14.4746,
+    zoom: 10,
   );
 
   CameraPosition _initialPosition;
@@ -52,44 +53,20 @@ class MapPageState extends State<MapPage> {
               initialCameraPosition: _initialPosition,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
+              onCameraMove: (CameraPosition position) {
+
+              },
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
-              markers: _buildMarkerDataFrom(state.mapData, mapBloc),
-            );
-          } else {
-            return GoogleMap(
-              mapType: MapType.hybrid,
-              initialCameraPosition: _initialPosition,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+              markers: state.mapMarkers,
             );
           }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
     );
-  }
-
-  Set<Marker> _buildMarkerDataFrom(MapData mapData, MapDataBloc mapBloc) {
-    var markerData = Set<Marker>();
-    for (Tournament tournament in mapData.tournaments) {
-      var id = MarkerId(tournament.id.toString());
-      var mapMarker = Marker(
-          markerId: id,
-          position: LatLng(tournament.lat, tournament.lng),
-          infoWindow: InfoWindow(
-            title: tournament.name,
-            snippet: tournament.venueAddress,
-          ),
-          onTap: () {
-            mapBloc.dispatch(UpdateSelectedTournament(id));
-          }
-      );
-      markerData.add(mapMarker);
-    }
-    return markerData;
   }
 
 }

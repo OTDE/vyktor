@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:vyktor/models/map_data.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 @immutable
 abstract class MapDataState extends Equatable {
@@ -18,11 +19,11 @@ class MapDataLoading extends MapDataState {
 }
 
 class MapDataLoaded extends MapDataState {
-  final MapData mapData;
+  final Set<Marker> mapMarkers;
   final Tournament selectedTournament;
 
-  MapDataLoaded(this.mapData, this.selectedTournament)
-      : super([mapData, selectedTournament]);
+  MapDataLoaded(this.mapMarkers, this.selectedTournament)
+      : super([mapMarkers, selectedTournament]);
 
   @override
   String toString() => 'Map data loaded.';
