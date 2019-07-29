@@ -17,9 +17,9 @@ class MapDataProvider {
 
   void setSelectedTournament(MarkerId tournamentId) => selectedTournament = mostRecentState.getTournament(tournamentId.toString());
 
-  Future<void> _buildMapState(Position position) async => mostRecentState = await _refreshMapData();
+  Future<void> _buildMapState(Position position) async => mostRecentState = await _refreshMapData(position);
 
-  Future<MapData> _refreshMapData() async => getGraphQLClient().query(queryOptions()).then(_toMapData);
+  Future<MapData> _refreshMapData(Position position) async => getGraphQLClient().query(queryOptions(position)).then(_toMapData);
 
   MapData _toMapData(QueryResult queryResult) {
     if (queryResult.hasErrors) {

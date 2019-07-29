@@ -22,7 +22,7 @@ class Vyktor extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(title: 'Testing Basic Widget Structure'),
+      home: HomePage(title: 'Vyktor (Test mode)'),
     );
   }
 

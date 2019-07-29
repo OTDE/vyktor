@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'smashgg_api_token.dart';
 import 'package:graphql/client.dart';
+import 'package:geolocator/geolocator.dart';
 
 final HttpLink _httpLink = HttpLink(
   uri: 'https://api.smash.gg/gql/alpha',
@@ -39,11 +40,13 @@ const String tournamentLocationQuery = r'''
     },
   ''';
 
-QueryOptions queryOptions() {
+QueryOptions queryOptions(Position position) {
+  var lat = position.latitude;
+  var lng = position.longitude;
   return QueryOptions(
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
-      "coordinates": "33.7454725,-117.86765300000002",
+      "coordinates": "$lat,$lng",
       "radius": "50mi"
     },
   );

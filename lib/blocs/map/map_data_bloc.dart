@@ -5,6 +5,7 @@ import 'map_data_barrel.dart';
 import 'package:vyktor/models/map_data.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
@@ -89,15 +90,29 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
           infoWindow: InfoWindow(
             title: tournament.name,
             snippet: tournament.venueAddress,
+            onTap: () {
+              _launchURL(tournament.slug);
+            },
           ),
           onTap: () {
             this.dispatch(UpdateSelectedTournament(id));
-          }
+          },
       );
       markerData.add(mapMarker);
     }
     return markerData;
   }
+
+  _launchURL(String slug) async {
+    final url = _buildURL(slug);
+    if(await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  String _buildURL(String slug) => 'http://smash.gg/' + slug;
 
   @override
   void dispose() {

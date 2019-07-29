@@ -41,6 +41,7 @@ class MapPageState extends State<MapPage> {
   );
 
   CameraPosition _initialPosition;
+  CameraPosition _lastRecordedPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -50,15 +51,11 @@ class MapPageState extends State<MapPage> {
           if (state is MapDataLoaded) {
             return GoogleMap(
               mapType: MapType.hybrid,
-              initialCameraPosition: _initialPosition,
+              initialCameraPosition: _getCameraPosition(),
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
-              onCameraMove: (CameraPosition position) {
-
-              },
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+              onCameraMove: _onCameraMove,
+              onMapCreated: _onMapCreated,
               markers: state.mapMarkers,
             );
           }
@@ -69,4 +66,13 @@ class MapPageState extends State<MapPage> {
     );
   }
 
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    _lastRecordedPosition = position;
+  }
+
+  CameraPosition _getCameraPosition() => _lastRecordedPosition ?? _initialPosition;
 }
