@@ -1,58 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:vyktor/pages/map_page.dart';
 import 'package:vyktor/pages/settings_page.dart';
+import 'package:vyktor/blocs/delegate.dart';
+import 'permissions_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vyktor/blocs/map/map_data_barrel.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:bloc/bloc.dart';
 
-enum TabItem {
-  MAP,
-  SETTINGS
-}
+enum TabItem { MAP, SETTINGS }
 
 /// TODO: Documentation.
 class HomePage extends StatefulWidget {
-
   HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
   _HomePageState createState() => _HomePageState();
-
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _hasLocationPermissions = false;
+  Geolocator _geolocator = Geolocator();
+  Position _initialPositon;
 
   TabItem _currentTab = TabItem.MAP;
   final List<TabItem> _bottomTabs = [TabItem.MAP, TabItem.SETTINGS];
 
   @override
+  initState() {
+    PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.location)
+        .then((PermissionStatus status) {
+      setState(() {
+        _hasLocationPermissions = status == PermissionStatus.granted;
+      });
+    });
+    super.initState();
+  }
+
+  permissionsCallback() async {
+    var initialPosition = await _geolocator.getCurrentPosition();
+    setState(() {
+      _initialPositon = initialPosition;
+      _hasLocationPermissions = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: _buildBody(),
-      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
   Widget _buildBody() {
-    switch(_currentTab) {
-      case TabItem.MAP:
-        return MapPage();
-      case TabItem.SETTINGS:
-        return SettingsPage();
-      default:
-        return MapPage();
+    if (_hasLocationPermissions) {
+      BlocSupervisor.delegate = SimpleBlocDelegate();
+      return BlocProvider(
+        builder: (context) => MapDataBloc(),
+        child: MapPage(),
+      );
     }
+    return PermissionsPage(enableLocation: permissionsCallback);
   }
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       items: _bottomTabs
-        .map((tab) =>
-          _buildBottomNavigationBarItem(_icon(tab), tab))
-        .toList(),
+          .map((tab) => _buildBottomNavigationBarItem(_icon(tab), tab))
+          .toList(),
       onTap: _onSelectTab,
     );
   }
@@ -86,7 +106,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String _title(TabItem tab) {
-    switch(tab) {
+    switch (tab) {
       case TabItem.MAP:
         return 'Map';
       case TabItem.SETTINGS:
@@ -97,7 +117,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   IconData _icon(TabItem tab) {
-    switch(tab) {
+    switch (tab) {
       case TabItem.MAP:
         return Icons.map;
       case TabItem.SETTINGS:
@@ -106,5 +126,4 @@ class _HomePageState extends State<HomePage> {
         throw 'Unknown: $tab';
     }
   }
-
 }

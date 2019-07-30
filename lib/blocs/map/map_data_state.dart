@@ -21,9 +21,10 @@ class MapDataLoading extends MapDataState {
 class MapDataLoaded extends MapDataState {
   final Set<Marker> mapMarkers;
   final Tournament selectedTournament;
+  final CameraPosition initialPosition;
 
-  MapDataLoaded(this.mapMarkers, this.selectedTournament)
-      : super([mapMarkers, selectedTournament]);
+  MapDataLoaded(this.selectedTournament, [this.mapMarkers, this.initialPosition])
+      : super([selectedTournament, mapMarkers, initialPosition]);
 
   @override
   String toString() => 'Map data loaded.';

@@ -6,6 +6,7 @@ import 'package:vyktor/models/map_data.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vyktor/services/location_utils.dart';
 
 class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
@@ -19,11 +20,6 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   MapDataState get initialState => InitialMapDataState();
 
   MapDataBloc() {
-    _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then(
-        (Position position) {
-          dispatch(InitializeMarkerData(position));
-        }
-    );
     _currentPosition = _geolocator.getPositionStream(_locationOptions).listen(
         (Position position) {
           dispatch(RefreshMarkerData(position));
@@ -35,7 +31,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   Stream<MapDataState> mapEventToState(
       MapDataEvent event
   ) async* {
-    if(event is InitializeMarkerData) {
+    if(event is InitializeMap) {
       yield* _mapInitializeMapDataToState(currentState, event);
     } else if(event is RefreshMarkerData) {
       yield* _mapRefreshMarkerDataToState(currentState, event);
@@ -46,10 +42,16 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
   Stream<MapDataState> _mapInitializeMapDataToState(
       MapDataState currentState,
-      InitializeMarkerData event
+      InitializeMap event
   ) async* {
     try {
-      yield InitialMapDataState();
+      if(!(currentState is MapDataLoaded)) {
+        CameraPosition cameraPosition = CameraPosition(
+          target: positionToLatLng(event.initialPosition),
+          zoom: DEFAULT_ZOOM_LEVEL,
+        );
+        yield InitialMapDataState();
+      }
     } catch (_) {
       yield MapDataNotLoaded();
     }
@@ -64,7 +66,11 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament
           ?? _mapDataProvider.mostRecentState.tournaments[0];
-      yield MapDataLoaded(_buildMarkerDataFrom(mapDataToView), tournamentToView);
+      final CameraPosition initialCamera = CameraPosition(
+        target: positionToLatLng(event.currentPosition),
+        zoom: DEFAULT_ZOOM_LEVEL,
+      );
+      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView), initialCamera);
     }
   }
 
@@ -76,7 +82,9 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       _mapDataProvider.setSelectedTournament(event.markerId);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament;
-      yield MapDataLoaded(_buildMarkerDataFrom(mapDataToView), tournamentToView);
+      var tourneyName = tournamentToView.name;
+      print('new selected tournament: $tourneyName');
+      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView));
     }
   }
 

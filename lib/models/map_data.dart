@@ -5,9 +5,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vyktor/blocs/map/map_data_barrel.dart';
 
-const String APPLE_MAPS_URL_PREFIX = 'http://maps.apple.com/?daddr=';
-const String GOOGLE_MAPS_URL_PREFIX = 'https://google.com/maps/dir/?api=1&destination=';
-
 class MapDataProvider {
 
   MapData mostRecentState;
@@ -15,7 +12,7 @@ class MapDataProvider {
 
   Future<void> refresh(Position currentPosition) async => await _buildMapState(currentPosition);
 
-  void setSelectedTournament(MarkerId tournamentId) => selectedTournament = mostRecentState.getTournament(tournamentId.toString());
+  void setSelectedTournament(MarkerId tournamentId) => selectedTournament = mostRecentState.getTournament(tournamentId.value);
 
   Future<void> _buildMapState(Position position) async => mostRecentState = await _refreshMapData(position);
 

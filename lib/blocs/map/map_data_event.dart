@@ -8,10 +8,10 @@ abstract class MapDataEvent extends Equatable {
   MapDataEvent([List props = const []]) : super(props);
 }
 
-class InitializeMarkerData extends MapDataEvent {
+class InitializeMap extends MapDataEvent {
   final Position initialPosition;
 
-  InitializeMarkerData(this.initialPosition) : super([initialPosition]);
+  InitializeMap(this.initialPosition) : super([initialPosition]);
 
   @override
   String toString() => 'Event triggered: initial map state.';
