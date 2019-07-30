@@ -20,7 +20,8 @@ class Vyktor extends StatelessWidget {
     return MaterialApp(
       title: 'Vyktor',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        canvasColor: Colors.white,
       ),
       home: HomePage(title: 'Vyktor (Test mode)'),
     );

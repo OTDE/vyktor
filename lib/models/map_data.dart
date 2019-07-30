@@ -39,7 +39,7 @@ class MapData {
   List<Tournament> tournaments;
   MapData([this.tournaments]);
 
-  Tournament getTournament(String id) => tournaments.singleWhere((tournament) => tournament.id == id as int);
+  Tournament getTournament(String id) => tournaments.singleWhere((tournament) => tournament.id == int.parse(id));
 
 }
 
