@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:vyktor/pages/map_page.dart';
-import 'package:vyktor/pages/settings_page.dart';
 import 'package:vyktor/blocs/delegate.dart';
 import 'permissions_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/map/map_data_barrel.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:bloc/bloc.dart';
 
-enum TabItem { MAP, SETTINGS }
 
-/// TODO: Documentation.
+
+/// The homepage of the app.
+///
+/// More of a hub for getting things set up than anything else.
+/// Once location permissions are given, the user probably won't
+/// see the opening screen ever again.
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+/// The state of the [HomePage].
+///
+/// On [initState], checks the phone's permissions,
+/// and computes if the app [_hasLocationPermissions].
 class _HomePageState extends State<HomePage> {
+  /// An indicator of if the app is allowed to track the phone's location.
   bool _hasLocationPermissions = false;
-  Geolocator _geolocator = Geolocator();
-  Position _initialPositon;
-
-  TabItem _currentTab = TabItem.MAP;
-  final List<TabItem> _bottomTabs = [TabItem.MAP, TabItem.SETTINGS];
 
   @override
   initState() {
@@ -41,10 +41,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  /// Callback function to send to the [PermissionsPage] child widget.
   permissionsCallback() async {
-    var initialPosition = await _geolocator.getCurrentPosition();
     setState(() {
-      _initialPositon = initialPosition;
       _hasLocationPermissions = true;
     });
   }
@@ -56,6 +55,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /// Builds the [body] of the [Scaffold] widget.
+  ///
+  /// The widget returned depends on if the app [_hasLocationPermissions].
+  /// If it does, the child is a [MapPage] receiving information from a
+  /// [MapDataBloc] through a [BlocProvider]. Otherwise, the child is a
+  /// [PermissionsPage] with a [permissionsCallback] for receiving information.
   Widget _buildBody() {
     if (_hasLocationPermissions) {
       BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -67,63 +72,4 @@ class _HomePageState extends State<HomePage> {
     return PermissionsPage(enableLocation: permissionsCallback);
   }
 
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: _bottomTabs
-          .map((tab) => _buildBottomNavigationBarItem(_icon(tab), tab))
-          .toList(),
-      onTap: _onSelectTab,
-    );
-  }
-
-  BottomNavigationBarItem _buildBottomNavigationBarItem(
-      IconData icon, TabItem tab) {
-    final String text = _title(tab);
-    final Color color =
-        _currentTab == tab ? Theme.of(context).primaryColor : Colors.grey;
-
-    return BottomNavigationBarItem(
-      icon: Icon(
-        icon,
-        color: color,
-      ),
-      title: Text(
-        text,
-        style: TextStyle(
-          color: color,
-        ),
-      ),
-    );
-  }
-
-  void _onSelectTab(int index) {
-    TabItem selectedTab = _bottomTabs[index];
-
-    setState(() {
-      _currentTab = selectedTab;
-    });
-  }
-
-  String _title(TabItem tab) {
-    switch (tab) {
-      case TabItem.MAP:
-        return 'Map';
-      case TabItem.SETTINGS:
-        return 'Settings';
-      default:
-        throw 'Unknown: $tab';
-    }
-  }
-
-  IconData _icon(TabItem tab) {
-    switch (tab) {
-      case TabItem.MAP:
-        return Icons.map;
-      case TabItem.SETTINGS:
-        return Icons.settings;
-      default:
-        throw 'Unknown: $tab';
-    }
-  }
 }

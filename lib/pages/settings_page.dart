@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// TODO:
-/// Set up basic structure of settings page.
-/// Responds to settings model
+/// Set this up!
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
   @override

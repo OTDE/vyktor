@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'map_data_barrel.dart';
 import 'package:vyktor/models/map_data.dart';
 import 'package:geolocator/geolocator.dart';
@@ -46,10 +45,6 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   ) async* {
     try {
       if(!(currentState is MapDataLoaded)) {
-        CameraPosition cameraPosition = CameraPosition(
-          target: positionToLatLng(event.initialPosition),
-          zoom: DEFAULT_ZOOM_LEVEL,
-        );
         yield InitialMapDataState();
       }
     } catch (_) {

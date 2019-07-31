@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vyktor/pages/home_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
 
 void main() => runApp(Vyktor());
 
-/// TODO: Implement splash screen.
+/// The base widget of Vyktor.
+/// TODO: build a separate widget for theme data.
 class Vyktor extends StatelessWidget {
 
   @override
@@ -17,7 +16,7 @@ class Vyktor extends StatelessWidget {
         primaryColor: Colors.purple,
         canvasColor: Colors.white,
       ),
-      home: HomePage(title: 'Vyktor (Test mode)'),
+      home: HomePage(),
     );
   }
 

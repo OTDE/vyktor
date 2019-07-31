@@ -1,13 +1,18 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
+/// TODO: document more robustly once fully integrated.
+///
+/// Basic shared preferences helper. Will be fairly straightforward to
+/// plug in, since the existence of the shared preferences inside the phone
+/// acts like a sort of pseudo-bloc with ez in and out points.
 class Settings {
 
   final String _radius = 'distanceFromCenter';
   final String _earlyDate = 'earliestTournamentDate';
   final String _lateDate = 'latestTournamentDate';
 
-  /// Default values for the settings
+  /// Default values for the settings.
   final double _defaultRadius = 50.0;
   final int _defaultEarlyDate = _daysFromNow(0);
   final int _defaultLateDate = _daysFromNow(60);

@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/map/map_data_barrel.dart';
 import 'package:geolocator/geolocator.dart';
 
-
+/// The page containing the map.
+///
+/// (and, honestly, most of the other stuff too.)
 class MapPage extends StatefulWidget {
   MapPage({Key key}) : super(key: key);
 
@@ -13,16 +15,21 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => MapPageState();
 }
 
+/// The state of the [MapPage].
+///
+/// Uses a [_controller], which currently isn't being used,
+/// since the map is listening to state changes in the BLoC.
+/// [_geolocator] allows the [FloatingActionButton] to get
+/// the phone's current location. The map also keeps track
+/// of the [_lastRecordedPosition], so that marker updates
+/// don't force the map to reload at the user location,
+/// instead of wherever the map's camera previously was.
 class MapPageState extends State<MapPage> {
+  /// A future [GoogleMapController], to be completed [onMapCreated].
   Completer<GoogleMapController> _controller = Completer();
+  /// A geolocation facilitator. Allows the refresh button to [getCurrentPosition].
   Geolocator _geolocator = Geolocator();
-
-  static final CameraPosition _testSocalPosition = CameraPosition(
-    target: LatLng(33.7454725, -117.86765300000002),
-    zoom: 10,
-  );
-
-  CameraPosition _initialPosition;
+  /// The last recorded [CameraPosition] of this map.
   CameraPosition _lastRecordedPosition;
 
   @override
@@ -69,6 +76,7 @@ class MapPageState extends State<MapPage> {
     });
   }
 
+  /// Updates [_lastRecordedPosition] when the camera moves to a new [position].
   void _onCameraMove(CameraPosition position) {
     _lastRecordedPosition = position;
   }
