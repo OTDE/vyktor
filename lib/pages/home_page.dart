@@ -26,6 +26,7 @@ class HomePage extends StatefulWidget {
 /// On [initState], checks the phone's permissions,
 /// and computes if the app [_hasLocationPermissions].
 class _HomePageState extends State<HomePage> {
+
   /// An indicator of if the app is allowed to track the phone's location.
   bool _hasLocationPermissions = false;
 

@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 ///
 /// When location is enabled, calls the [enableLocation] callback function.
 class PermissionsPage extends StatefulWidget {
+
   /// The callback function [PermissionsPage] calls on receipt of location permission.
   final Function enableLocation;
 
@@ -19,6 +20,7 @@ class PermissionsPage extends StatefulWidget {
 /// Uses [_permissions] to get the status
 /// of location permissions for this app.
 class PermissionsPageState extends State<PermissionsPage> {
+
   /// The object used to calculate location [PermissionStatus].
   Map<PermissionGroup, PermissionStatus> _permissions;
 

@@ -7,17 +7,35 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vyktor/services/location_utils.dart';
 
+/// The "go-between" for the pages and the models of this app.
+///
+/// Broadcasts various [MapData] states through a [Stream] built
+/// by the [mapEventToState] function.
 class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
+  /// The facilitator for providing [MapData] to the [MapDataBloc].
   final MapDataProvider _mapDataProvider = MapDataProvider();
+
+  /// The geolocation object used to track position changes.
   final Geolocator _geolocator = Geolocator();
+
+  /// The options used to build the geolocator stream.
+  ///
+  /// The [LocationAccuracy] defaults to high, and the stream updates
+  /// when the user moves a number of meters determined by [distanceFilter]
+  /// away from the last position.
   final LocationOptions _locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
   StreamSubscription<Position> _currentPosition;
 
 
+  /// Creates the initial state of the [MapDataBloc].
+  ///
+  /// TODO: consider making this [MapDataLoading].
   @override
   MapDataState get initialState => InitialMapDataState();
 
+  /// On constructing this, listens to a stream of the phone's positions, and
+  /// then fires a [RefreshMarkerData] event when it receives new data.
   MapDataBloc() {
     _currentPosition = _geolocator.getPositionStream(_locationOptions).listen(
         (Position position) {
@@ -26,6 +44,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     );
   }
 
+  /// On receiving an event, pushes a new state, depending on event type.
   @override
   Stream<MapDataState> mapEventToState(
       MapDataEvent event
@@ -39,6 +58,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     }
   }
 
+  /// Is this used? Consider cleaning up if the case.
   Stream<MapDataState> _mapInitializeMapDataToState(
       MapDataState currentState,
       InitializeMap event
@@ -52,6 +72,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     }
   }
 
+  /// Uses input from the [RefreshMarkerData] event to stream [MapData].
   Stream<MapDataState> _mapRefreshMarkerDataToState(
       MapDataState currentState,
       RefreshMarkerData event
@@ -65,10 +86,11 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
         target: positionToLatLng(event.currentPosition),
         zoom: DEFAULT_ZOOM_LEVEL,
       );
-      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView), initialCamera);
+      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView, tournamentToView), initialCamera);
     }
   }
 
+  /// Receives input from the selected marker and updates the [selectedTournament].
   Stream<MapDataState> _mapUpdateSelectedTournamentToState(
       MapDataState currentState,
       UpdateSelectedTournament event
@@ -77,14 +99,21 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       _mapDataProvider.setSelectedTournament(event.markerId);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament;
-      var tourneyName = tournamentToView.name;
-      print('new selected tournament: $tourneyName');
       yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView));
     }
   }
 
-  Set<Marker> _buildMarkerDataFrom(MapData mapData) {
+  /// Creates markers with attributes and fields pulled from [mapData].
+  ///
+  /// If [selectedTournament] is included in the arguments, adds it to the list
+  /// of [Markers] to send to the [GoogleMap] widget. Each [onTap] callback
+  /// triggers a [Bloc] event.
+  Set<Marker> _buildMarkerDataFrom(MapData mapData, [Tournament selectedTournament]) {
     var markerData = Set<Marker>();
+    if(selectedTournament != null) {
+      if(!mapData.tournaments.contains(selectedTournament))
+        mapData.tournaments.add(selectedTournament);
+    }
     for (Tournament tournament in mapData.tournaments) {
       var id = MarkerId(tournament.id.toString());
       var mapMarker = Marker(
@@ -106,6 +135,9 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     return markerData;
   }
 
+  /// Launches a URL with the given [slug].
+  ///
+  /// See [_buildURL] for the format of the URL.
   _launchURL(String slug) async {
     final url = _buildURL(slug);
     if(await canLaunch(url)) {

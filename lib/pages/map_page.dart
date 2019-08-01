@@ -25,10 +25,13 @@ class MapPage extends StatefulWidget {
 /// don't force the map to reload at the user location,
 /// instead of wherever the map's camera previously was.
 class MapPageState extends State<MapPage> {
+
   /// A future [GoogleMapController], to be completed [onMapCreated].
   Completer<GoogleMapController> _controller = Completer();
+
   /// A geolocation facilitator. Allows the refresh button to [getCurrentPosition].
   Geolocator _geolocator = Geolocator();
+
   /// The last recorded [CameraPosition] of this map.
   CameraPosition _lastRecordedPosition;
 
