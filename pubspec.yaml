@@ -1,7 +1,7 @@
 name: vyktor
 description: Find video game competitions near you!
 
-version: 1.0.0+1
+version: 0.0.1
 
 environment:
   sdk: '>=2.1.0 <3.0.0'
@@ -24,6 +24,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: '^0.7.2+1'
+
+flutter_icons:
+  image_path: 'assets/images/icon-128x128.png'
+  android: true
 
 flutter:
   uses-material-design: true
