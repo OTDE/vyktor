@@ -17,7 +17,6 @@ abstract class MapDataEvent extends Equatable {
 ///
 /// TODO: consider reworking this event or eliminating it entirely.
 class InitializeMap extends MapDataEvent {
-
   /// The user's initial position. Used to create the map.
   ///
   /// (Or would, if it was used.)
@@ -35,7 +34,6 @@ class InitializeMap extends MapDataEvent {
 /// app function. The UI dispatches this frequently. I have to always
 /// pay attention to what this guy is doing.
 class RefreshMarkerData extends MapDataEvent {
-
   /// The phone's current position.
   final Position currentPosition;
 
@@ -50,12 +48,12 @@ class RefreshMarkerData extends MapDataEvent {
 /// Used for choosing which tournament to view additional data for.
 /// In the future, will be used to build an info widget on tournament selection.
 class UpdateSelectedTournament extends MapDataEvent {
-
   /// The [MarkerId] of the [Marker] whose tournament data this event will select.
   final MarkerId markerId;
 
   UpdateSelectedTournament(this.markerId) : super([markerId]);
 
   @override
-  String toString() => 'Event triggered: update selected tournament to id $markerId';
+  String toString() =>
+      'Event triggered: update selected tournament to id $markerId';
 }

@@ -9,10 +9,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-
   Widget build(BuildContext context) {
-    return new Scaffold(
-
-    );
+    return new Scaffold();
   }
 }

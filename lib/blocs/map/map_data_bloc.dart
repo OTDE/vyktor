@@ -12,7 +12,6 @@ import 'package:vyktor/services/location_utils.dart';
 /// Broadcasts various [MapData] states through a [Stream] built
 /// by the [mapEventToState] function.
 class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
-
   /// The facilitator for providing [MapData] to the [MapDataBloc].
   final MapDataProvider _mapDataProvider = MapDataProvider();
 
@@ -24,9 +23,9 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   /// The [LocationAccuracy] defaults to high, and the stream updates
   /// when the user moves a number of meters determined by [distanceFilter]
   /// away from the last position.
-  final LocationOptions _locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
+  final LocationOptions _locationOptions =
+      LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
   StreamSubscription<Position> _currentPosition;
-
 
   /// Creates the initial state of the [MapDataBloc].
   ///
@@ -37,34 +36,30 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   /// On constructing this, listens to a stream of the phone's positions, and
   /// then fires a [RefreshMarkerData] event when it receives new data.
   MapDataBloc() {
-    _currentPosition = _geolocator.getPositionStream(_locationOptions).listen(
-        (Position position) {
-          dispatch(RefreshMarkerData(position));
-        }
-    );
+    _currentPosition = _geolocator
+        .getPositionStream(_locationOptions)
+        .listen((Position position) {
+      dispatch(RefreshMarkerData(position));
+    });
   }
 
   /// On receiving an event, pushes a new state, depending on event type.
   @override
-  Stream<MapDataState> mapEventToState(
-      MapDataEvent event
-  ) async* {
-    if(event is InitializeMap) {
+  Stream<MapDataState> mapEventToState(MapDataEvent event) async* {
+    if (event is InitializeMap) {
       yield* _mapInitializeMapDataToState(currentState, event);
-    } else if(event is RefreshMarkerData) {
+    } else if (event is RefreshMarkerData) {
       yield* _mapRefreshMarkerDataToState(currentState, event);
-    } else if(event is UpdateSelectedTournament) {
+    } else if (event is UpdateSelectedTournament) {
       yield* _mapUpdateSelectedTournamentToState(currentState, event);
     }
   }
 
   /// Is this used? Consider cleaning up if the case.
   Stream<MapDataState> _mapInitializeMapDataToState(
-      MapDataState currentState,
-      InitializeMap event
-  ) async* {
+      MapDataState currentState, InitializeMap event) async* {
     try {
-      if(!(currentState is MapDataLoaded)) {
+      if (!(currentState is MapDataLoaded)) {
         yield InitialMapDataState();
       }
     } catch (_) {
@@ -74,32 +69,30 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
   /// Uses input from the [RefreshMarkerData] event to stream [MapData].
   Stream<MapDataState> _mapRefreshMarkerDataToState(
-      MapDataState currentState,
-      RefreshMarkerData event
-  ) async* {
-    if(currentState is MapDataLoaded || currentState is InitialMapDataState) {
+      MapDataState currentState, RefreshMarkerData event) async* {
+    if (currentState is MapDataLoaded || currentState is InitialMapDataState) {
       await _mapDataProvider.refresh(event.currentPosition);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
-      final Tournament tournamentToView = _mapDataProvider.selectedTournament
-          ?? _mapDataProvider.mostRecentState.tournaments[0];
+      final Tournament tournamentToView = _mapDataProvider.selectedTournament ??
+          _mapDataProvider.mostRecentState.tournaments[0];
       final CameraPosition initialCamera = CameraPosition(
         target: positionToLatLng(event.currentPosition),
         zoom: DEFAULT_ZOOM_LEVEL,
       );
-      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView, tournamentToView), initialCamera);
+      yield MapDataLoaded(tournamentToView,
+          _buildMarkerDataFrom(mapDataToView, tournamentToView), initialCamera);
     }
   }
 
   /// Receives input from the selected marker and updates the [selectedTournament].
   Stream<MapDataState> _mapUpdateSelectedTournamentToState(
-      MapDataState currentState,
-      UpdateSelectedTournament event
-  ) async* {
-    if(currentState is MapDataLoaded) {
+      MapDataState currentState, UpdateSelectedTournament event) async* {
+    if (currentState is MapDataLoaded) {
       _mapDataProvider.setSelectedTournament(event.markerId);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament;
-      yield MapDataLoaded(tournamentToView, _buildMarkerDataFrom(mapDataToView));
+      yield MapDataLoaded(
+          tournamentToView, _buildMarkerDataFrom(mapDataToView));
     }
   }
 
@@ -108,27 +101,28 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   /// If [selectedTournament] is included in the arguments, adds it to the list
   /// of [Markers] to send to the [GoogleMap] widget. Each [onTap] callback
   /// triggers a [Bloc] event.
-  Set<Marker> _buildMarkerDataFrom(MapData mapData, [Tournament selectedTournament]) {
+  Set<Marker> _buildMarkerDataFrom(MapData mapData,
+      [Tournament selectedTournament]) {
     var markerData = Set<Marker>();
-    if(selectedTournament != null) {
-      if(!mapData.tournaments.contains(selectedTournament))
+    if (selectedTournament != null) {
+      if (!mapData.tournaments.contains(selectedTournament))
         mapData.tournaments.add(selectedTournament);
     }
     for (Tournament tournament in mapData.tournaments) {
       var id = MarkerId(tournament.id.toString());
       var mapMarker = Marker(
-          markerId: id,
-          position: LatLng(tournament.lat, tournament.lng),
-          infoWindow: InfoWindow(
-            title: tournament.name,
-            snippet: tournament.venueAddress,
-            onTap: () {
-              _launchURL(tournament.slug);
-            },
-          ),
+        markerId: id,
+        position: LatLng(tournament.lat, tournament.lng),
+        infoWindow: InfoWindow(
+          title: tournament.name,
+          snippet: tournament.venueAddress,
           onTap: () {
-            this.dispatch(UpdateSelectedTournament(id));
+            _launchURL(tournament.slug);
           },
+        ),
+        onTap: () {
+          this.dispatch(UpdateSelectedTournament(id));
+        },
       );
       markerData.add(mapMarker);
     }
@@ -140,7 +134,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   /// See [_buildURL] for the format of the URL.
   _launchURL(String slug) async {
     final url = _buildURL(slug);
-    if(await canLaunch(url)) {
+    if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
@@ -154,5 +148,4 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     _currentPosition.cancel();
     super.dispose();
   }
-
 }

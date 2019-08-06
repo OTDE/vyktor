@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 ///
 /// Used for debugging so I don't lose my mind debugging where the BloC is at.
 class SimpleBlocDelegate extends BlocDelegate {
-
   /// Fires an event's [toString] method when an [event] is
   /// dispatched to the [bloc].
   @override
@@ -28,5 +27,4 @@ class SimpleBlocDelegate extends BlocDelegate {
     super.onError(bloc, error, stacktrace);
     print(error);
   }
-
 }

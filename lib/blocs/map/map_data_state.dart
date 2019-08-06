@@ -49,7 +49,8 @@ class MapDataLoaded extends MapDataState {
   /// The [CameraPosition] used for the first build of the [GoogleMap] widget.
   final CameraPosition initialPosition;
 
-  MapDataLoaded(this.selectedTournament, this.mapMarkers, [this.initialPosition])
+  MapDataLoaded(this.selectedTournament, this.mapMarkers,
+      [this.initialPosition])
       : super([selectedTournament, mapMarkers, initialPosition]);
 
   @override

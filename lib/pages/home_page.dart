@@ -7,8 +7,6 @@ import 'package:vyktor/blocs/map/map_data_barrel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:bloc/bloc.dart';
 
-
-
 /// The homepage of the app.
 ///
 /// More of a hub for getting things set up than anything else.
@@ -26,7 +24,6 @@ class HomePage extends StatefulWidget {
 /// On [initState], checks the phone's permissions,
 /// and computes if the app [_hasLocationPermissions].
 class HomePageState extends State<HomePage> {
-
   /// An indicator of if the app is allowed to track the phone's location.
   bool _hasLocationPermissions = false;
 
@@ -72,5 +69,4 @@ class HomePageState extends State<HomePage> {
     }
     return PermissionsPage(enableLocation: permissionsCallback);
   }
-
 }

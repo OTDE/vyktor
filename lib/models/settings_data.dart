@@ -7,7 +7,6 @@ import 'dart:async';
 /// plug in, since the existence of the shared preferences inside the phone
 /// acts like a sort of pseudo-bloc with ez in and out points.
 class Settings {
-
   final String _radius = 'distanceFromCenter';
   final String _earlyDate = 'earliestTournamentDate';
   final String _lateDate = 'latestTournamentDate';
@@ -17,7 +16,8 @@ class Settings {
   final int _defaultEarlyDate = _daysFromNow(0);
   final int _defaultLateDate = _daysFromNow(60);
 
-  static int _daysFromNow(int numOfDays) => DateTime.now().add(Duration(days: numOfDays)).millisecondsSinceEpoch;
+  static int _daysFromNow(int numOfDays) =>
+      DateTime.now().add(Duration(days: numOfDays)).millisecondsSinceEpoch;
 
   Future<double> getRadiusInMiles() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -54,5 +54,4 @@ class Settings {
 
     return preferences.setInt(_lateDate, date);
   }
-
 }
