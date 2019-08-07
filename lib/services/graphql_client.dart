@@ -13,7 +13,7 @@ final HttpLink _httpLink = HttpLink(
 
 /// The authentication token. (No peeking.)
 final AuthLink _authLink = AuthLink(
-  getToken: () async => 'Bearer $SMASHGG_API_TOKEN',
+  getToken: () async => 'Bearer $smashgg_api_token',
 );
 
 /// The final link used when making the query.
