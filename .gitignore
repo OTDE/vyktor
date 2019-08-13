@@ -37,6 +37,7 @@
 **/android/key.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/app/proguardrules.pro
+vyktor_android.zip
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
