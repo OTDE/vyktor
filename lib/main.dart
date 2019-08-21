@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:vyktor/pages/home_page.dart';
+import 'package:flutter/services.dart';
+import 'pages/home_page.dart';
+import 'theme.dart';
 
 void main() => runApp(Vyktor());
 
 /// The base widget of Vyktor.
-/// TODO: build a separate widget for theme data.
 class Vyktor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: vyktorColorScheme.primaryVariant,
+      statusBarColor: vyktorColorScheme.primaryVariant,
+      statusBarBrightness: Brightness.dark,
+    ));
     return MaterialApp(
       title: 'Vyktor',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        primaryColor: Colors.purple,
-        canvasColor: Colors.white,
-      ),
+      theme: vyktorTheme,
       home: HomePage(),
     );
   }

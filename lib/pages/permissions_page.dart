@@ -30,25 +30,32 @@ class PermissionsPageState extends State<PermissionsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Spacer(flex: 7),
+            Spacer(flex: 24),
+            Text(
+              'vyktor',
+              style: Theme.of(context).primaryTextTheme.display3,
+            ),
+            Spacer(flex: 2),
             Text(
               'Welcome to Vyktor\'s closed alpha!',
-              style:
-                  TextStyle(color: Theme.of(context).canvasColor, fontSize: 20),
+              style: Theme.of(context).primaryTextTheme.headline,
             ),
             Spacer(flex: 1),
             Text(
               'First, allow location tracking.',
-              style: TextStyle(
-                color: Theme.of(context).canvasColor,
-              ),
+              style: Theme.of(context).primaryTextTheme.body1,
             ),
+            Spacer(flex: 3),
             RaisedButton(
-              child: Text('Enable'),
-              textColor: Theme.of(context).primaryColor,
+              child: Text(
+                  'Enable',
+                style: Theme.of(context).primaryTextTheme.button,
+              ),
+              color: Theme.of(context).colorScheme.surface,
+              textColor: Theme.of(context).colorScheme.onSurface,
               onPressed: () => _getPermissions(),
             ),
-            Spacer(flex: 6),
+            Spacer(flex: 20),
           ],
         ),
       ),

@@ -19,7 +19,7 @@ dependencies:
   path_provider: '^0.5.0+1'
   permission_handler: '^3.2.0'
   shared_preferences: '^0.5.3+4'
-  url_launcher: '^5.1.0'
+  url_launcher: '^5.1.2'
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +33,83 @@ flutter_icons:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Computer Modern Bright
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Bright-Roman.ttf'
+        - asset: 'assets/fonts/computer-modern/CMU-Bright-Oblique.ttf'
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Bright-Semibold.ttf'
+          weight: 600
+        - asset: 'assets/fonts/computer-modern/CMU-Bright-Semibold-Oblique.ttf'
+          weight: 600
+          style: italic
+    - family: Computer Modern Concrete
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Concrete-Roman.ttf'
+          weight: 300
+        - asset: 'assets/fonts/computer-modern/CMU-Concrete.ttf'
+        - asset: 'assets/fonts/computer-modern/CMU-Concrete-Italic.ttf'
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Concrete-Bold-Italic.ttf'
+          weight: 700
+          style: italic
+    - family: Computer Modern Classical Serif
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Classical-Serif-Italic.ttf'
+          style: italic
+    - family: Computer Modern Sans Serif
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Sans-Serif-Medium.ttf'
+          weight: 500
+        - asset: 'assets/fonts/computer-modern/CMU-Sans-Serif-Oblique.ttf'
+          weight: 500
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Sans-Serif-Demi-Condensed.ttf'
+          weight: 600
+        - asset: 'assets/fonts/computer-modern/CMU-Sans-Serif-Bold.ttf'
+          weight: 700
+        - asset: 'assets/fonts/computer-modern/CMU-Sans-Serif-Bold-Oblique.ttf'
+          weight: 700
+          style: italic
+    - family: Computer Modern Serif
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Roman.ttf'
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Italic.ttf'
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Bold.ttf'
+          weight: 700
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Bold-Italic.ttf'
+          weight: 700
+          style: italic
+    - family: Computer Modern Serif Extra
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Extra-Roman-Slanted.ttf'
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Extra-Bold-Slanted.ttf'
+          weight: 700
+          style: italic
+    - family: Computer Modern Serif Upright Italic
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Serif-Upright-Italic.ttf'
+    - family: Computer Modern Typewriter
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Light.ttf'
+          weight: 300
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Light-Oblique.ttf'
+          weight: 300
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Regular.ttf'
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Italic.ttf'
+          style: italic
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Bold.ttf'
+          weight: 700
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Bold-Italic.ttf'
+          weight: 700
+          style: italic
+    - family: Computer Modern Typewriter Variable Width
+      fonts:
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Variable-Width-Regular.ttf'
+        - asset: 'assets/fonts/computer-modern/CMU-Typewriter-Variable-Width-Italic.ttf'
+          style: italic
+

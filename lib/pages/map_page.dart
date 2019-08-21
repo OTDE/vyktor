@@ -39,7 +39,8 @@ class MapPageState extends State<MapPage> {
     final mapBloc = BlocProvider.of<MapDataBloc>(context);
     return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
       if (state is MapDataLoaded) {
-        return Stack(
+        return SafeArea(
+            child: Stack(
           children: <Widget>[
             GoogleMap(
               mapType: MapType.hybrid,
@@ -65,7 +66,7 @@ class MapPageState extends State<MapPage> {
                   },
                 )),
           ],
-        );
+        ));
       }
       return Container(
         color: Theme.of(context).primaryColor,
