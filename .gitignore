@@ -37,6 +37,8 @@
 **/android/key.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/app/proguardrules.pro
+android/app/src/main/gen/com/sethchapman/vyktor/Manifest.java
+android/app/src/main/gen/com/sethchapman/vyktor/R.java
 vyktor_android.zip
 
 # iOS/XCode related
@@ -71,5 +73,5 @@ vyktor_android.zip
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-android/app/src/main/gen/com/sethchapman/vyktor/Manifest.java
-android/app/src/main/gen/com/sethchapman/vyktor/R.java
+
+
