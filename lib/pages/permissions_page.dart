@@ -73,4 +73,5 @@ class PermissionsPageState extends State<PermissionsPage> {
         .checkPermissionStatus(PermissionGroup.location);
     if (result == PermissionStatus.granted) widget.enableLocation();
   }
+
 }

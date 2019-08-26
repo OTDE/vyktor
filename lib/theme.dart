@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 
+/// The [ThemeData] used to build the various widgets in Vyktor.
 final vyktorTheme = ThemeData(
   accentColor: vyktorColorScheme.secondary,
   accentColorBrightness: Brightness.light,
@@ -23,6 +23,7 @@ final vyktorTheme = ThemeData(
   primaryTextTheme: vyktorPrimaryTextTheme,
 );
 
+/// Vyktor's [ColorScheme].
 final vyktorColorScheme = ColorScheme(
   background: Colors.grey[300],
   brightness: Brightness.light,
@@ -39,6 +40,7 @@ final vyktorColorScheme = ColorScheme(
   surface: Colors.deepPurple[400],
 );
 
+/// Vyktor's [TextTheme].
 final vyktorPrimaryTextTheme = TextTheme(
   body1: TextStyle(
     color: vyktorColorScheme.onPrimary,

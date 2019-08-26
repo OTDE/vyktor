@@ -1,8 +1,10 @@
-import 'package:graphql/client.dart';
-import 'package:vyktor/services/graphql_client.dart';
 import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:graphql/client.dart';
+
+import 'package:vyktor/services/graphql_client.dart';
 
 /// A class for providing [MapData] to the MapDataBloc.
 ///

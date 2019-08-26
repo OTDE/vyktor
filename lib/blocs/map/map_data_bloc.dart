@@ -1,11 +1,14 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'map_data_barrel.dart';
-import 'package:vyktor/models/map_data.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:vyktor/models/map_data.dart';
 import 'package:vyktor/services/location_utils.dart';
+
+import 'map_data_barrel.dart';
 
 /// The "go-between" for the pages and the models of this app.
 ///

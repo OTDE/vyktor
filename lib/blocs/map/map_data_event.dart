@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:meta/meta.dart';
 
 /// The blueprint for any kind of event this BLoC could receive.
 @immutable

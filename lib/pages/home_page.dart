@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:vyktor/pages/map_page.dart';
-import 'package:vyktor/blocs/delegate.dart';
-import 'permissions_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'package:vyktor/blocs/delegate.dart';
+import 'package:vyktor/blocs/map/map_data_barrel.dart';
+
+import 'map_page.dart';
+import 'permissions_page.dart';
 
 /// The homepage of the app.
 ///
@@ -61,7 +63,7 @@ class HomePageState extends State<HomePage> {
   /// [PermissionsPage] with a [permissionsCallback] for receiving information.
   Widget _buildBody() {
     if (_hasLocationPermissions) {
-      BlocSupervisor.delegate = SimpleBlocDelegate();
+      BlocSupervisor.delegate = MapBlocDelegate();
       return BlocProvider(
         builder: (context) => MapDataBloc(),
         child: MapPage(),

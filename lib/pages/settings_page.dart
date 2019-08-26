@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// TODO:
-/// Set this up!
+/// TODO: Make this more into a... uh, panel??
+/// ... we'll see.
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
   @override
