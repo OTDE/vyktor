@@ -55,6 +55,8 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       yield* _mapRefreshMarkerDataToState(currentState, event);
     } else if (event is UpdateSelectedTournament) {
       yield* _mapUpdateSelectedTournamentToState(currentState, event);
+    } else if (event is ToggleLocationListening) {
+      yield* _mapToggleLocationListeningToState(currentState, event);
     }
   }
 
@@ -97,6 +99,16 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       yield MapDataLoaded(
           tournamentToView, _buildMarkerDataFrom(mapDataToView));
     }
+  }
+
+  /// Toggles the subscription to the phone's location.
+  ///
+  /// TODO: think about less boilerplate-y ways to accomplish this.
+  /// Maybe have it pass a boolean to ensure the logic doesn't flip accidentally?
+  Stream<MapDataState> _mapToggleLocationListeningToState(
+      MapDataState currentState, ToggleLocationListening event) async* {
+    _togglePositionSubscription();
+    yield currentState;
   }
 
   /// Creates markers with attributes and fields pulled from [mapData].
@@ -145,6 +157,15 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   }
 
   String _buildURL(String slug) => 'http://smash.gg/' + slug;
+
+  /// Toggles the subscription to the phone's location.
+  void _togglePositionSubscription() {
+    if(_currentPosition.isPaused) {
+      _currentPosition.resume();
+    } else {
+      _currentPosition.pause();
+    }
+  }
 
   @override
   void dispose() {

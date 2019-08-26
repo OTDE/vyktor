@@ -57,3 +57,13 @@ class UpdateSelectedTournament extends MapDataEvent {
   String toString() =>
       'Event triggered: update selected tournament to id $markerId';
 }
+
+/// Toggles if the BloC is listening to the [Position] stream.
+class ToggleLocationListening extends MapDataEvent {
+
+  ToggleLocationListening(): super();
+
+  @override
+  String toString() =>
+      'Event triggered: toggled listening to phone\'s location';
+}

@@ -10,6 +10,7 @@ import 'package:vyktor/blocs/map/map_data_barrel.dart';
 /// The page containing the map.
 ///
 /// (and, honestly, most of the other stuff too.)
+/// TODO: separate out the map, formatting, and setting widgets.
 class MapPage extends StatefulWidget {
   MapPage({Key key}) : super(key: key);
 
