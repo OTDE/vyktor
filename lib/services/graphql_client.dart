@@ -25,24 +25,36 @@ final Link _link = _authLink.concat(_httpLink);
 /// "Collect a bunch of metadata on tournaments
 /// that have registration open and are within
 /// [$radius] miles of [$coordinates]."
+///
+/// (This thing keeps growin'! Lots of filters to add.)
 const String tournamentLocationQuery = r'''
-   query TournamentsByLocation($coordinates: String!, $radius: String!) {
+   query TournamentsByLocation($coordinates: String!, $radius: String!, $after: Timestamp!, $before: Timestamp!) {
       tournaments(query: {
         filter: {
+          afterDate: $after
+          beforeDate: $before
           location: {
             distanceFrom: $coordinates,
             distance: $radius
           }
           regOpen: true
+          upcoming: true
         }
       }) {
         nodes {
           id
-          name
-          slug
-          venueAddress
           lat
           lng
+          name
+          slug
+          startAt
+          timezone
+          venueAddress
+          participants(query: {}) {
+            pageInfo {
+              total
+            }
+          }
           images(type:"profile"){
             url
           }
@@ -59,7 +71,12 @@ QueryOptions queryOptions(Position position) {
   var lng = position.longitude;
   return QueryOptions(
     document: tournamentLocationQuery,
-    variables: <String, dynamic>{"coordinates": "$lat,$lng", "radius": "50mi"},
+    variables: <String, dynamic> {
+      "coordinates": "$lat,$lng",
+      "radius": "50mi",
+      "after": 1566780444,
+      "before": 1568162844
+    },
   );
 }
 

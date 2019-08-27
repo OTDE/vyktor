@@ -125,8 +125,10 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     }
     for (Tournament tournament in mapData.tournaments) {
       var id = MarkerId(tournament.id.toString());
+      var attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
       var mapMarker = Marker(
         markerId: id,
+        icon: BitmapDescriptor.defaultMarkerWithHue(attendeeColor),
         position: LatLng(tournament.lat, tournament.lng),
         infoWindow: InfoWindow(
           title: tournament.name,
@@ -143,6 +145,8 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     }
     return markerData;
   }
+
+  double _toMarkerHue(int attendeeCount) => attendeeCount.clamp(0, 270).toDouble();
 
   /// Launches a URL with the given [slug].
   ///
