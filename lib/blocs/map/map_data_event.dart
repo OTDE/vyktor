@@ -67,3 +67,13 @@ class ToggleLocationListening extends MapDataEvent {
   String toString() =>
       'Event triggered: toggled listening to phone\'s location';
 }
+
+/// Toggles if the [GoogleMap] instance is locked.
+class ToggleMapLocking extends MapDataEvent {
+
+  ToggleMapLocking(): super();
+
+  @override
+  String toString() =>
+      'Event triggered: toggled map locking.';
+}

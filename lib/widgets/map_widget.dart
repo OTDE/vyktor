@@ -39,10 +39,10 @@ class VyktorMapState extends State<VyktorMap> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
     return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         return GoogleMap(
+          mapToolbarEnabled: false,
           mapType: MapType.normal,
           initialCameraPosition: _lastRecordedPosition ?? state.initialPosition,
           myLocationEnabled: true,
@@ -53,6 +53,10 @@ class VyktorMapState extends State<VyktorMap> {
             _lastRecordedPosition ??= state.initialPosition;
           },
           markers: state.mapMarkers,
+          rotateGesturesEnabled: state.isMapUnlocked ?? true,
+          tiltGesturesEnabled: state.isMapUnlocked ?? true,
+          scrollGesturesEnabled: state.isMapUnlocked ?? true,
+          zoomGesturesEnabled: state.isMapUnlocked ?? true,
         );
       }
       return Container(

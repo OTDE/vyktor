@@ -3,6 +3,8 @@ import 'smashgg_api_token.dart';
 import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'package:vyktor/models/settings_data.dart';
+
 /// This file contains variables and functions related
 /// to making GraphQL queries to the smash.gg API.
 
@@ -66,19 +68,28 @@ const String tournamentLocationQuery = r'''
 /// The options supplied to the GraphQL query.
 ///
 /// The center of the query is dictated by the [position] given.
-QueryOptions queryOptions(Position position) {
+Future<QueryOptions> queryOptions(Position position) async {
   var lat = position.latitude;
   var lng = position.longitude;
+  var earlyDate = await getSettings().getEarlyDate().then(_formatForQuery);
+  var lateDate = await getSettings().getLateDate().then(_formatForQuery);
+  print("$earlyDate $lateDate");
   return QueryOptions(
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
       "coordinates": "$lat,$lng",
       "radius": "50mi",
-      "after": 1566780444,
-      "before": 1568162844
+      "after": earlyDate,
+      "before": lateDate
     },
   );
 }
+
+Settings _settings;
+
+Settings getSettings() => _settings ?? Settings();
+
+int _formatForQuery(int fromSettings) => (fromSettings / 1000).round();
 
 /// The GraphQL client being used by the app to send queries.
 GraphQLClient _client;

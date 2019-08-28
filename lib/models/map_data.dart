@@ -32,7 +32,7 @@ class MapDataProvider {
   /// The [QueryOptions] object is built based on the [currentPosition].
   /// Once the query is successful, the resulting JSON is parsed [_toMapData].
   Future<MapData> _refreshMapData(Position currentPosition) async =>
-      getGraphQLClient().query(queryOptions(currentPosition)).then(_toMapData);
+      getGraphQLClient().query(await queryOptions(currentPosition)).then(_toMapData);
 
   /// Parses the [queryResult] into [MapData].
   ///

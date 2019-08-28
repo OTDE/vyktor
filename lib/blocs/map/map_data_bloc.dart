@@ -57,6 +57,8 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       yield* _mapUpdateSelectedTournamentToState(currentState, event);
     } else if (event is ToggleLocationListening) {
       yield* _mapToggleLocationListeningToState(currentState, event);
+    } else if (event is ToggleMapLocking) {
+      yield* _mapToggleMapLockingToState(currentState, event);
     }
   }
 
@@ -85,7 +87,10 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
         zoom: DEFAULT_ZOOM_LEVEL,
       );
       yield MapDataLoaded(tournamentToView,
-          _buildMarkerDataFrom(mapDataToView, tournamentToView), initialCamera);
+          _buildMarkerDataFrom(mapDataToView, tournamentToView),
+          initialPosition: initialCamera,
+          isMapUnlocked: true,
+      );
     }
   }
 
@@ -97,7 +102,9 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament;
       yield MapDataLoaded(
-          tournamentToView, _buildMarkerDataFrom(mapDataToView));
+          tournamentToView, _buildMarkerDataFrom(mapDataToView),
+          isMapUnlocked: currentState.isMapUnlocked,
+      );
     }
   }
 
@@ -109,6 +116,15 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       MapDataState currentState, ToggleLocationListening event) async* {
     _togglePositionSubscription();
     yield currentState;
+  }
+
+  Stream<MapDataState> _mapToggleMapLockingToState(
+      MapDataState currentState, ToggleMapLocking event) async* {
+    if (currentState is MapDataLoaded) {
+      yield MapDataLoaded(
+          currentState.selectedTournament, currentState.mapMarkers,
+          isMapUnlocked: !currentState.isMapUnlocked ?? false);
+    }
   }
 
   /// Creates markers with attributes and fields pulled from [mapData].
@@ -146,7 +162,8 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     return markerData;
   }
 
-  double _toMarkerHue(int attendeeCount) => attendeeCount.clamp(0, 270).toDouble();
+  double _toMarkerHue(int attendeeCount) =>
+      attendeeCount.clamp(0, 270).toDouble();
 
   /// Launches a URL with the given [slug].
   ///
@@ -164,7 +181,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
 
   /// Toggles the subscription to the phone's location.
   void _togglePositionSubscription() {
-    if(_currentPosition.isPaused) {
+    if (_currentPosition.isPaused) {
       _currentPosition.resume();
     } else {
       _currentPosition.pause();
