@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
 import 'package:vyktor/widgets/map_widget.dart';
 import 'package:vyktor/widgets/menu_widget.dart';
+import 'package:vyktor/widgets/tournament/selected_tournament_animator.dart';
 
 
 /// The page containing the map and menu widgets.
@@ -25,6 +24,7 @@ class MapPageState extends State<MapPage> {
           children: <Widget>[
             VyktorMap(),
             VyktorMenu(),
+            SelectedTournamentAnimator(),
           ],
         ));
   }

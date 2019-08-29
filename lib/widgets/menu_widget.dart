@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
+import 'package:vyktor/blocs/blocs.dart';
 import 'package:vyktor/services/unicorn_dial.dart';
 
 class VyktorMenu extends StatefulWidget {
@@ -11,9 +11,13 @@ class VyktorMenu extends StatefulWidget {
 
 class VyktorMenuState extends State<VyktorMenu> {
 
+  bool _mainButtonSelected = false;
+  bool _inSelection = false;
+
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     List<UnicornButton> childButtons = [
       UnicornButton(
         hasLabel: true,
@@ -67,11 +71,23 @@ class VyktorMenuState extends State<VyktorMenu> {
     return Align(
       alignment: Alignment(0.9, 0.9),
       child: UnicornDialer(
-        bottomPadding: 30.0,
+        bottomPadding: 15.0,
         childButtons: childButtons,
         finalButtonIcon: Icon(Icons.launch),
         onMainButtonPressed: () async {
-          mapBloc.dispatch(ToggleMapLocking());
+          if(_inSelection) {
+            return;
+          }
+          _inSelection = true;
+          animBloc.dispatch(DeselectAll());
+          if(_mainButtonSelected) {
+            mapBloc.dispatch(UnlockMap());
+            _mainButtonSelected = false;
+          } else {
+            mapBloc.dispatch(LockMap());
+            _mainButtonSelected = true;
+          }
+          _inSelection = false;
         },
         orientation: UnicornOrientation.VERTICAL,
         parentButton: Icon(Icons.settings),
@@ -79,4 +95,6 @@ class VyktorMenuState extends State<VyktorMenu> {
       ),
     );
   }
+
+
 }

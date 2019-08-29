@@ -125,9 +125,9 @@ final vyktorPrimaryTextTheme = TextTheme(
   ),
   subhead: TextStyle(
     color: vyktorColorScheme.onPrimary,
-    fontFamily: 'Computer Modern Typewriter',
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
+    fontFamily: 'Computer Modern Concrete',
+    fontSize: 16,
+    fontWeight: FontWeight.w300,
   ),
   subtitle: TextStyle(
     color: vyktorColorScheme.secondary,

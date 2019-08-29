@@ -59,6 +59,10 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       yield* _mapToggleLocationListeningToState(currentState, event);
     } else if (event is ToggleMapLocking) {
       yield* _mapToggleMapLockingToState(currentState, event);
+    } else if (event is LockMap) {
+      yield* _mapLockMapToState(currentState, event);
+    } else if (event is UnlockMap) {
+      yield* _mapUnlockMapToState(currentState, event);
     }
   }
 
@@ -80,16 +84,17 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
     if (currentState is MapDataLoaded || currentState is InitialMapDataState) {
       await _mapDataProvider.refresh(event.currentPosition);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
-      final Tournament tournamentToView = _mapDataProvider.selectedTournament ??
-          _mapDataProvider.mostRecentState.tournaments[0];
+      final Tournament tournamentToView =
+          _mapDataProvider.selectedTournament ?? Tournament(id: -1);
       final CameraPosition initialCamera = CameraPosition(
         target: positionToLatLng(event.currentPosition),
         zoom: DEFAULT_ZOOM_LEVEL,
       );
-      yield MapDataLoaded(tournamentToView,
-          _buildMarkerDataFrom(mapDataToView, tournamentToView),
-          initialPosition: initialCamera,
-          isMapUnlocked: true,
+      yield MapDataLoaded(
+        tournamentToView,
+        mapDataToView,
+        initialPosition: initialCamera,
+        isMapUnlocked: true,
       );
     }
   }
@@ -98,12 +103,18 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   Stream<MapDataState> _mapUpdateSelectedTournamentToState(
       MapDataState currentState, UpdateSelectedTournament event) async* {
     if (currentState is MapDataLoaded) {
-      _mapDataProvider.setSelectedTournament(event.markerId);
+      if (int.parse(event.markerId.value) != -1) {
+        _mapDataProvider.setSelectedTournament(event.markerId);
+      }
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
-      final Tournament tournamentToView = _mapDataProvider.selectedTournament;
+      final Tournament tournamentToView =
+          (int.parse(event.markerId.value) != -1)
+              ? _mapDataProvider.selectedTournament
+              : Tournament(id: -1);
       yield MapDataLoaded(
-          tournamentToView, _buildMarkerDataFrom(mapDataToView),
-          isMapUnlocked: currentState.isMapUnlocked,
+        tournamentToView,
+        mapDataToView,
+        isMapUnlocked: currentState.isMapUnlocked,
       );
     }
   }
@@ -121,63 +132,26 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   Stream<MapDataState> _mapToggleMapLockingToState(
       MapDataState currentState, ToggleMapLocking event) async* {
     if (currentState is MapDataLoaded) {
-      yield MapDataLoaded(
-          currentState.selectedTournament, currentState.mapMarkers,
+      yield MapDataLoaded(currentState.selectedTournament, currentState.mapData,
           isMapUnlocked: !currentState.isMapUnlocked ?? false);
     }
   }
 
-  /// Creates markers with attributes and fields pulled from [mapData].
-  ///
-  /// If [selectedTournament] is included in the arguments, adds it to the list
-  /// of [Markers] to send to the [GoogleMap] widget. Each [onTap] callback
-  /// triggers a [Bloc] event.
-  Set<Marker> _buildMarkerDataFrom(MapData mapData,
-      [Tournament selectedTournament]) {
-    var markerData = Set<Marker>();
-    if (selectedTournament != null) {
-      if (!mapData.tournaments.contains(selectedTournament))
-        mapData.tournaments.add(selectedTournament);
-    }
-    for (Tournament tournament in mapData.tournaments) {
-      var id = MarkerId(tournament.id.toString());
-      var attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
-      var mapMarker = Marker(
-        markerId: id,
-        icon: BitmapDescriptor.defaultMarkerWithHue(attendeeColor),
-        position: LatLng(tournament.lat, tournament.lng),
-        infoWindow: InfoWindow(
-          title: tournament.name,
-          snippet: tournament.venueAddress,
-          onTap: () {
-            _launchURL(tournament.slug);
-          },
-        ),
-        onTap: () {
-          this.dispatch(UpdateSelectedTournament(id));
-        },
-      );
-      markerData.add(mapMarker);
-    }
-    return markerData;
-  }
-
-  double _toMarkerHue(int attendeeCount) =>
-      attendeeCount.clamp(0, 270).toDouble();
-
-  /// Launches a URL with the given [slug].
-  ///
-  /// See [_buildURL] for the format of the URL.
-  _launchURL(String slug) async {
-    final url = _buildURL(slug);
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+  Stream<MapDataState> _mapLockMapToState(
+      MapDataState currentState, LockMap event) async* {
+    if (currentState is MapDataLoaded) {
+      yield MapDataLoaded(currentState.selectedTournament, currentState.mapData,
+          isMapUnlocked: false);
     }
   }
 
-  String _buildURL(String slug) => 'http://smash.gg/' + slug;
+  Stream<MapDataState> _mapUnlockMapToState(
+      MapDataState currentState, UnlockMap event) async* {
+    if (currentState is MapDataLoaded) {
+      yield MapDataLoaded(currentState.selectedTournament, currentState.mapData,
+          isMapUnlocked: true);
+    }
+  }
 
   /// Toggles the subscription to the phone's location.
   void _togglePositionSubscription() {

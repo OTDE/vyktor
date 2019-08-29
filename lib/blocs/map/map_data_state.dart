@@ -37,12 +37,12 @@ class MapDataLoading extends MapDataState {
 
 /// The state of the BLoC when all the [MapData] is loaded.
 ///
-/// The [mapMarkers] and [selectedTournament] are always used by this state,
+/// The [mapData] and [selectedTournament] are always used by this state,
 /// while the [initialPosition] is only used when the app is first started,
 /// so that the map loads a [CameraPosition] centered around the user's location.
 class MapDataLoaded extends MapDataState {
   /// The markers that will be applied to the [GoogleMap] widget's [markers] field.
-  final Set<Marker> mapMarkers;
+  final MapData mapData;
 
   /// The [Tournament] currently selected by the user.
   final Tournament selectedTournament;
@@ -53,9 +53,9 @@ class MapDataLoaded extends MapDataState {
   /// If the [GoogleMap] is locked.
   final bool isMapUnlocked;
 
-  MapDataLoaded(this.selectedTournament, this.mapMarkers,
+  MapDataLoaded(this.selectedTournament, this.mapData,
   {this.initialPosition, this.isMapUnlocked})
-      : super([selectedTournament, mapMarkers, initialPosition, isMapUnlocked]);
+      : super([selectedTournament, mapData, initialPosition, isMapUnlocked]);
 
   @override
   String toString() => 'Map data loaded.';

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:vyktor/blocs/delegate.dart';
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
+import 'package:vyktor/blocs/blocs.dart';
 
 import 'map_page.dart';
 import 'permissions_page.dart';
@@ -64,8 +64,15 @@ class HomePageState extends State<HomePage> {
   Widget _buildBody() {
     if (_hasLocationPermissions) {
       BlocSupervisor.delegate = MapBlocDelegate();
-      return BlocProvider(
-        builder: (context) => MapDataBloc(),
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider<MapDataBloc>(
+            builder: (context) => MapDataBloc(),
+          ),
+          BlocProvider<AnimatorBloc>(
+            builder: (context) => AnimatorBloc(),
+          ),
+        ],
         child: MapPage(),
       );
     }

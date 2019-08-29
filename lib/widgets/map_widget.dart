@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:vyktor/blocs/map/map_data_barrel.dart';
+import 'package:vyktor/models/map_data.dart';
+import 'package:vyktor/blocs/blocs.dart';
 
 /// The page containing the map.
 ///
@@ -29,7 +32,7 @@ class VyktorMap extends StatefulWidget {
 /// instead of wherever the map's camera previously was.
 class VyktorMapState extends State<VyktorMap> {
   /// A future [GoogleMapController], to be completed [onMapCreated].
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _mapController;
 
   /// A geolocation facilitator. Allows the refresh button to [getCurrentPosition].
   Geolocator _geolocator = Geolocator();
@@ -37,8 +40,12 @@ class VyktorMapState extends State<VyktorMap> {
   /// The last recorded [CameraPosition] of this map.
   CameraPosition _lastRecordedPosition;
 
+  bool _selectingTournament = false;
+
   @override
   Widget build(BuildContext context) {
+    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         return GoogleMap(
@@ -49,14 +56,26 @@ class VyktorMapState extends State<VyktorMap> {
           myLocationButtonEnabled: true,
           onCameraMove: _onCameraMove,
           onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
+            _mapController = controller;
             _lastRecordedPosition ??= state.initialPosition;
           },
-          markers: state.mapMarkers,
+          onTap: (position) async {
+            animBloc.dispatch(DeselectAll());
+            mapBloc.dispatch(UnlockMap());
+          },
+          markers: _buildMarkerDataFrom(state.mapData, state.selectedTournament,
+              mapBloc, state, animBloc),
           rotateGesturesEnabled: state.isMapUnlocked ?? true,
           tiltGesturesEnabled: state.isMapUnlocked ?? true,
           scrollGesturesEnabled: state.isMapUnlocked ?? true,
           zoomGesturesEnabled: state.isMapUnlocked ?? true,
+          gestureRecognizers: state.isMapUnlocked
+              ? <Factory<OneSequenceGestureRecognizer>>[
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                ].toSet()
+              : null,
         );
       }
       return Container(
@@ -74,4 +93,84 @@ class VyktorMapState extends State<VyktorMap> {
   void _onCameraMove(CameraPosition position) {
     _lastRecordedPosition = position;
   }
+
+  /// Creates markers with attributes and fields pulled from [mapData].
+  ///
+  /// If [selectedTournament] is included in the arguments, adds it to the list
+  /// of [Markers] to send to the [GoogleMap] widget. Each [onTap] callback
+  /// triggers a [Bloc] event.
+  Set<Marker> _buildMarkerDataFrom(
+      MapData mapData,
+      Tournament selectedTournament,
+      MapDataBloc mapBloc,
+      MapDataLoaded state,
+      AnimatorBloc animBloc) {
+    var markerData = Set<Marker>();
+    if (selectedTournament != null) {
+      if (!mapData.tournaments.contains(selectedTournament))
+        mapData.tournaments.add(selectedTournament);
+    }
+    for (Tournament tournament in mapData.tournaments) {
+      if (tournament.id == -1) continue;
+      var id = MarkerId(tournament.id.toString());
+      var attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
+      var mapMarker = Marker(
+        markerId: id,
+        icon: BitmapDescriptor.defaultMarkerWithHue(attendeeColor),
+        position: LatLng(tournament.lat, tournament.lng),
+        infoWindow: InfoWindow(
+                title: 'Tournament starts at',
+                snippet: _toDate(tournament.startAt),
+              ),
+        onTap: () async {
+          if (_selectingTournament) {
+            return;
+          }
+          _selectingTournament = true;
+          Tournament prev = state.selectedTournament;
+            mapBloc.dispatch(UpdateSelectedTournament(id));
+            _mapController.animateCamera(CameraUpdate.newLatLngZoom(
+                LatLng(tournament.lat - 0.004, tournament.lng), 14.0));
+            if(prev.id == tournament.id) { //Same marker, deselect
+              animBloc.dispatch(DeselectAll());
+            }
+          animBloc.dispatch(SelectTournament(id)); // Lock and load
+          mapBloc.dispatch(LockMap());
+          _selectingTournament = false;
+        },
+      );
+      markerData.add(mapMarker);
+    }
+    return markerData;
+  }
+
+  String _formatInfoWindowTitle(String title) {
+    var titleWords = title.split(' ');
+    var addedNewLine = false;
+    var formattedTitle = '';
+    for (String word in titleWords) {
+      if (formattedTitle.length > title.length / 2 && !addedNewLine) {
+        formattedTitle += '\n$word';
+        addedNewLine = true;
+      } else {
+        formattedTitle += '$word ';
+      }
+    }
+    return formattedTitle;
+  }
+
+  String _toDate(int timestamp) {
+    var date =
+        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+    return '${date.month}/${date.day}/${date.year} — ${date.hour % 12}:'
+        '${(int minute) {
+      return minute < 10 ? '0$minute' : '$minute';
+    }(date.minute)} '
+        '${(int hour) {
+      return hour > 12 ? 'PM' : 'AM';
+    }(date.hour)}';
+  }
+
+  double _toMarkerHue(int attendeeCount) =>
+      attendeeCount.clamp(0, 270).toDouble();
 }

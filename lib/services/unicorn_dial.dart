@@ -192,10 +192,10 @@ class _UnicornDialer extends State<UnicornDialer>
                       return;
                     }
                     _isPressed = true;
+                    await mainActionButtonOnPressed();
                     if (widget.onMainButtonPressed != null) {
                      await widget.onMainButtonPressed();
                     }
-                    await mainActionButtonOnPressed();
                     _isPressed = false;
                   },
                   child: !hasChildButtons
