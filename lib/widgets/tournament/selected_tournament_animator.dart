@@ -24,7 +24,7 @@ class SelectedTournamentAnimatorState extends State<SelectedTournamentAnimator>
       vsync: this,
       duration: Duration(milliseconds: 300),
     );
-    _offset = Tween<Offset>(begin: Offset(-1.0, 0.5), end: Offset(-0.005, 0.5)).chain(
+    _offset = Tween<Offset>(begin: Offset(-1.0, 0.3), end: Offset(-0.005, 0.3)).chain(
       new CurveTween(curve: Curves.ease)
     ).animate(_controller);
   }
@@ -54,7 +54,7 @@ class SelectedTournamentAnimatorState extends State<SelectedTournamentAnimator>
           position: _offset,
           child: SizedBox(
             width: 300,
-            height: 300,
+            height: 400,
             child: SelectedTournament(),
           )
         ),

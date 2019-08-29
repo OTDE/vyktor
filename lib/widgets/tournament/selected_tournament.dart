@@ -15,6 +15,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
 
   @override
   Widget build(BuildContext context) {
+    final animBloc = BlocProvider.of<AnimatorBloc>(context);
+    final mapBloc = BlocProvider.of<MapDataBloc>(context);
     return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         return DecoratedBox(
@@ -27,101 +29,124 @@ class _SelectedTournamentState extends State<SelectedTournament> {
               width: 300,
               height: 300,
               margin: EdgeInsets.all(20.0).add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: <Widget>[
-                  Row(
+                  CustomPaint(
+
+              ),
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        alignment:
-                            Alignment.topLeft,
-                        height: 120,
-                        width: 120,
-                        child: SizedBox(
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryVariant,
-                                border: Border.all(
-                                    color: Theme.of(context).accentColor,
-                                    width: 5.0),
-                              ),
-                              child: Center(
-                                child: FadeInImage.memoryNetwork(
-                                  placeholder: kTransparentImage,
-                                  image:
-                                      state.selectedTournament.images[0].url ??
-                                          'https://picsum.photos/80',
-                                  width: 80,
-                                  height: 80,
-                                ),
-                              )),
-                          width: 100,
-                          height: 100,
-                        ),
-                      ),
-                      Spacer(flex: 3),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Align(
-                              alignment:
-                              Alignment.topLeft,
-                              child: RaisedButton(
-                                child: Text(
-                                  'Directions',
-                                  style: Theme.of(context).primaryTextTheme.button,
-                                ),
-                                color: Theme.of(context).colorScheme.surface,
-                                textColor: Theme.of(context).colorScheme.onSurface,
-                                onPressed: () async {
-                                  try {
-                                    _launchURL(_buildDirectionsURL(
-                                        state.selectedTournament.venueAddress));
-                                  } catch (_) {
-                                    //TODO: dialog w/ 'not valid maps url' or somesuch
-                                  }
-                                },
-                              )),
-                          Align(
-                              alignment:
-                              Alignment.topLeft,
-                              child: RaisedButton(
-                                child: Text(
-                                  'Sign up',
-                                  style: Theme.of(context).primaryTextTheme.button,
-                                ),
-                                color: Theme.of(context).colorScheme.surface,
-                                textColor: Theme.of(context).colorScheme.onSurface,
-                                onPressed: () async {
-                                  try {
-                                    _launchURL(_buildSmashggURL(
-                                        state.selectedTournament.slug));
-                                  } catch (_) {
-                                    //TODO: dialog w/ 'cannot launch url' or somesuch
-                                  }
-                                },
-                              ))
+                          Container(
+                            alignment:
+                            Alignment.topLeft,
+                            height: 120,
+                            width: 120,
+                            child: SizedBox(
+                              child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant,
+                                    border: Border.all(
+                                        color: Theme.of(context).accentColor,
+                                        width: 5.0),
+                                  ),
+                                  child: Center(
+                                    child: FadeInImage.memoryNetwork(
+                                      placeholder: kTransparentImage,
+                                      image:
+                                      state.selectedTournament.images[0].url ??
+                                          'https://picsum.photos/80',
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                  )),
+                              width: 100,
+                              height: 100,
+                            ),
+                          ),
+                          Spacer(flex: 3),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Align(
+                                  alignment:
+                                  Alignment.topLeft,
+                                  child: RaisedButton(
+                                    child: Text(
+                                      'Directions',
+                                      style: Theme.of(context).primaryTextTheme.button,
+                                    ),
+                                    color: Theme.of(context).colorScheme.surface,
+                                    textColor: Theme.of(context).colorScheme.onSurface,
+                                    onPressed: () async {
+                                      try {
+                                        _launchURL(_buildDirectionsURL(
+                                            state.selectedTournament.venueAddress));
+                                      } catch (_) {
+                                        //TODO: dialog w/ 'not valid maps url' or somesuch
+                                      }
+                                    },
+                                  )),
+                              Align(
+                                  alignment:
+                                  Alignment.topLeft,
+                                  child: RaisedButton(
+                                    child: Text(
+                                      'Sign up',
+                                      style: Theme.of(context).primaryTextTheme.button,
+                                    ),
+                                    color: Theme.of(context).colorScheme.surface,
+                                    textColor: Theme.of(context).colorScheme.onSurface,
+                                    onPressed: () async {
+                                      try {
+                                        _launchURL(_buildSmashggURL(
+                                            state.selectedTournament.slug));
+                                      } catch (_) {
+                                        //TODO: dialog w/ 'cannot launch url' or somesuch
+                                      }
+                                    },
+                                  ))
+                            ],
+                          ),
+                          Spacer(flex: 10),
                         ],
                       ),
-                      Spacer(flex: 10),
+                      Spacer(flex: 1),
+                      Text(
+                        state.selectedTournament.name,
+                        style: Theme.of(context).primaryTextTheme.headline,
+                      ),
+                      Spacer(flex: 1),
+                      Text(
+                        _formatAddress(state.selectedTournament.venueAddress),
+                        style: Theme.of(context).primaryTextTheme.subhead,
+                      ),
+                      Spacer(flex: 15)
                     ],
                   ),
-                  Text(
-                    state.selectedTournament.name,
-                    style: Theme.of(context).primaryTextTheme.headline,
-                  ),
-                  Spacer(flex: 1),
-                  Text(
-                    _formatAddress(state.selectedTournament.venueAddress),
-                    style: Theme.of(context).primaryTextTheme.subhead,
-                  ),
-                  Spacer(flex: 4)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                        foregroundColor: Theme.of(context).accentColor,
+                        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                        heroTag: 'cancelTournament',
+                        shape: ContinuousRectangleBorder(),
+                        mini: true,
+                        child: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          animBloc.dispatch(DeselectAll());
+                          mapBloc.dispatch(UnlockMap());
+                        }
+                    ),
+                  )
                 ],
               )),
         );

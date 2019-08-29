@@ -48,34 +48,33 @@ class VyktorMapState extends State<VyktorMap> {
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
       if (state is MapDataLoaded) {
-        return GoogleMap(
-          mapToolbarEnabled: false,
-          mapType: MapType.normal,
-          initialCameraPosition: _lastRecordedPosition ?? state.initialPosition,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-          onCameraMove: _onCameraMove,
-          onMapCreated: (GoogleMapController controller) {
-            _mapController = controller;
-            _lastRecordedPosition ??= state.initialPosition;
-          },
-          onTap: (position) async {
-            animBloc.dispatch(DeselectAll());
-            mapBloc.dispatch(UnlockMap());
-          },
-          markers: _buildMarkerDataFrom(state.mapData, state.selectedTournament,
-              mapBloc, state, animBloc),
-          rotateGesturesEnabled: state.isMapUnlocked ?? true,
-          tiltGesturesEnabled: state.isMapUnlocked ?? true,
-          scrollGesturesEnabled: state.isMapUnlocked ?? true,
-          zoomGesturesEnabled: state.isMapUnlocked ?? true,
-          gestureRecognizers: state.isMapUnlocked
-              ? <Factory<OneSequenceGestureRecognizer>>[
-                  Factory<OneSequenceGestureRecognizer>(
+        return IgnorePointer(
+          ignoring: !state.isMapUnlocked,
+          child: GoogleMap(
+            mapToolbarEnabled: false,
+            mapType: MapType.normal,
+            initialCameraPosition: _lastRecordedPosition ?? state.initialPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            onCameraMove: _onCameraMove,
+            onMapCreated: (GoogleMapController controller) {
+              _mapController = controller;
+              _lastRecordedPosition ??= state.initialPosition;
+            },
+            markers: _buildMarkerDataFrom(state.mapData, state.selectedTournament,
+                mapBloc, state, animBloc),
+            rotateGesturesEnabled: state.isMapUnlocked ?? true,
+            tiltGesturesEnabled: state.isMapUnlocked ?? true,
+            scrollGesturesEnabled: state.isMapUnlocked ?? true,
+            zoomGesturesEnabled: state.isMapUnlocked ?? true,
+            gestureRecognizers: state.isMapUnlocked
+                ? <Factory<OneSequenceGestureRecognizer>>[
+              Factory<OneSequenceGestureRecognizer>(
                     () => EagerGestureRecognizer(),
-                  ),
-                ].toSet()
-              : null,
+              ),
+            ].toSet()
+                : null,
+          ),
         );
       }
       return Container(
@@ -130,7 +129,7 @@ class VyktorMapState extends State<VyktorMap> {
           Tournament prev = state.selectedTournament;
             mapBloc.dispatch(UpdateSelectedTournament(id));
             _mapController.animateCamera(CameraUpdate.newLatLngZoom(
-                LatLng(tournament.lat - 0.004, tournament.lng), 14.0));
+                LatLng(tournament.lat - 0.069, tournament.lng), 11.0));
             if(prev.id == tournament.id) { //Same marker, deselect
               animBloc.dispatch(DeselectAll());
             }
@@ -142,21 +141,6 @@ class VyktorMapState extends State<VyktorMap> {
       markerData.add(mapMarker);
     }
     return markerData;
-  }
-
-  String _formatInfoWindowTitle(String title) {
-    var titleWords = title.split(' ');
-    var addedNewLine = false;
-    var formattedTitle = '';
-    for (String word in titleWords) {
-      if (formattedTitle.length > title.length / 2 && !addedNewLine) {
-        formattedTitle += '\n$word';
-        addedNewLine = true;
-      } else {
-        formattedTitle += '$word ';
-      }
-    }
-    return formattedTitle;
   }
 
   String _toDate(int timestamp) {
