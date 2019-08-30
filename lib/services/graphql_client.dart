@@ -71,6 +71,7 @@ const String tournamentLocationQuery = r'''
 Future<QueryOptions> queryOptions(Position position) async {
   var lat = position.latitude;
   var lng = position.longitude;
+  var radius = await getSettings().getRadiusInMiles();
   var earlyDate = await getSettings().getEarlyDate().then(_formatForQuery);
   var lateDate = await getSettings().getLateDate().then(_formatForQuery);
   print("$earlyDate $lateDate");
@@ -78,7 +79,7 @@ Future<QueryOptions> queryOptions(Position position) async {
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
       "coordinates": "$lat,$lng",
-      "radius": "50mi",
+      "radius": "${radius}mi",
       "after": earlyDate,
       "before": lateDate
     },

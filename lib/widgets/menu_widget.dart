@@ -21,7 +21,7 @@ class VyktorMenuState extends State<VyktorMenu> {
       UnicornButton(
         hasLabel: true,
         labelBackgroundColor: Theme.of(context).colorScheme.surface,
-        labelText: "Map settings",
+        labelText: "Map Settings",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
@@ -30,8 +30,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "map",
           mini: true,
           onPressed: () async {
-            print('hit map');
-            mapBloc.dispatch(UnlockMap());
+            animBloc.dispatch(SelectMapSettings());
             _mainButtonSelected = false;
           },
         ),
@@ -39,7 +38,7 @@ class VyktorMenuState extends State<VyktorMenu> {
       UnicornButton(
         hasLabel: true,
         labelBackgroundColor: Theme.of(context).colorScheme.surface,
-        labelText: "Search settings",
+        labelText: "Search Settings",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
@@ -48,7 +47,6 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            print('hit search');
             mapBloc.dispatch(UnlockMap());
             _mainButtonSelected = false;
           },
@@ -57,7 +55,7 @@ class VyktorMenuState extends State<VyktorMenu> {
       UnicornButton(
         hasLabel: true,
         labelBackgroundColor: Theme.of(context).colorScheme.surface,
-        labelText: "Other info",
+        labelText: "Other Info",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
@@ -66,7 +64,6 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            print('hit info');
             mapBloc.dispatch(UnlockMap());
             _mainButtonSelected = false;
           },
@@ -105,16 +102,6 @@ class VyktorMenuState extends State<VyktorMenu> {
           parentButtonBackground:
           Theme.of(context).colorScheme.primaryVariant,
         ));
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            animBloc.dispatch(DeselectAll());
-            mapBloc.dispatch(UnlockMap());
-          },
-          child: menuDial,
-        )
-      ],
-    );
+    return menuDial;
   }
 }

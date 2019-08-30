@@ -47,8 +47,9 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                             child: Center(
                               child: FadeInImage.memoryNetwork(
                                 placeholder: kTransparentImage,
-                                image: state.selectedTournament.images[0].url ??
-                                    'https://picsum.photos/80',
+                                image: state.selectedTournament.images.length != 0
+                                    ? state.selectedTournament.images[0].url
+                                    : 'https://picsum.photos/80',
                                 width: 80,
                                 height: 80,
                               ),
@@ -114,7 +115,9 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                 ),
                 Spacer(flex: 1),
                 Text(
-                  '$numEntrants entrant${(entrants) { return entrants == 1 ? '' : 's'; } (numEntrants)}',
+                  '$numEntrants entrant${(entrants) {
+                    return entrants == 1 ? '' : 's';
+                  }(numEntrants)}',
                   style: Theme.of(context).primaryTextTheme.display1,
                 ),
                 Spacer(flex: 1),

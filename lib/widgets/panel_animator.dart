@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/blocs.dart';
-import 'selected_tournament.dart';
 import 'package:vyktor/widgets/exit_detector.dart';
 
-class SelectedTournamentAnimator extends StatefulWidget {
-  SelectedTournamentAnimator({Key key}) : super(key: key);
+enum SelectedPanel {tournament, map_settings, search_settings, info}
+
+class PanelAnimator extends StatefulWidget {
+
+  final Widget child;
+  final SelectedPanel panel;
+
+  PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
 
   @override
-  SelectedTournamentAnimatorState createState() =>
-      SelectedTournamentAnimatorState();
+  PanelAnimatorState createState() =>
+      PanelAnimatorState();
 }
 
-class SelectedTournamentAnimatorState extends State<SelectedTournamentAnimator>
+class PanelAnimatorState extends State<PanelAnimator>
     with SingleTickerProviderStateMixin {
   Animation<Offset> _offset;
   AnimationController _controller;
@@ -40,7 +45,20 @@ class SelectedTournamentAnimatorState extends State<SelectedTournamentAnimator>
   Widget build(BuildContext context) {
     return BlocBuilder<AnimatorBloc, AnimatorState>(builder: (context, state) {
       if (state is TabAnimatorState) {
-        _isSelected = state.isTournamentSelected;
+        switch(widget.panel) {
+          case SelectedPanel.tournament:
+            _isSelected = state.isTournamentSelected;
+            break;
+          case SelectedPanel.map_settings:
+            _isSelected = state.isMapSettingsSelected;
+            break;
+          case SelectedPanel.search_settings:
+            _isSelected = state.isSearchSettingsSelected;
+            break;
+          case SelectedPanel.info:
+            _isSelected = state.isInfoSelected;
+            break;
+        }
         if (_isSelected) {
           _controller.forward();
         } else {
@@ -69,10 +87,10 @@ class SelectedTournamentAnimatorState extends State<SelectedTournamentAnimator>
                       position: DecorationPosition.background,
                       child: Container(
                         width: 300,
-                        height: 300,
+                        height: 400,
                         margin: EdgeInsets.all(20.0)
                             .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
-                        child: SelectedTournament(),
+                        child: widget.child,
                       ),
                     ),
                   ),

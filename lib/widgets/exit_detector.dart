@@ -15,7 +15,6 @@ class _ExitDetectorState extends State<ExitDetector> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        print('tapped exit detector!');
         mapBloc.dispatch(UnlockMap());
         animBloc.dispatch(DeselectAll());
       },

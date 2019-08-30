@@ -14,23 +14,23 @@ class Settings {
   final String _lateDate = 'latestTournamentDate';
 
   /// Default values for the settings.
-  final double _defaultRadius = 50.0;
+  final int _defaultRadius = 50;
   final int _defaultEarlyDate = _daysFromNow(0);
   final int _defaultLateDate = _daysFromNow(60);
 
   static int _daysFromNow(int numOfDays) =>
       (DateTime.now().add(Duration(days: numOfDays))).millisecondsSinceEpoch;
 
-  Future<double> getRadiusInMiles() async {
+  Future<int> getRadiusInMiles() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.getDouble(_radius) ?? _defaultRadius;
+    return preferences.getInt(_radius) ?? _defaultRadius;
   }
 
-  Future<bool> setRadiusInMiles(double radius) async {
+  Future<bool> setRadiusInMiles(int radius) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.setDouble(_radius, radius);
+    return preferences.setInt(_radius, radius);
   }
 
   Future<int> getEarlyDate() async {
