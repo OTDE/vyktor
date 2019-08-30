@@ -91,14 +91,17 @@ class UnicornDialer extends StatefulWidget {
   final double childPadding;
   final Color backgroundColor;
   final Function onMainButtonPressed;
+  final Function onBackgroundPressed;
   final Object parentHeroTag;
   final double bottomPadding;
+  final double rightPadding;
 
   UnicornDialer(
       {this.parentButton,
       this.parentButtonBackground,
       this.childButtons,
       this.onMainButtonPressed,
+      this.onBackgroundPressed,
       this.orientation = 1,
       this.hasBackground = true,
       this.backgroundColor = Colors.white30,
@@ -107,7 +110,8 @@ class UnicornDialer extends StatefulWidget {
       this.animationDuration = 180,
       this.mainAnimationDuration = 200,
       this.childPadding = 4.0,
-      this.bottomPadding = 0.0})
+      this.bottomPadding = 0.0,
+      this.rightPadding = 0.0})
       : assert(parentButton != null);
 
   _UnicornDialer createState() => _UnicornDialer();
@@ -171,8 +175,6 @@ class _UnicornDialer extends State<UnicornDialer>
       }
     }
 
-
-
     var mainFAB = AnimatedBuilder(
         animation: this._parentController,
         builder: (BuildContext context, Widget child) {
@@ -188,13 +190,13 @@ class _UnicornDialer extends State<UnicornDialer>
                   backgroundColor: widget.parentButtonBackground,
                   onPressed: () async {
                     // Async exit pattern if the button is pressed too quick
-                    if(_isPressed) {
+                    if (_isPressed) {
                       return;
                     }
                     _isPressed = true;
                     await mainActionButtonOnPressed();
                     if (widget.onMainButtonPressed != null) {
-                     await widget.onMainButtonPressed();
+                      await widget.onMainButtonPressed();
                     }
                     _isPressed = false;
                   },
@@ -299,15 +301,22 @@ class _UnicornDialer extends State<UnicornDialer>
             });
 
       var unicornDialWidget = Container(
-          margin: widget.bottomPadding != 0 ? EdgeInsets.only(bottom: widget.bottomPadding) : null,
-          height: double.infinity,
-          child: Stack(
-              //fit: StackFit.expand,
-              alignment: Alignment.bottomCenter,
-              overflow: Overflow.visible,
-              children: childButtonsList.toList()
+        margin: widget.bottomPadding != 0
+            ? EdgeInsets.only(
+                bottom: widget.bottomPadding, right: widget.rightPadding)
+            : null,
+        height: double.infinity,
+        width: double.infinity,
+        child: Stack(
+            //fit: StackFit.expand,
+            alignment: Alignment.bottomRight,
+            overflow: Overflow.visible,
+            children: <Widget>[
+              ...(childButtonsList.toList()
                 ..add(Positioned(
-                    right: null, bottom: null, child: mainFloatingButton))));
+                    right: null, bottom: null, child: mainFloatingButton)))
+            ]),
+      );
 
       var modal = ScaleTransition(
           scale: CurvedAnimation(
@@ -316,8 +325,14 @@ class _UnicornDialer extends State<UnicornDialer>
           ),
           alignment: FractionalOffset.center,
           child: GestureDetector(
-              onTap: mainActionButtonOnPressed,
+              onTap: () {
+                if(widget.onBackgroundPressed != null) {
+                  widget.onBackgroundPressed();
+                }
+                mainActionButtonOnPressed();
+              },
               child: Container(
+                alignment: Alignment.topLeft,
                 color: widget.backgroundColor,
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,

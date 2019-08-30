@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:vyktor/widgets/map_widget.dart';
 import 'package:vyktor/widgets/menu_widget.dart';
+import 'package:vyktor/widgets/exit_detector.dart';
 import 'package:vyktor/widgets/tournament/selected_tournament_animator.dart';
 
 

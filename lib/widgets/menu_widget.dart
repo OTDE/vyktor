@@ -10,7 +10,6 @@ class VyktorMenu extends StatefulWidget {
 }
 
 class VyktorMenuState extends State<VyktorMenu> {
-
   bool _mainButtonSelected = false;
   bool _inSelection = false;
 
@@ -31,7 +30,9 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "map",
           mini: true,
           onPressed: () async {
-            mapBloc.dispatch(ToggleMapLocking());
+            print('hit map');
+            mapBloc.dispatch(UnlockMap());
+            _mainButtonSelected = false;
           },
         ),
       ),
@@ -47,7 +48,9 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            mapBloc.dispatch(ToggleMapLocking());
+            print('hit search');
+            mapBloc.dispatch(UnlockMap());
+            _mainButtonSelected = false;
           },
         ),
       ),
@@ -63,38 +66,55 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            mapBloc.dispatch(ToggleMapLocking());
+            print('hit info');
+            mapBloc.dispatch(UnlockMap());
+            _mainButtonSelected = false;
           },
         ),
       ),
     ];
-    return Align(
-      alignment: Alignment(0.9, 0.9),
-      child: UnicornDialer(
-        bottomPadding: 15.0,
-        childButtons: childButtons,
-        finalButtonIcon: Icon(Icons.launch),
-        onMainButtonPressed: () async {
-          if(_inSelection) {
-            return;
-          }
-          _inSelection = true;
-          animBloc.dispatch(DeselectAll());
-          if(_mainButtonSelected) {
+
+    var menuDial = Align(
+        alignment: Alignment(0.9, 0.9),
+        child: UnicornDialer(
+          bottomPadding: 15.0,
+          rightPadding: 15.0,
+          childButtons: childButtons,
+          finalButtonIcon: Icon(Icons.launch),
+          onBackgroundPressed: () async {
             mapBloc.dispatch(UnlockMap());
             _mainButtonSelected = false;
-          } else {
-            mapBloc.dispatch(LockMap());
-            _mainButtonSelected = true;
-          }
-          _inSelection = false;
-        },
-        orientation: UnicornOrientation.VERTICAL,
-        parentButton: Icon(Icons.settings),
-        parentButtonBackground: Theme.of(context).colorScheme.primaryVariant,
-      ),
+          },
+          onMainButtonPressed: () async {
+            if (_inSelection) {
+              return;
+            }
+            _inSelection = true;
+            animBloc.dispatch(DeselectAll());
+            if (_mainButtonSelected) {
+              mapBloc.dispatch(UnlockMap());
+              _mainButtonSelected = false;
+            } else {
+              mapBloc.dispatch(LockMap());
+              _mainButtonSelected = true;
+            }
+            _inSelection = false;
+          },
+          orientation: UnicornOrientation.VERTICAL,
+          parentButton: Icon(Icons.settings),
+          parentButtonBackground:
+          Theme.of(context).colorScheme.primaryVariant,
+        ));
+    return Stack(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            animBloc.dispatch(DeselectAll());
+            mapBloc.dispatch(UnlockMap());
+          },
+          child: menuDial,
+        )
+      ],
     );
   }
-
-
 }

@@ -61,8 +61,9 @@ final vyktorPrimaryTextTheme = TextTheme(
   ),
   caption: TextStyle(
     color: vyktorColorScheme.onPrimary,
-    fontFamily: 'Computer Modern Serif',
+    fontFamily: 'Computer Modern Concrete',
     fontSize: 12,
+    fontWeight: FontWeight.bold,
     fontStyle: FontStyle.italic,
   ),
   display1: TextStyle(

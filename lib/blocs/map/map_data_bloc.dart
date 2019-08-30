@@ -85,7 +85,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       await _mapDataProvider.refresh(event.currentPosition);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView =
-          _mapDataProvider.selectedTournament ?? Tournament(id: -1);
+          _mapDataProvider.selectedTournament ?? mapDataToView.tournaments[0];
       final CameraPosition initialCamera = CameraPosition(
         target: positionToLatLng(event.currentPosition),
         zoom: DEFAULT_ZOOM_LEVEL,
@@ -107,10 +107,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
         _mapDataProvider.setSelectedTournament(event.markerId);
       }
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
-      final Tournament tournamentToView =
-          (int.parse(event.markerId.value) != -1)
-              ? _mapDataProvider.selectedTournament
-              : Tournament(id: -1);
+      final Tournament tournamentToView = _mapDataProvider.selectedTournament;
       yield MapDataLoaded(
         tournamentToView,
         mapDataToView,

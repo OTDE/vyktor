@@ -117,10 +117,6 @@ class VyktorMapState extends State<VyktorMap> {
         markerId: id,
         icon: BitmapDescriptor.defaultMarkerWithHue(attendeeColor),
         position: LatLng(tournament.lat, tournament.lng),
-        infoWindow: InfoWindow(
-                title: 'Tournament starts at',
-                snippet: _toDate(tournament.startAt),
-              ),
         onTap: () async {
           if (_selectingTournament) {
             return;

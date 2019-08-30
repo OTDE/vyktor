@@ -85,7 +85,7 @@ class LockMap extends MapDataEvent {
 
   @override
   String toString() =>
-      'Event triggered: toggled map locking.';
+      'Event triggered: locking map.';
 }
 
 /// Toggles if the [GoogleMap] instance is locked.
@@ -95,5 +95,5 @@ class UnlockMap extends MapDataEvent {
 
   @override
   String toString() =>
-      'Event triggered: toggled map locking.';
+      'Event triggered: unlocking map.';
 }
