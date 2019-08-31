@@ -85,6 +85,7 @@ class UnicornDialer extends StatefulWidget {
   final Icon finalButtonIcon;
   final bool hasBackground;
   final Color parentButtonBackground;
+  final Color parentButtonForeground;
   final List<UnicornButton> childButtons;
   final int animationDuration;
   final int mainAnimationDuration;
@@ -99,6 +100,7 @@ class UnicornDialer extends StatefulWidget {
   UnicornDialer(
       {this.parentButton,
       this.parentButtonBackground,
+      this.parentButtonForeground,
       this.childButtons,
       this.onMainButtonPressed,
       this.onBackgroundPressed,
@@ -188,6 +190,7 @@ class _UnicornDialer extends State<UnicornDialer>
                   isExtended: false,
                   heroTag: widget.parentHeroTag,
                   backgroundColor: widget.parentButtonBackground,
+                  foregroundColor: widget.parentButtonForeground,
                   onPressed: () async {
                     // Async exit pattern if the button is pressed too quick
                     if (_isPressed) {

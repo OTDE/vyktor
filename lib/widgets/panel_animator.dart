@@ -3,18 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/blocs.dart';
 import 'package:vyktor/widgets/exit_detector.dart';
 
-enum SelectedPanel {tournament, map_settings, search_settings, info}
+enum SelectedPanel { tournament, map_settings, search_settings, info }
 
 class PanelAnimator extends StatefulWidget {
 
   final Widget child;
   final SelectedPanel panel;
-
   PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
 
   @override
-  PanelAnimatorState createState() =>
-      PanelAnimatorState();
+  PanelAnimatorState createState() => PanelAnimatorState();
 }
 
 class PanelAnimatorState extends State<PanelAnimator>
@@ -31,7 +29,7 @@ class PanelAnimatorState extends State<PanelAnimator>
       duration: Duration(milliseconds: 300),
     );
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
-        .chain(new CurveTween(curve: Curves.ease))
+        .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
   }
 
@@ -66,38 +64,45 @@ class PanelAnimatorState extends State<PanelAnimator>
         }
       }
       return SlideTransition(
-            textDirection: TextDirection.ltr,
-            position: _offset,
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: ExitDetector(),
-                ),
-                Positioned(
-                  bottom: 15,
-                  child: SizedBox(
+        textDirection: TextDirection.ltr,
+        position: _offset,
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: ExitDetector(),
+            ),
+            Positioned(
+              bottom: 15,
+              child: SizedBox(
+                width: 300,
+                height: 400,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                        blurRadius: 5,
+                        offset: Offset.fromDirection(1, 2),
+                      )
+                    ],
+                    shape: BoxShape.rectangle,
+                  ),
+                  position: DecorationPosition.background,
+                  child: Container(
                     width: 300,
                     height: 400,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        shape: BoxShape.rectangle,
-                      ),
-                      position: DecorationPosition.background,
-                      child: Container(
-                        width: 300,
-                        height: 400,
-                        margin: EdgeInsets.all(20.0)
-                            .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
-                        child: widget.child,
-                      ),
-                    ),
+                    margin: EdgeInsets.all(20.0)
+                        .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
+                    child: widget.child,
                   ),
-                )
-              ],
-            ),
-          );
+                ),
+              ),
+            )
+          ],
+        ),
+      );
     });
   }
 }

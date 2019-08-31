@@ -6,6 +6,8 @@ import 'package:vyktor/widgets/menu_widget.dart';
 import 'package:vyktor/widgets/panel_animator.dart';
 import 'package:vyktor/widgets/panels/tournament.dart';
 import 'package:vyktor/widgets/panels/map_settings.dart';
+import 'package:vyktor/widgets/panels/search_settings.dart';
+import 'package:vyktor/widgets/panels/info.dart';
 
 
 /// The page containing the map and menu widgets.
@@ -33,6 +35,14 @@ class MapPageState extends State<MapPage> {
             PanelAnimator(
               child: MapSettingsPanel(),
               panel: SelectedPanel.map_settings,
+            ),
+            PanelAnimator(
+              child: SearchSettingsPanel(),
+              panel: SelectedPanel.search_settings,
+            ),
+            PanelAnimator(
+              child: InfoPanel(),
+              panel: SelectedPanel.info,
             )
           ],
         ));

@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:vyktor/models/map_data.dart';
+import 'package:vyktor/models/settings_data.dart';
 import 'package:vyktor/blocs/blocs.dart';
 
 /// The page containing the map.
@@ -53,7 +54,8 @@ class VyktorMapState extends State<VyktorMap> {
           child: GoogleMap(
             mapToolbarEnabled: false,
             mapType: MapType.normal,
-            initialCameraPosition: _lastRecordedPosition ?? state.initialPosition,
+            initialCameraPosition:
+                _lastRecordedPosition ?? state.initialPosition,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             onCameraMove: _onCameraMove,
@@ -61,19 +63,22 @@ class VyktorMapState extends State<VyktorMap> {
               _mapController = controller;
               _lastRecordedPosition ??= state.initialPosition;
             },
-            markers: _buildMarkerDataFrom(state.mapData, state.selectedTournament,
-                mapBloc, state, animBloc),
+            onLongPress: (pressLocation) async {
+              var exploreModeEnabled = await Settings().getExploreMode();
+              if (exploreModeEnabled) {
+                mapBloc.dispatch(RefreshMarkerData(Position(
+                    latitude: pressLocation.latitude,
+                    longitude: pressLocation.longitude)));
+              } else {
+                return;
+              }
+            },
+            markers: _buildMarkerDataFrom(state.mapData,
+                state.selectedTournament, mapBloc, state, animBloc),
             rotateGesturesEnabled: state.isMapUnlocked ?? true,
             tiltGesturesEnabled: state.isMapUnlocked ?? true,
             scrollGesturesEnabled: state.isMapUnlocked ?? true,
             zoomGesturesEnabled: state.isMapUnlocked ?? true,
-            gestureRecognizers: state.isMapUnlocked
-                ? <Factory<OneSequenceGestureRecognizer>>[
-              Factory<OneSequenceGestureRecognizer>(
-                    () => EagerGestureRecognizer(),
-              ),
-            ].toSet()
-                : null,
           ),
         );
       }
@@ -122,15 +127,12 @@ class VyktorMapState extends State<VyktorMap> {
             return;
           }
           _selectingTournament = true;
-          Tournament prev = state.selectedTournament;
-            mapBloc.dispatch(UpdateSelectedTournament(id));
-            _mapController.animateCamera(CameraUpdate.newLatLngZoom(
-                LatLng(tournament.lat - 0.069, tournament.lng), 11.0));
-            if(prev.id == tournament.id) { //Same marker, deselect
-              animBloc.dispatch(DeselectAll());
-            }
-          animBloc.dispatch(SelectTournament(id)); // Lock and load
           mapBloc.dispatch(LockMap());
+          mapBloc.dispatch(UpdateSelectedTournament(id));
+          animBloc.dispatch(SelectTournament(id));
+          _mapController.animateCamera(CameraUpdate.newLatLngZoom(
+              LatLng(tournament.lat - 0.069, tournament.lng),
+              11.0)); // Lock and load
           _selectingTournament = false;
         },
       );
@@ -139,18 +141,8 @@ class VyktorMapState extends State<VyktorMap> {
     return markerData;
   }
 
-  String _toDate(int timestamp) {
-    var date =
-        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
-    return '${date.month}/${date.day}/${date.year} — ${date.hour % 12}:'
-        '${(int minute) {
-      return minute < 10 ? '0$minute' : '$minute';
-    }(date.minute)} '
-        '${(int hour) {
-      return hour > 12 ? 'PM' : 'AM';
-    }(date.hour)}';
-  }
-
+  /// Uses a log function to plot the color of each marker.
   double _toMarkerHue(int attendeeCount) =>
-      attendeeCount.clamp(0, 270).toDouble();
+      ((math.log((attendeeCount.toDouble() * 0.0025) + 0.013) * 38.0) + 163.0)
+          .clamp(0.0, 270.0);
 }

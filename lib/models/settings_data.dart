@@ -9,9 +9,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// acts like a sort of pseudo-bloc with ez in and out points.
 class Settings {
 
+  static final Settings _settings = Settings._internal();
+
+  factory Settings() {
+    return _settings;
+  }
+
+  Settings._internal();
+
   final String _radius = 'distanceFromCenter';
   final String _earlyDate = 'earliestTournamentDate';
   final String _lateDate = 'latestTournamentDate';
+  final String _explore = 'exploreEnabled';
 
   /// Default values for the settings.
   final int _defaultRadius = 50;
@@ -33,27 +42,39 @@ class Settings {
     return preferences.setInt(_radius, radius);
   }
 
-  Future<int> getEarlyDate() async {
+  Future<int> getStartAfterDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
     return preferences.getInt(_earlyDate) ?? _defaultEarlyDate;
   }
 
-  Future<bool> setEarlyDate(int date) async {
+  Future<bool> setStartAfterDate(int date) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
     return preferences.setInt(_earlyDate, date);
   }
 
-  Future<int> getLateDate() async {
+  Future<int> getStartBeforeDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
     return preferences.getInt(_lateDate) ?? _defaultLateDate;
   }
 
-  Future<bool> setLateDate(int date) async {
+  Future<bool> setStartBeforeDate(int date) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
     return preferences.setInt(_lateDate, date);
+  }
+
+  Future<bool> getExploreMode() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    return preferences.getBool(_explore) ?? false;
+  }
+
+  Future<bool> setExploreMode(bool isEnabled) async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    return preferences.setBool(_explore, isEnabled);
   }
 }

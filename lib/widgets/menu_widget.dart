@@ -20,12 +20,12 @@ class VyktorMenuState extends State<VyktorMenu> {
     List<UnicornButton> childButtons = [
       UnicornButton(
         hasLabel: true,
-        labelBackgroundColor: Theme.of(context).colorScheme.surface,
+        labelBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
         labelText: "Map Settings",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-          foregroundColor: Theme.of(context).backgroundColor,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           child: Icon(Icons.map),
           heroTag: "map",
           mini: true,
@@ -37,34 +37,34 @@ class VyktorMenuState extends State<VyktorMenu> {
       ),
       UnicornButton(
         hasLabel: true,
-        labelBackgroundColor: Theme.of(context).colorScheme.surface,
+        labelBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
         labelText: "Search Settings",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-          foregroundColor: Theme.of(context).backgroundColor,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           child: Icon(Icons.search),
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            mapBloc.dispatch(UnlockMap());
+            animBloc.dispatch(SelectSearchSettings());
             _mainButtonSelected = false;
           },
         ),
       ),
       UnicornButton(
         hasLabel: true,
-        labelBackgroundColor: Theme.of(context).colorScheme.surface,
+        labelBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
         labelText: "Other Info",
         labelTextStyle: Theme.of(context).primaryTextTheme.button,
         currentButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-          foregroundColor: Theme.of(context).backgroundColor,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           child: Icon(Icons.info),
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            mapBloc.dispatch(UnlockMap());
+            animBloc.dispatch(SelectInfo());
             _mainButtonSelected = false;
           },
         ),
@@ -77,7 +77,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           bottomPadding: 15.0,
           rightPadding: 15.0,
           childButtons: childButtons,
-          finalButtonIcon: Icon(Icons.launch),
+          finalButtonIcon: Icon(Icons.cancel),
           onBackgroundPressed: () async {
             mapBloc.dispatch(UnlockMap());
             _mainButtonSelected = false;
@@ -100,7 +100,8 @@ class VyktorMenuState extends State<VyktorMenu> {
           orientation: UnicornOrientation.VERTICAL,
           parentButton: Icon(Icons.settings),
           parentButtonBackground:
-          Theme.of(context).colorScheme.primaryVariant,
+          Theme.of(context).primaryColor,
+          parentButtonForeground: Theme.of(context).colorScheme.onPrimary,
         ));
     return menuDial;
   }

@@ -12,6 +12,7 @@ class MapSettingsPanel extends StatefulWidget {
 }
 
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
+
   int _radius = 50;
 
   @override
@@ -118,12 +119,13 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
         Align(
           alignment: Alignment.bottomRight,
           child: FloatingActionButton(
-              foregroundColor: Theme.of(context).accentColor,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+              elevation: 0.0,
               heroTag: 'cancelTournament',
               shape: ContinuousRectangleBorder(),
               mini: true,
-              child: Icon(Icons.check),
+              child: Icon(Icons.save),
               onPressed: () async {
                 var currentPosition = await Geolocator().getCurrentPosition();
                 await Settings().setRadiusInMiles(_radius);
@@ -131,36 +133,9 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                 mapBloc.dispatch(RefreshMarkerData(currentPosition));
                 mapBloc.dispatch(UnlockMap());
               }),
-        )
+        ),
       ],
     );
   }
 
-  /// Launches a [url]
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  String _toFormattedAddress(String address) {
-    var addressWords = address.split(', ');
-    return '${addressWords[0]}\n${addressWords[1]}, ${addressWords[2]}';
-  }
-
-  String _toFormattedDate(int timestamp) {
-    var date =
-        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
-    return '${date.month}/${date.day}/${date.year} — ${date.hour % 12}:'
-        '${(int minute) {
-      return minute < 10 ? '0$minute' : '$minute';
-    }(date.minute)} '
-        '${(int hour) {
-      return hour > 12 ? 'PM' : 'AM';
-    }(date.hour)}';
-  }
-
-  String _buildSmashggURL(String slug) => 'http://smash.gg/' + slug;
 }

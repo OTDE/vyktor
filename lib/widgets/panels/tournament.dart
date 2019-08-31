@@ -136,15 +136,17 @@ class _SelectedTournamentState extends State<SelectedTournament> {
             Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
-                  foregroundColor: Theme.of(context).accentColor,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                  elevation: 0.0,
                   heroTag: 'cancelTournament',
                   shape: ContinuousRectangleBorder(),
                   mini: true,
                   child: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    animBloc.dispatch(DeselectAll());
+                  onPressed: () async {
                     mapBloc.dispatch(UnlockMap());
+                    await Future.delayed(Duration(milliseconds: 100));
+                    animBloc.dispatch(DeselectAll());
                   }),
             )
           ],

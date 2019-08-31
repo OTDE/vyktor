@@ -1,7 +1,7 @@
 name: vyktor
 description: Find video game competitions near you!
 
-version: '0.0.1+4'
+version: '0.0.1+9'
 
 environment:
   sdk: '>=2.2.2 <3.0.0'

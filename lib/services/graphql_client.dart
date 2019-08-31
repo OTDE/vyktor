@@ -71,10 +71,10 @@ const String tournamentLocationQuery = r'''
 Future<QueryOptions> queryOptions(Position position) async {
   var lat = position.latitude;
   var lng = position.longitude;
-  var radius = await getSettings().getRadiusInMiles();
-  var earlyDate = await getSettings().getEarlyDate().then(_formatForQuery);
-  var lateDate = await getSettings().getLateDate().then(_formatForQuery);
-  print("$earlyDate $lateDate");
+  var radius = await Settings().getRadiusInMiles();
+  var earlyDate = await Settings().getStartAfterDate().then(_formatForQuery);
+  var lateDate = await Settings().getStartBeforeDate().then(_formatForQuery);
+  print('early: $earlyDate\nlate: $lateDate');
   return QueryOptions(
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
@@ -85,10 +85,6 @@ Future<QueryOptions> queryOptions(Position position) async {
     },
   );
 }
-
-Settings _settings;
-
-Settings getSettings() => _settings ?? Settings();
 
 int _formatForQuery(int fromSettings) => (fromSettings / 1000).round();
 
