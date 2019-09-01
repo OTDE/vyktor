@@ -14,9 +14,11 @@ class SearchSettingsPanel extends StatefulWidget {
 
 class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
 
-  int _startAfterDate;
-  int _startBeforeDate;
-  bool _isExploreModeEnabled;
+  // These need to be initialized so the app doesn't throw a fit
+  // while it's waiting for the settings to fill these values in.
+  int _startAfterDate = 0;
+  int _startBeforeDate = 0;
+  bool _isExploreModeEnabled = false;
 
   @override
   void initState() {
@@ -86,7 +88,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                     }),
                 Spacer(flex: 1),
                 Text(
-                  '$_startAfterDate',
+                  '${_toFormattedDate(_startAfterDate)}',
                   style: Theme.of(context).primaryTextTheme.button,
                 ),
                 Spacer(flex: 10),
@@ -110,6 +112,9 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                     mini: true,
                     child: Icon(Icons.edit),
                     onPressed: () async {
+                      // AfterDate picker invariant:
+                      //
+                      //
                       var selectedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.fromMillisecondsSinceEpoch(
@@ -129,7 +134,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                     }),
                 Spacer(flex: 1),
                 Text(
-                  '$_startBeforeDate',
+                  '${_toFormattedDate(_startBeforeDate)}',
                   style: Theme.of(context).primaryTextTheme.button,
                 ),
                 Spacer(flex: 10),
@@ -186,6 +191,8 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
   }
 
   String _toFormattedDate(int timestamp) {
-
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return '${date.month}/${date.day}/${date.year}';
   }
+
 }
