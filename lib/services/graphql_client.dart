@@ -28,7 +28,7 @@ final Link _link = _authLink.concat(_httpLink);
 /// that have registration open and are within
 /// [$radius] miles of [$coordinates]."
 ///
-/// (This thing keeps growin'! Lots of filters to add.)
+/// TODO: update documentation on query to reflect new parameters.
 const String tournamentLocationQuery = r'''
    query TournamentsByLocation($coordinates: String!, $radius: String!, $after: Timestamp!, $before: Timestamp!) {
       tournaments(query: {
@@ -72,16 +72,15 @@ Future<QueryOptions> queryOptions(Position position) async {
   var lat = position.latitude;
   var lng = position.longitude;
   var radius = await Settings().getRadiusInMiles();
-  var earlyDate = await Settings().getStartAfterDate().then(_formatForQuery);
-  var lateDate = await Settings().getStartBeforeDate().then(_formatForQuery);
-  print('early: $earlyDate\nlate: $lateDate');
+  var afterDate = await Settings().getStartAfterDate().then(_formatForQuery);
+  var beforeDate = await Settings().getStartBeforeDate().then(_formatForQuery);
   return QueryOptions(
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
       "coordinates": "$lat,$lng",
       "radius": "${radius}mi",
-      "after": earlyDate,
-      "before": lateDate
+      "after": afterDate,
+      "before": beforeDate
     },
   );
 }

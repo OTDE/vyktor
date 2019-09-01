@@ -8,6 +8,7 @@ import 'package:vyktor/widgets/panels/tournament.dart';
 import 'package:vyktor/widgets/panels/map_settings.dart';
 import 'package:vyktor/widgets/panels/search_settings.dart';
 import 'package:vyktor/widgets/panels/info.dart';
+import 'package:vyktor/blocs/blocs.dart';
 
 
 /// The page containing the map and menu widgets.
@@ -34,11 +35,11 @@ class MapPageState extends State<MapPage> {
             ),
             PanelAnimator(
               child: MapSettingsPanel(),
-              panel: SelectedPanel.map_settings,
+              panel: SelectedPanel.mapSettings,
             ),
             PanelAnimator(
               child: SearchSettingsPanel(),
-              panel: SelectedPanel.search_settings,
+              panel: SelectedPanel.searchSettings,
             ),
             PanelAnimator(
               child: InfoPanel(),

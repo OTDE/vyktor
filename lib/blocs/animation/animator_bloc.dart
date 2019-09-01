@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './animation_barrel.dart';
 
 class AnimatorBloc extends Bloc<AnimatorEvent, AnimatorState> {
-  MarkerId _selectedTournament;
 
   @override
-  AnimatorState get initialState => TabAnimatorState(
-        isTournamentSelected: false,
-        isMapSettingsSelected: false,
-        isSearchSettingsSelected: false,
-        isInfoSelected: false,
-      );
+  AnimatorState get initialState => TabAnimatorState(selectedPanel: SelectedPanel.none);
 
   @override
   Stream<AnimatorState> mapEventToState(
@@ -33,63 +26,27 @@ class AnimatorBloc extends Bloc<AnimatorEvent, AnimatorState> {
 
   Stream<AnimatorState> _mapSelectTournamentToState(
       AnimatorState currentState, SelectTournament event) async* {
-    if (currentState is TabAnimatorState) {
-      if (currentState.isTournamentSelected &&
-          (_selectedTournament == null ||
-              _selectedTournament == event.selectedTournament)) {
-        print('$_selectedTournament <- old \n${event.selectedTournament} <-new');
-        _selectedTournament = event.selectedTournament;
-        this.dispatch(DeselectAll());
-      } else {
-        _selectedTournament = event.selectedTournament;
-        yield TabAnimatorState(
-          isTournamentSelected: true,
-          isMapSettingsSelected: false,
-          isSearchSettingsSelected: false,
-          isInfoSelected: false,
-        );
-      }
-    }
+    yield TabAnimatorState(selectedPanel: SelectedPanel.tournament);
   }
 
   Stream<AnimatorState> _mapSelectMapSettingsToState(
       AnimatorState currentState, SelectMapSettings event) async* {
-    yield TabAnimatorState(
-      isTournamentSelected: false,
-      isMapSettingsSelected: true,
-      isSearchSettingsSelected: false,
-      isInfoSelected: false,
-    );
+    yield TabAnimatorState(selectedPanel: SelectedPanel.mapSettings);
   }
 
   Stream<AnimatorState> _mapSelectSearchSettingsToState(
       AnimatorState currentState, SelectSearchSettings event) async* {
-    yield TabAnimatorState(
-      isTournamentSelected: false,
-      isMapSettingsSelected: false,
-      isSearchSettingsSelected: true,
-      isInfoSelected: false,
-    );
+    yield TabAnimatorState(selectedPanel: SelectedPanel.searchSettings);
   }
 
   Stream<AnimatorState> _mapSelectInfoToState(
       AnimatorState currentState, SelectInfo event) async* {
-    yield TabAnimatorState(
-      isTournamentSelected: false,
-      isMapSettingsSelected: false,
-      isSearchSettingsSelected: false,
-      isInfoSelected: true,
-    );
+    yield TabAnimatorState(selectedPanel: SelectedPanel.info);
   }
 
   Stream<AnimatorState> _mapDeselectAllToState(
       AnimatorState currentState, DeselectAll event) async* {
-    yield TabAnimatorState(
-      isTournamentSelected: false,
-      isMapSettingsSelected: false,
-      isSearchSettingsSelected: false,
-      isInfoSelected: false,
-    );
+    yield TabAnimatorState(selectedPanel: SelectedPanel.none);
   }
 
   @override

@@ -162,16 +162,16 @@ class _UnicornDialer extends State<UnicornDialer>
     var hasChildButtons =
         widget.childButtons != null && widget.childButtons.length > 0;
 
-    if (!this._parentController.isAnimating) {
-      if (this._parentController.isCompleted) {
-        this._parentController.forward().then((s) {
+    if (!this._parentController.isAnimating) { // If it's not in the process of animating
+      if (this._parentController.isCompleted) { // If it's completed
+        this._parentController.forward().then((s) { // -> / <- / ->
           this._parentController.reverse().then((e) {
             this._parentController.forward();
           });
         });
       }
-      if (this._parentController.isDismissed) {
-        this._parentController.reverse().then((s) {
+      if (this._parentController.isDismissed) { // If it's dismissed
+        this._parentController.reverse().then((s) { // <- / ->
           this._parentController.forward();
         });
       }

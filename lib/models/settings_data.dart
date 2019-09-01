@@ -9,23 +9,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// acts like a sort of pseudo-bloc with ez in and out points.
 class Settings {
 
-  static final Settings _settings = Settings._internal();
+  static const Settings _settings = Settings._internal();
 
   factory Settings() {
     return _settings;
   }
 
-  Settings._internal();
+  const Settings._internal();
 
-  final String _radius = 'distanceFromCenter';
-  final String _earlyDate = 'earliestTournamentDate';
-  final String _lateDate = 'latestTournamentDate';
-  final String _explore = 'exploreEnabled';
+  static const String _radius = 'distanceFromCenter';
+  static const String _earlyDate = 'earliestTournamentDate';
+  static const String _lateDate = 'latestTournamentDate';
+  static const String _explore = 'exploreEnabled';
 
   /// Default values for the settings.
-  final int _defaultRadius = 50;
-  final int _defaultEarlyDate = _daysFromNow(0);
-  final int _defaultLateDate = _daysFromNow(60);
+  static const int _defaultRadius = 50;
+  static int _defaultAfterDate = _daysFromNow(0);
+  static int _defaultBeforeDate = _daysFromNow(60);
 
   static int _daysFromNow(int numOfDays) =>
       (DateTime.now().add(Duration(days: numOfDays))).millisecondsSinceEpoch;
@@ -45,7 +45,7 @@ class Settings {
   Future<int> getStartAfterDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.getInt(_earlyDate) ?? _defaultEarlyDate;
+    return preferences.getInt(_earlyDate) ?? _defaultAfterDate;
   }
 
   Future<bool> setStartAfterDate(int date) async {
@@ -57,7 +57,7 @@ class Settings {
   Future<int> getStartBeforeDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.getInt(_lateDate) ?? _defaultLateDate;
+    return preferences.getInt(_lateDate) ?? _defaultBeforeDate;
   }
 
   Future<bool> setStartBeforeDate(int date) async {

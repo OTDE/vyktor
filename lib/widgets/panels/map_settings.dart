@@ -13,7 +13,7 @@ class MapSettingsPanel extends StatefulWidget {
 
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
-  int _radius = 50;
+  int _radius = 5;
 
   @override
   void initState() {

@@ -7,26 +7,12 @@ abstract class AnimatorState extends Equatable {
   AnimatorState([List props = const <dynamic>[]]) : super(props);
 }
 
+enum SelectedPanel { tournament, mapSettings, searchSettings, info, none }
+
 class TabAnimatorState extends AnimatorState {
-  final bool isTournamentSelected;
+  final SelectedPanel selectedPanel;
 
-  final bool isMapSettingsSelected;
-
-  final bool isSearchSettingsSelected;
-
-  final bool isInfoSelected;
-
-  TabAnimatorState(
-      {@required this.isTournamentSelected,
-      @required this.isMapSettingsSelected,
-      @required this.isSearchSettingsSelected,
-      @required this.isInfoSelected})
-      : super([
-          isTournamentSelected,
-          isMapSettingsSelected,
-          isSearchSettingsSelected,
-          isInfoSelected
-        ]);
+  TabAnimatorState({@required this.selectedPanel}) : super([selectedPanel]);
 
   @override
   String toString() => 'Selecting tab.';

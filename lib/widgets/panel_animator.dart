@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/blocs.dart';
 import 'package:vyktor/widgets/exit_detector.dart';
 
-enum SelectedPanel { tournament, map_settings, search_settings, info }
+
 
 class PanelAnimator extends StatefulWidget {
 
@@ -26,7 +26,7 @@ class PanelAnimatorState extends State<PanelAnimator>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 500),
     );
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
@@ -43,24 +43,15 @@ class PanelAnimatorState extends State<PanelAnimator>
   Widget build(BuildContext context) {
     return BlocBuilder<AnimatorBloc, AnimatorState>(builder: (context, state) {
       if (state is TabAnimatorState) {
-        switch(widget.panel) {
-          case SelectedPanel.tournament:
-            _isSelected = state.isTournamentSelected;
-            break;
-          case SelectedPanel.map_settings:
-            _isSelected = state.isMapSettingsSelected;
-            break;
-          case SelectedPanel.search_settings:
-            _isSelected = state.isSearchSettingsSelected;
-            break;
-          case SelectedPanel.info:
-            _isSelected = state.isInfoSelected;
-            break;
-        }
+        _isSelected = state.selectedPanel == widget.panel;
         if (_isSelected) {
-          _controller.forward();
+          if(!_controller.isAnimating && _controller.isDismissed) {
+            _controller.forward();
+          }
         } else {
-          _controller.reverse();
+          if(!_controller.isAnimating && _controller.isCompleted) {
+            _controller.reverse();
+          }
         }
       }
       return SlideTransition(
