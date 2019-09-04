@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:vyktor/models/map_data.dart';
 import 'package:vyktor/services/location_utils.dart';
@@ -27,7 +26,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   /// when the user moves a number of meters determined by [distanceFilter]
   /// away from the last position.
   final LocationOptions _locationOptions =
-      LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 100);
+      LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10000);
   StreamSubscription<Position> _currentPosition;
 
   /// Creates the initial state of the [MapDataBloc].
