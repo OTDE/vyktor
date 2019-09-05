@@ -81,6 +81,36 @@ class VyktorMapState extends State<VyktorMap> {
             zoomGesturesEnabled: state.isMapUnlocked ?? true,
           ),
         );
+      } else if (state is MapDataNotLoaded) {
+        return Container(
+          color: Theme.of(context).primaryColor,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Spacer(flex: 24),
+                Text(
+                  'Couldn\'t load map data. Try again.',
+                  style: Theme.of(context).primaryTextTheme.headline,
+                ),
+                Spacer(flex: 3),
+                RaisedButton(
+                  child: Text(
+                    'Refresh',
+                    style: Theme.of(context).primaryTextTheme.button,
+                  ),
+                  color: Theme.of(context).colorScheme.surface,
+                  textColor: Theme.of(context).colorScheme.onSurface,
+                  onPressed: () async {
+                    var currentPosition = await Geolocator().getCurrentPosition();
+                    mapBloc.dispatch(RefreshMarkerData(currentPosition));
+                  },
+                ),
+                Spacer(flex: 20),
+              ],
+            ),
+          ),
+        );
       }
       return Container(
         color: Theme.of(context).primaryColor,

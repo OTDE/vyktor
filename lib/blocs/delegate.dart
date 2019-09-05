@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 /// As basic as a [BlocDelegate] can get.
 ///
 /// Used for debugging so I don't lose my mind debugging where the BloC is at.
-class MapBlocDelegate extends BlocDelegate {
+class BasicBlocDelegate extends BlocDelegate {
   /// Fires an event's [toString] method when an [event] is
   /// dispatched to the [bloc].
   @override

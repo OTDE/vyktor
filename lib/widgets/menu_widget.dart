@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vyktor/blocs/blocs.dart';
 import 'package:vyktor/services/unicorn_dial.dart';
+import 'package:geolocator/geolocator.dart';
 
 class VyktorMenu extends StatefulWidget {
   VyktorMenu({Key key}) : super(key: key);
@@ -17,7 +18,34 @@ class VyktorMenuState extends State<VyktorMenu> {
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapDataBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
+    final snackBarOnRefresh = SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+        content: Text(
+          'Map data refreshed.',
+          style: Theme.of(context).primaryTextTheme.body1,
+        ),
+        duration: Duration(seconds: 1),
+    );
     List<UnicornButton> childButtons = [
+      UnicornButton(
+        hasLabel: true,
+        labelBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
+        labelText: "Refresh",
+        labelTextStyle: Theme.of(context).primaryTextTheme.button,
+        currentButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          child: Icon(Icons.refresh),
+          heroTag: "refresh",
+          mini: true,
+          onPressed: () async {
+            var currentPosition = await Geolocator().getCurrentPosition();
+            mapBloc.dispatch(RefreshMarkerData(currentPosition));
+            Scaffold.of(context).showSnackBar(snackBarOnRefresh);
+            _mainButtonSelected = false;
+          },
+        ),
+      ),
       UnicornButton(
         hasLabel: true,
         labelBackgroundColor: Theme.of(context).colorScheme.primaryVariant,

@@ -63,7 +63,7 @@ class HomePageState extends State<HomePage> {
   /// [PermissionsPage] with a [permissionsCallback] for receiving information.
   Widget _buildBody() {
     if (_hasLocationPermissions) {
-      BlocSupervisor.delegate = MapBlocDelegate();
+      BlocSupervisor.delegate = BasicBlocDelegate();
       return MultiBlocProvider(
         providers: [
           BlocProvider<MapDataBloc>(
