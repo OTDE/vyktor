@@ -70,8 +70,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
       try {
         await _mapDataProvider.refresh(event.currentPosition);
         final MapData mapDataToView = _mapDataProvider.mostRecentState;
-        final Tournament tournamentToView =
-            _mapDataProvider.selectedTournament ?? mapDataToView.tournaments[0];
+        final Tournament tournamentToView = _mapDataProvider.selectedTournament;
         final CameraPosition initialCamera = CameraPosition(
           target: LatLng(event.currentPosition.latitude, event.currentPosition.longitude),
           zoom: 10.0,
@@ -83,6 +82,9 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
           isMapUnlocked: true,
         );
       } on BadRequestException catch(e) {
+        print(e.message);
+        yield MapDataNotLoaded();
+      } on InternetException catch(e) {
         print(e.message);
         yield MapDataNotLoaded();
       }
