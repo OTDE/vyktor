@@ -11,10 +11,7 @@ import 'package:vyktor/models/map_data.dart';
 import 'package:vyktor/models/settings_data.dart';
 import 'package:vyktor/blocs/blocs.dart';
 
-/// The page containing the map.
-///
-/// (and, honestly, most of the other stuff too.)
-/// TODO: separate out the map, formatting, and setting widgets.
+/// The page containing the map and its associated data.
 class VyktorMap extends StatefulWidget {
   VyktorMap({Key key}) : super(key: key);
 
@@ -57,7 +54,10 @@ class VyktorMapState extends State<VyktorMap> {
             initialCameraPosition:
                 _lastRecordedPosition ?? state.initialPosition,
             myLocationEnabled: true,
-            myLocationButtonEnabled: true,
+            // This is false by default.
+            // This is just a reminder to keep it that way,
+            // since it creates an extra FAB in iOS.
+            myLocationButtonEnabled: false,
             onCameraMove: _onCameraMove,
             onMapCreated: (GoogleMapController controller) {
               _mapController = controller;

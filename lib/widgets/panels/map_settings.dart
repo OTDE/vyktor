@@ -107,10 +107,15 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               min: 5,
               max: 150,
               divisions: 58,
-              onChanged: (value) {
+              onChanged: (radius) {
                 setState(() {
-                  _radius = value.truncate();
+                  _radius = radius.truncate();
                 });
+              },
+              onChangeEnd: (radius) async {
+                var currentPosition = await Geolocator().getCurrentPosition();
+                await Settings().setRadiusInMiles(_radius);
+                mapBloc.dispatch(RefreshMarkerData(currentPosition));
               },
             ),
             Spacer(flex: 7),
@@ -125,12 +130,9 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               heroTag: 'cancelTournament',
               shape: ContinuousRectangleBorder(),
               mini: true,
-              child: Icon(Icons.save),
+              child: Icon(Icons.arrow_back),
               onPressed: () async {
-                var currentPosition = await Geolocator().getCurrentPosition();
-                await Settings().setRadiusInMiles(_radius);
                 animBloc.dispatch(DeselectAll());
-                mapBloc.dispatch(RefreshMarkerData(currentPosition));
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

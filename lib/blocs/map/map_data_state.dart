@@ -12,24 +12,9 @@ abstract class MapDataState extends Equatable {
   MapDataState([List props = const []]) : super(props);
 }
 
-/// The initial state of the BLoC, before any [MapData] loads.
-///
-/// This state is represented in the UI layer as a loading animation.
-/// Perhaps replacing it with [MapDataLoading] could work?
-///
-/// TODO: rework this in conjunction with [MapDataLoading].
-class InitialMapDataState extends MapDataState {
-  @override
-  String toString() => 'Initial map data state';
-}
-
 /// The state of the BLoC when [MapData] is loading.
 ///
-/// This is possibly not needed. Built this out of boilerplate
-/// when learning how to make BLoCs and haven't really touched it
-/// (or used it, really) since.
-///
-/// TODO: consider reworking this state.
+/// Default state before any data is loaded.
 class MapDataLoading extends MapDataState {
   @override
   String toString() => 'Map data loading...';
@@ -62,8 +47,6 @@ class MapDataLoaded extends MapDataState {
 }
 
 /// If this state is loaded, something's fishy.
-///
-/// TODO: build display widget for this state, in case something DOES happen.
 class MapDataNotLoaded extends MapDataState {
   @override
   String toString() => 'Map data not loaded.';

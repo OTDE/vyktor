@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// TODO: document more robustly once fully integrated.
-///
 /// Basic shared preferences helper. Will be fairly straightforward to
 /// plug in, since the existence of the shared preferences inside the phone
 /// acts like a sort of pseudo-bloc with ez in and out points.

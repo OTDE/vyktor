@@ -39,7 +39,6 @@ class MapDataProvider {
   /// Throws an [Exception] if the result returns with errors.
   /// Assumes the JSON received will have a list of tournaments
   /// and throws the rest of the information away.
-  /// TODO: possibly investigate query complexity in requests?
   MapData _toMapData(QueryResult queryResult) {
     if (queryResult.hasErrors) {
       throw Exception();
@@ -85,6 +84,8 @@ class MapData {
   /// eliminate it as a possibility if a bug shows up, though.
   Tournament getTournament(String id) =>
       tournaments.singleWhere((tournament) => tournament.id == int.parse(id));
+
+  bool isEmpty() => tournaments.isEmpty;
 }
 
 /// Generated code for storing information from a [QueryResult].
@@ -96,11 +97,7 @@ class MapData {
 /// dependent on the kind of GraphQL requests this app will need to make.
 /// I started by getting a generous number of fields in anticipation of
 /// future requirements, but some may leave, and some already need to be
-/// added. [Image] should avoid name collisions, hopefully, but we'll find
-/// that out when I get to making the frontend
-/// for our little slide-image-bar-thing.
-///
-/// Update: IT'S TIME 4 CHANGE BABY
+/// added.
 class Tournament {
   int id;
   double lat;

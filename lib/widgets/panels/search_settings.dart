@@ -151,6 +151,11 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                 Switch(
                   value: _isExploreModeEnabled,
                   onChanged: (isEnabled) async {
+                    if (isEnabled) {
+                      mapBloc.dispatch(DisableLocationListening());
+                    } else {
+                      mapBloc.dispatch(EnableLocationListening());
+                    }
                     await Settings().setExploreMode(isEnabled);
                     setState(() {
                       _isExploreModeEnabled = isEnabled;

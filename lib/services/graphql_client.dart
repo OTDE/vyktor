@@ -26,9 +26,8 @@ final Link _link = _authLink.concat(_httpLink);
 /// In broad terms, this query is saying
 /// "Collect a bunch of metadata on tournaments
 /// that have registration open and are within
-/// [$radius] miles of [$coordinates]."
-///
-/// TODO: update documentation on query to reflect new parameters.
+/// [$radius] miles of [$coordinates] between
+/// [$afterDate] and [$beforeDate]."
 const String tournamentLocationQuery = r'''
    query TournamentsByLocation($coordinates: String!, $radius: String!, $after: Timestamp!, $before: Timestamp!) {
       tournaments(query: {

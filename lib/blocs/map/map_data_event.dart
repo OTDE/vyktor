@@ -9,25 +9,6 @@ abstract class MapDataEvent extends Equatable {
   MapDataEvent([List props = const []]) : super(props);
 }
 
-/// The [MapDataEvent] for initializing the map.
-///
-/// Currently, this isn't in use. Again, boilerplate from learning how to
-/// set one of these up. I don't think the current form this app is in
-/// really requires it, either.
-///
-/// TODO: consider reworking this event or eliminating it entirely.
-class InitializeMap extends MapDataEvent {
-  /// The user's initial position. Used to create the map.
-  ///
-  /// (Or would, if it was used.)
-  final Position initialPosition;
-
-  InitializeMap(this.initialPosition) : super([initialPosition]);
-
-  @override
-  String toString() => 'Event triggered: initialize map state.';
-}
-
 /// Refreshes the set of [Marker] widgets to be displayed on-screen.
 ///
 /// This event runs the show, really. Calls most of what makes this
@@ -58,15 +39,27 @@ class UpdateSelectedTournament extends MapDataEvent {
       'Event triggered: update selected tournament to id $markerId';
 }
 
-/// Toggles if the BloC is listening to the [Position] stream.
-class ToggleLocationListening extends MapDataEvent {
 
-  ToggleLocationListening(): super();
+/// Resumes the [Position] stream in the BLoC.
+class EnableLocationListening extends MapDataEvent {
+
+  EnableLocationListening(): super();
 
   @override
   String toString() =>
       'Event triggered: toggled listening to phone\'s location';
 }
+
+/// Pauses the [Position] stream in the BLoC.
+class DisableLocationListening extends MapDataEvent {
+
+  DisableLocationListening(): super();
+
+  @override
+  String toString() =>
+      'Event triggered: toggled listening to phone\'s location';
+}
+
 
 /// Toggles if the [GoogleMap] instance is locked.
 class ToggleMapLocking extends MapDataEvent {
