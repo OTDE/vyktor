@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql/client.dart';
 
 import 'package:vyktor/services/graphql_client.dart';
+import 'package:vyktor/services/exceptions.dart';
 
 /// A class for providing [MapData] to the MapDataBloc.
 ///
@@ -32,7 +33,9 @@ class MapDataProvider {
   /// The [QueryOptions] object is built based on the [currentPosition].
   /// Once the query is successful, the resulting JSON is parsed [_toMapData].
   Future<MapData> _refreshMapData(Position currentPosition) async =>
-      getGraphQLClient().query(await queryOptions(currentPosition)).then(_toMapData);
+      getGraphQLClient()
+          .query(await queryOptions(currentPosition))
+          .then(_toMapData);
 
   /// Parses the [queryResult] into [MapData].
   ///
@@ -41,14 +44,14 @@ class MapDataProvider {
   /// and throws the rest of the information away.
   MapData _toMapData(QueryResult queryResult) {
     if (queryResult.hasErrors) {
-      throw Exception();
+      throw BadRequestException(queryResult.errors.toString());
     }
 
     final tournamentList =
         queryResult.data["tournaments"]["nodes"] as List<dynamic>;
     List<Tournament> tournaments = tournamentList
-        .map((tournament) => Tournament.fromJson(tournament))
-        .toList();
+        ?.map((tournament) => Tournament.fromJson(tournament))
+        ?.toList();
     return MapData(tournaments);
   }
 
@@ -62,7 +65,7 @@ class MapDataProvider {
   /// so -to my knowledge- this function should never return null.
   /// Go check the BLoC's mapEventToState functions if something seems kooky.
   void setSelectedTournament(MarkerId tournamentId) =>
-      selectedTournament = mostRecentState.getTournament(tournamentId.value);
+      selectedTournament = mostRecentState.getTournament(tournamentId?.value);
 }
 
 /// A class for holding the results of a smash.gg query in a neatly-parsed bundle.
@@ -74,7 +77,10 @@ class MapData {
   /// The tournaments that will be fed to the BLoC.
   List<Tournament> tournaments;
 
-  MapData([this.tournaments]);
+  /// Allows for null results.
+  MapData(List<Tournament> tournaments) {
+    this.tournaments = tournaments ?? [];
+  }
 
   /// Retrieves a [Tournament] based on the value of its associated [MarkerId] value.
   ///
@@ -82,8 +88,12 @@ class MapData {
   /// have to take their word for it that this is unique, but
   /// I truly doubt there will ever be duplicates here. Don't
   /// eliminate it as a possibility if a bug shows up, though.
-  Tournament getTournament(String id) =>
-      tournaments.singleWhere((tournament) => tournament.id == int.parse(id));
+  Tournament getTournament(String id) {
+    if(id != null) {
+      return tournaments.singleWhere((tournament) => tournament.id == int.parse(id));
+    }
+    return null;
+  }
 
   bool isEmpty() => tournaments.isEmpty;
 }
@@ -124,30 +134,31 @@ class Tournament {
   });
 
   factory Tournament.fromJson(Map<String, dynamic> json) => new Tournament(
-    id: json["id"],
-    lat: json["lat"].toDouble(),
-    lng: json["lng"].toDouble(),
-    name: json["name"],
-    slug: json["slug"],
-    startAt: json["startAt"],
-    timezone: json["timezone"],
-    venueAddress: json["venueAddress"],
-    participants: Participants.fromJson(json["participants"]),
-    images: new List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
-  );
+        id: json["id"],
+        lat: json["lat"].toDouble(),
+        lng: json["lng"].toDouble(),
+        name: json["name"],
+        slug: json["slug"],
+        startAt: json["startAt"],
+        timezone: json["timezone"],
+        venueAddress: json["venueAddress"],
+        participants: Participants.fromJson(json["participants"]),
+        images:
+            new List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "lat": lat,
-    "lng": lng,
-    "name": name,
-    "slug": slug,
-    "startAt": startAt,
-    "timezone": timezone,
-    "venueAddress": venueAddress,
-    "participants": participants.toJson(),
-    "images": new List<dynamic>.from(images.map((x) => x.toJson())),
-  };
+        "id": id,
+        "lat": lat,
+        "lng": lng,
+        "name": name,
+        "slug": slug,
+        "startAt": startAt,
+        "timezone": timezone,
+        "venueAddress": venueAddress,
+        "participants": participants.toJson(),
+        "images": new List<dynamic>.from(images.map((x) => x.toJson())),
+      };
 }
 
 class Image {
@@ -158,12 +169,12 @@ class Image {
   });
 
   factory Image.fromJson(Map<String, dynamic> json) => new Image(
-    url: json["url"],
-  );
+        url: json["url"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "url": url,
-  };
+        "url": url,
+      };
 }
 
 class Participants {
@@ -174,12 +185,12 @@ class Participants {
   });
 
   factory Participants.fromJson(Map<String, dynamic> json) => new Participants(
-    pageInfo: PageInfo.fromJson(json["pageInfo"]),
-  );
+        pageInfo: PageInfo.fromJson(json["pageInfo"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "pageInfo": pageInfo.toJson(),
-  };
+        "pageInfo": pageInfo.toJson(),
+      };
 }
 
 class PageInfo {
@@ -190,10 +201,10 @@ class PageInfo {
   });
 
   factory PageInfo.fromJson(Map<String, dynamic> json) => new PageInfo(
-    total: json["total"],
-  );
+        total: json["total"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "total": total,
-  };
+        "total": total,
+      };
 }

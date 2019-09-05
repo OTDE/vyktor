@@ -99,10 +99,11 @@ class VyktorMenuState extends State<VyktorMenu> {
           },
           orientation: UnicornOrientation.VERTICAL,
           parentButton: Icon(Icons.settings),
-          parentButtonBackground:
-          Theme.of(context).primaryColor,
+          parentButtonBackground: Theme.of(context).primaryColor,
           parentButtonForeground: Theme.of(context).colorScheme.onPrimary,
         ));
-    return menuDial;
+    return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
+      return (state is MapDataLoaded) ? menuDial : Container();
+    });
   }
 }

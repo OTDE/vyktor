@@ -16,6 +16,7 @@ class _ExitDetectorState extends State<ExitDetector> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         mapBloc.dispatch(UnlockMap());
+        mapBloc.dispatch(UpdateSelectedTournament());
         animBloc.dispatch(DeselectAll());
       },
       child: Container(

@@ -115,7 +115,6 @@ class VyktorMapState extends State<VyktorMap> {
         mapData.tournaments.add(selectedTournament);
     }
     for (Tournament tournament in mapData.tournaments) {
-      if (tournament.id == -1) continue;
       var id = MarkerId(tournament.id.toString());
       var attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
       var mapMarker = Marker(
@@ -127,8 +126,9 @@ class VyktorMapState extends State<VyktorMap> {
             return;
           }
           _selectingTournament = true;
-          mapBloc.dispatch(LockMap());
           mapBloc.dispatch(UpdateSelectedTournament(id));
+          mapBloc.dispatch(LockMap());
+
           animBloc.dispatch(SelectTournament(id));
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),

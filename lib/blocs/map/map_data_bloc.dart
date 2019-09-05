@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:vyktor/models/map_data.dart';
+import 'package:vyktor/services/exceptions.dart';
 
 import 'map_data_barrel.dart';
 
@@ -66,20 +67,25 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   Stream<MapDataState> _mapRefreshMarkerDataToState(
       MapDataState currentState, RefreshMarkerData event) async* {
     if (currentState is MapDataLoaded || currentState is MapDataLoading) {
-      await _mapDataProvider.refresh(event.currentPosition);
-      final MapData mapDataToView = _mapDataProvider.mostRecentState;
-      final Tournament tournamentToView =
-          _mapDataProvider.selectedTournament ?? mapDataToView.tournaments[0];
-      final CameraPosition initialCamera = CameraPosition(
-        target: LatLng(event.currentPosition.latitude, event.currentPosition.longitude),
-        zoom: 10.0,
-      );
-      yield MapDataLoaded(
-        tournamentToView,
-        mapDataToView,
-        initialPosition: initialCamera,
-        isMapUnlocked: true,
-      );
+      try {
+        await _mapDataProvider.refresh(event.currentPosition);
+        final MapData mapDataToView = _mapDataProvider.mostRecentState;
+        final Tournament tournamentToView =
+            _mapDataProvider.selectedTournament ?? mapDataToView.tournaments[0];
+        final CameraPosition initialCamera = CameraPosition(
+          target: LatLng(event.currentPosition.latitude, event.currentPosition.longitude),
+          zoom: 10.0,
+        );
+        yield MapDataLoaded(
+          tournamentToView,
+          mapDataToView,
+          initialPosition: initialCamera,
+          isMapUnlocked: true,
+        );
+      } on BadRequestException catch(e) {
+        print(e.message);
+        yield MapDataNotLoaded();
+      }
     }
   }
 
@@ -87,9 +93,7 @@ class MapDataBloc extends Bloc<MapDataEvent, MapDataState> {
   Stream<MapDataState> _mapUpdateSelectedTournamentToState(
       MapDataState currentState, UpdateSelectedTournament event) async* {
     if (currentState is MapDataLoaded) {
-      if (int.parse(event.markerId.value) != -1) {
-        _mapDataProvider.setSelectedTournament(event.markerId);
-      }
+      _mapDataProvider.setSelectedTournament(event.markerId);
       final MapData mapDataToView = _mapDataProvider.mostRecentState;
       final Tournament tournamentToView = _mapDataProvider.selectedTournament;
       yield MapDataLoaded(

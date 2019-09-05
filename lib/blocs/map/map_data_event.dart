@@ -32,7 +32,7 @@ class UpdateSelectedTournament extends MapDataEvent {
   /// The [MarkerId] of the [Marker] whose tournament data this event will select.
   final MarkerId markerId;
 
-  UpdateSelectedTournament(this.markerId) : super([markerId]);
+  UpdateSelectedTournament([this.markerId]) : super([markerId]);
 
   @override
   String toString() =>
