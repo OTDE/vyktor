@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'smashgg_api_token.dart';
 import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:vyktor/models/settings_data.dart';
+import 'settings.dart';
 
 /// This file contains variables and functions related
 /// to making GraphQL queries to the smash.gg API.
@@ -84,6 +85,9 @@ Future<QueryOptions> queryOptions(Position position) async {
   );
 }
 
+/// Converts from milliseconds since unix epoch to seconds.
+///
+/// (Since Dart doesn't do seconds. WHY?)
 int _formatForQuery(int fromSettings) => (fromSettings / 1000).round();
 
 /// The GraphQL client being used by the app to send queries.

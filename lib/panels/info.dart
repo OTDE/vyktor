@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/blocs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../blocs/blocs.dart';
 
+/// Panel dedicated to providing additional information about the app.
 class InfoPanel extends StatefulWidget {
   @override
   _InfoPanelState createState() => _InfoPanelState();
@@ -12,7 +13,7 @@ class InfoPanel extends StatefulWidget {
 class _InfoPanelState extends State<InfoPanel> {
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
@@ -33,7 +34,8 @@ class _InfoPanelState extends State<InfoPanel> {
               children: <Widget>[
                 FloatingActionButton(
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryVariant,
                     elevation: 0.0,
                     heroTag: 'otdeTwitter',
                     shape: ContinuousRectangleBorder(),
@@ -59,7 +61,8 @@ class _InfoPanelState extends State<InfoPanel> {
               children: <Widget>[
                 FloatingActionButton(
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryVariant,
                     elevation: 0.0,
                     heroTag: 'otdeTwitter',
                     shape: ContinuousRectangleBorder(),
@@ -98,7 +101,7 @@ class _InfoPanelState extends State<InfoPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                animBloc.dispatch(DeselectAll());
+                animBloc.dispatch(DeselectAllPanels());
                 mapBloc.dispatch(UnlockMap());
               }),
         ),
@@ -106,6 +109,7 @@ class _InfoPanelState extends State<InfoPanel> {
     );
   }
 
+  ///
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -113,5 +117,4 @@ class _InfoPanelState extends State<InfoPanel> {
       throw 'Could not launch $url';
     }
   }
-
 }

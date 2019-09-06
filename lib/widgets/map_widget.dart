@@ -1,15 +1,14 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:vyktor/models/map_data.dart';
-import 'package:vyktor/models/settings_data.dart';
-import 'package:vyktor/blocs/blocs.dart';
+import '../blocs/blocs.dart';
+import '../models/map_model.dart';
+import '../services/settings.dart';
 
 /// The page containing the map and its associated data.
 class VyktorMap extends StatefulWidget {
@@ -42,9 +41,9 @@ class VyktorMapState extends State<VyktorMap> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
-    return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
+    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         return IgnorePointer(
           ignoring: !state.isMapUnlocked,
@@ -102,7 +101,8 @@ class VyktorMapState extends State<VyktorMap> {
                   color: Theme.of(context).colorScheme.surface,
                   textColor: Theme.of(context).colorScheme.onSurface,
                   onPressed: () async {
-                    var currentPosition = await Geolocator().getCurrentPosition();
+                    var currentPosition =
+                        await Geolocator().getCurrentPosition();
                     mapBloc.dispatch(RefreshMarkerData(currentPosition));
                   },
                 ),
@@ -136,7 +136,7 @@ class VyktorMapState extends State<VyktorMap> {
   Set<Marker> _buildMarkerDataFrom(
       MapData mapData,
       Tournament selectedTournament,
-      MapDataBloc mapBloc,
+      MapBloc mapBloc,
       MapDataLoaded state,
       AnimatorBloc animBloc) {
     var markerData = Set<Marker>();
@@ -159,7 +159,7 @@ class VyktorMapState extends State<VyktorMap> {
           mapBloc.dispatch(UpdateSelectedTournament(id));
           mapBloc.dispatch(LockMap());
 
-          animBloc.dispatch(SelectTournament(id));
+          animBloc.dispatch(SelectTournamentPanel());
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),
               11.0)); // Lock and load

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/blocs.dart';
-import 'package:vyktor/widgets/exit_detector.dart';
 
+import '../blocs/blocs.dart';
+import 'exit_detector.dart';
 
-
+/// Animation wrapper for a [child] widget.
+///
+/// The [panel] spec determines if [child] is selected.
 class PanelAnimator extends StatefulWidget {
 
   final Widget child;
@@ -41,8 +43,9 @@ class PanelAnimatorState extends State<PanelAnimator>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnimatorBloc, AnimatorState>(builder: (context, state) {
-      if (state is TabAnimatorState) {
+    return BlocBuilder<AnimatorBloc, AnimationState>(builder: (context, state) {
+      if (state is AnimationPanelState) {
+        // Dictates when panel is shown.
         _isSelected = state.selectedPanel == widget.panel;
         if (_isSelected) {
           if(!_controller.isAnimating && _controller.isDismissed) {

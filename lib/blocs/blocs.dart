@@ -1,2 +1,2 @@
-export 'package:vyktor/blocs/animation/animation_barrel.dart';
-export 'package:vyktor/blocs/map/map_data_barrel.dart';
+export 'animation/animation.dart';
+export 'map/map.dart';

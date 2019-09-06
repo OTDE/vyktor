@@ -3,22 +3,19 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// Page that displays when location is disabled for this app.
 ///
-/// When location is enabled, calls the [enableLocation] callback function.
+/// When location is enabled, calls the [onLocationEnabled] callback function.
 class PermissionsPage extends StatefulWidget {
   /// The callback function [PermissionsPage] calls on receipt of location permission.
-  final Function enableLocation;
+  final Function onLocationEnabled;
 
-  PermissionsPage({Key key, @required this.enableLocation}) : super(key: key);
+  PermissionsPage({Key key, @required this.onLocationEnabled}) : super(key: key);
 
   @override
-  State<PermissionsPage> createState() => PermissionsPageState();
+  State<PermissionsPage> createState() => _PermissionsPageState();
 }
 
-/// State of the permissions page.
-///
-/// Uses [_permissions] to get the status
-/// of location permissions for this app.
-class PermissionsPageState extends State<PermissionsPage> {
+/// Uses [_permissions] to get the status of location permissions for this app.
+class _PermissionsPageState extends State<PermissionsPage> {
   /// The object used to calculate location [PermissionStatus].
   Map<PermissionGroup, PermissionStatus> _permissions;
 
@@ -69,14 +66,14 @@ class PermissionsPageState extends State<PermissionsPage> {
 
   /// Requests permissions, then checks [result].
   ///
-  /// If [result] is enabled, invokes the [enableLocation]
+  /// If [result] is enabled, invokes the [onLocationEnabled]
   /// callback function to the parent widget.
   _getPermissions() async {
     _permissions = await PermissionHandler()
         .requestPermissions([PermissionGroup.location]);
     var result = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.location);
-    if (result == PermissionStatus.granted) widget.enableLocation();
+    if (result == PermissionStatus.granted) widget.onLocationEnabled();
   }
 
 }

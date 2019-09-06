@@ -1,12 +1,11 @@
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/blocs.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vyktor/models/settings_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 
+import '../blocs/blocs.dart';
+import '../services/settings.dart';
+
+/// The panel dedicating to holding information search settings.
 class SearchSettingsPanel extends StatefulWidget {
   @override
   _SearchSettingsPanelState createState() => _SearchSettingsPanelState();
@@ -16,15 +15,15 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
 
   // These need to be initialized so the app doesn't throw a fit
   // while it's waiting for the settings to fill these values in.
+
+  // The minimum date after which the tournament starts.
   int _startAfterDate = 0;
+  // The maximum date before which a tournament starts.
   int _startBeforeDate = 0;
   bool _isExploreModeEnabled = false;
 
   @override
   void initState() {
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.clear();
-    });
     Settings().getStartAfterDate().then((afterDate) {
       Settings().getStartBeforeDate().then((beforeDate) {
         Settings().getExploreMode().then((exploreModeEnabled) {
@@ -41,7 +40,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
@@ -184,7 +183,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               child: Icon(Icons.arrow_back),
               onPressed: () async {
                 var currentPosition = await Geolocator().getCurrentPosition();
-                animBloc.dispatch(DeselectAll());
+                animBloc.dispatch(DeselectAllPanels());
                 if(!_isExploreModeEnabled) {
                   mapBloc.dispatch(RefreshMarkerData(currentPosition));
                 }
@@ -195,6 +194,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
     );
   }
 
+  /// Formats a unix [timestamp] into a mm/dd/yyyy date string.
   String _toFormattedDate(int timestamp) {
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return '${date.month}/${date.day}/${date.year}';

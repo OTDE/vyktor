@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/blocs.dart';
-import 'package:vyktor/services/unicorn_dial.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../blocs/blocs.dart';
+import '../services/unicorn_dial_mod.dart';
+
+/// Vyktor's menu. Largely centered around the 'unicorn dial' code.
 class VyktorMenu extends StatefulWidget {
   VyktorMenu({Key key}) : super(key: key);
 
@@ -11,12 +13,12 @@ class VyktorMenu extends StatefulWidget {
 }
 
 class VyktorMenuState extends State<VyktorMenu> {
-  bool _mainButtonSelected = false;
-  bool _inSelection = false;
+  bool _isMainButtonSelected = false;
+  bool _inSelectionFunction = false;
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
     final snackBarOnRefresh = SnackBar(
         backgroundColor: Theme.of(context).colorScheme.primaryVariant,
@@ -42,7 +44,7 @@ class VyktorMenuState extends State<VyktorMenu> {
             var currentPosition = await Geolocator().getCurrentPosition();
             mapBloc.dispatch(RefreshMarkerData(currentPosition));
             Scaffold.of(context).showSnackBar(snackBarOnRefresh);
-            _mainButtonSelected = false;
+            _isMainButtonSelected = false;
           },
         ),
       ),
@@ -58,8 +60,8 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "map",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectMapSettings());
-            _mainButtonSelected = false;
+            animBloc.dispatch(SelectMapSettingsPanel());
+            _isMainButtonSelected = false;
           },
         ),
       ),
@@ -75,8 +77,8 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectSearchSettings());
-            _mainButtonSelected = false;
+            animBloc.dispatch(SelectSearchSettingsPanel());
+            _isMainButtonSelected = false;
           },
         ),
       ),
@@ -92,8 +94,8 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectInfo());
-            _mainButtonSelected = false;
+            animBloc.dispatch(SelectInfoPanel());
+            _isMainButtonSelected = false;
           },
         ),
       ),
@@ -108,29 +110,29 @@ class VyktorMenuState extends State<VyktorMenu> {
           finalButtonIcon: Icon(Icons.cancel),
           onBackgroundPressed: () async {
             mapBloc.dispatch(UnlockMap());
-            _mainButtonSelected = false;
+            _isMainButtonSelected = false;
           },
           onMainButtonPressed: () async {
-            if (_inSelection) {
+            if (_inSelectionFunction) {
               return;
             }
-            _inSelection = true;
-            animBloc.dispatch(DeselectAll());
-            if (_mainButtonSelected) {
+            _inSelectionFunction = true;
+            animBloc.dispatch(DeselectAllPanels());
+            if (_isMainButtonSelected) {
               mapBloc.dispatch(UnlockMap());
-              _mainButtonSelected = false;
+              _isMainButtonSelected = false;
             } else {
               mapBloc.dispatch(LockMap());
-              _mainButtonSelected = true;
+              _isMainButtonSelected = true;
             }
-            _inSelection = false;
+            _inSelectionFunction = false;
           },
           orientation: UnicornOrientation.VERTICAL,
           parentButton: Icon(Icons.settings),
           parentButtonBackground: Theme.of(context).primaryColor,
           parentButtonForeground: Theme.of(context).colorScheme.onPrimary,
         ));
-    return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
+    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       return (state is MapDataLoaded) ? menuDial : Container();
     });
   }

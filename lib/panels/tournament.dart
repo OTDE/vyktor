@@ -1,10 +1,13 @@
 import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:vyktor/blocs/blocs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../blocs/blocs.dart';
+
+/// The panel dedicated to showing the selected tournament.
 class SelectedTournament extends StatefulWidget {
   @override
   _SelectedTournamentState createState() => _SelectedTournamentState();
@@ -16,8 +19,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   @override
   Widget build(BuildContext context) {
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
-    return BlocBuilder<MapDataBloc, MapDataState>(builder: (context, state) {
+    final mapBloc = BlocProvider.of<MapBloc>(context);
+    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         if (state.selectedTournament != null) {
           int numEntrants =
@@ -150,8 +153,9 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                     child: Icon(Icons.arrow_back),
                     onPressed: () async {
                       mapBloc.dispatch(UnlockMap());
+                      animBloc.dispatch(DeselectAllPanels());
+                      await Future.delayed(Duration(seconds: 1));
                       mapBloc.dispatch(UpdateSelectedTournament());
-                      animBloc.dispatch(DeselectAll());
                     }),
               )
             ],
@@ -162,7 +166,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
     });
   }
 
-  /// Launches a [url]
+  /// Launches a [url], or throws an exception trying.
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -171,11 +175,16 @@ class _SelectedTournamentState extends State<SelectedTournament> {
     }
   }
 
+  /// Formats tournament address to make it look nice on the panel.
+  ///
+  /// Assumes addresses are written like so:
+  /// 0239 Example Street, City, State ZIP, Country
   String _toFormattedAddress(String address) {
     var addressWords = address.split(', ');
     return '${addressWords[0]}\n${addressWords[1]}, ${addressWords[2]}';
   }
 
+  /// Formats a unix [timestamp] into a formatted date/time string.
   String _toFormattedDate(int timestamp) {
     var date =
         DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
@@ -188,8 +197,10 @@ class _SelectedTournamentState extends State<SelectedTournament> {
     }(date.hour)}';
   }
 
+  /// Builds a URL, given a smash.gg tournament [slug].
   String _buildSmashggURL(String slug) => 'http://smash.gg/' + slug;
 
+  /// Builds a directions URL, given an [address], based on platform.
   String _buildDirectionsURL(String address) {
     if (isIOS) {
       address.replaceAll(' ', '+');

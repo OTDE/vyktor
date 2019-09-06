@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:vyktor/blocs/delegate.dart';
-import 'package:vyktor/blocs/blocs.dart';
-
+import '../blocs/delegate.dart';
+import '../blocs/blocs.dart';
 import 'map_page.dart';
 import 'permissions_page.dart';
 
@@ -18,14 +17,11 @@ class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
 
   @override
-  HomePageState createState() => HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-/// The state of the [HomePage].
-///
-/// On [initState], checks the phone's permissions,
-/// and computes if the app [_hasLocationPermissions].
-class HomePageState extends State<HomePage> {
+/// On [initState], checks the phone's permissions, and computes if the app [_hasLocationPermissions].
+class _HomePageState extends State<HomePage> {
   /// An indicator of if the app is allowed to track the phone's location.
   bool _hasLocationPermissions = false;
 
@@ -41,13 +37,6 @@ class HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  /// Callback function to send to the [PermissionsPage] child widget.
-  permissionsCallback() async {
-    setState(() {
-      _hasLocationPermissions = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,19 +44,13 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  /// Builds the [body] of the [Scaffold] widget.
-  ///
-  /// The widget returned depends on if the app [_hasLocationPermissions].
-  /// If it does, the child is a [MapPage] receiving information from a
-  /// [MapDataBloc] through a [BlocProvider]. Otherwise, the child is a
-  /// [PermissionsPage] with a [permissionsCallback] for receiving information.
   Widget _buildBody() {
     if (_hasLocationPermissions) {
       BlocSupervisor.delegate = BasicBlocDelegate();
       return MultiBlocProvider(
         providers: [
-          BlocProvider<MapDataBloc>(
-            builder: (context) => MapDataBloc(),
+          BlocProvider<MapBloc>(
+            builder: (context) => MapBloc(),
           ),
           BlocProvider<AnimatorBloc>(
             builder: (context) => AnimatorBloc(),
@@ -76,6 +59,12 @@ class HomePageState extends State<HomePage> {
         child: MapPage(),
       );
     }
-    return PermissionsPage(enableLocation: permissionsCallback);
+    return PermissionsPage(onLocationEnabled: loadMapPage);
+  }
+
+  loadMapPage() async {
+    setState(() {
+      _hasLocationPermissions = true;
+    });
   }
 }

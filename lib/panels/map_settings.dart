@@ -1,11 +1,12 @@
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vyktor/blocs/blocs.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vyktor/models/settings_data.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../blocs/blocs.dart';
+import '../services/settings.dart';
+
+/// Panel dedicated to handling map settings.
 class MapSettingsPanel extends StatefulWidget {
   @override
   _MapSettingsPanelState createState() => _MapSettingsPanelState();
@@ -27,7 +28,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapDataBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
     final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
@@ -132,7 +133,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
-                animBloc.dispatch(DeselectAll());
+                animBloc.dispatch(DeselectAllPanels());
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

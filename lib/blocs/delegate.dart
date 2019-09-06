@@ -9,7 +9,7 @@ class BasicBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
     super.onEvent(bloc, event);
-    print(event);
+    print('${bloc.runtimeType.toString()}: $event');
   }
 
   /// Sends information about [bloc] state [transition]s.
@@ -18,13 +18,13 @@ class BasicBlocDelegate extends BlocDelegate {
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    print(transition);
+    print('${bloc.runtimeType.toString()}: $transition');
   }
 
   /// Prints the [stacktrace] if a [bloc] throws an [error].
   @override
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
-    print(error);
+    print('${bloc.runtimeType.toString()}: $error');
   }
 }
