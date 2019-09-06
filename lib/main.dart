@@ -16,6 +16,7 @@ class Vyktor extends StatelessWidget {
       systemNavigationBarColor: vyktorTheme.colorScheme.primaryVariant,
       statusBarColor: vyktorTheme.colorScheme.primaryVariant,
       statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
     ));
     return MaterialApp(
       title: 'Vyktor',

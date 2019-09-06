@@ -74,6 +74,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                                   target: LatLng(-44.493191, 168.446977),
                                   zoom: 4.8,
                                 ),
+                                myLocationButtonEnabled: false,
                               ),
                             ),
                           ),
@@ -101,7 +102,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               ],
             ),
             Spacer(flex: 1),
-            Slider(
+            Slider.adaptive(
               activeColor: Theme.of(context).accentColor,
               inactiveColor: Theme.of(context).primaryColor,
               value: _radius.toDouble(),

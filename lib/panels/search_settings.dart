@@ -147,7 +147,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                   style: Theme.of(context).primaryTextTheme.headline,
                 ),
                 Spacer(flex: 1),
-                Switch(
+                Switch.adaptive(
                   value: _isExploreModeEnabled,
                   onChanged: (isEnabled) async {
                     if (isEnabled) {
