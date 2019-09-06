@@ -14,7 +14,7 @@ class MapSettingsPanel extends StatefulWidget {
 
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
-  int _radius = 5;
+  int _radius = 50;
 
   @override
   void initState() {
@@ -59,6 +59,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                             height: 180,
                             width: 240,
                             child: IgnorePointer(
+                              ignoring: true,
                               child: GoogleMap(
                                 circles: {
                                   Circle(
@@ -75,6 +76,10 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                                   zoom: 4.8,
                                 ),
                                 myLocationButtonEnabled: false,
+                                scrollGesturesEnabled: false,
+                                tiltGesturesEnabled: false,
+                                zoomGesturesEnabled: false,
+                                rotateGesturesEnabled: false,
                               ),
                             ),
                           ),
@@ -102,7 +107,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               ],
             ),
             Spacer(flex: 1),
-            Slider.adaptive(
+            Slider(
               activeColor: Theme.of(context).accentColor,
               inactiveColor: Theme.of(context).primaryColor,
               value: _radius.toDouble(),
@@ -115,9 +120,8 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                 });
               },
               onChangeEnd: (radius) async {
-                var currentPosition = await Geolocator().getCurrentPosition();
-                await Settings().setRadiusInMiles(_radius);
-                mapBloc.dispatch(RefreshMarkerData(currentPosition));
+                await Settings().setRadiusInMiles(radius.truncate());
+                mapBloc.dispatch(RefreshMarkerData());
               },
             ),
             Spacer(flex: 7),
@@ -133,7 +137,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               shape: ContinuousRectangleBorder(),
               mini: true,
               child: Icon(Icons.arrow_back),
-              onPressed: () async {
+              onPressed: () {
                 animBloc.dispatch(DeselectAllPanels());
                 mapBloc.dispatch(UnlockMap());
               }),

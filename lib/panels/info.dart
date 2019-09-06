@@ -42,6 +42,9 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
+                      animBloc.dispatch(DeselectAllPanels());
+                      mapBloc.dispatch(UnlockMap());
+                      await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/thatdeepends');
                     }),
                 Spacer(flex: 1),
@@ -69,6 +72,9 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
+                      animBloc.dispatch(DeselectAllPanels());
+                      mapBloc.dispatch(UnlockMap());
+                      await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/ceegearts');
                     }),
                 Spacer(flex: 1),

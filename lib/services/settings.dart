@@ -79,4 +79,11 @@ class Settings {
 
     return preferences.setBool(_explore, isEnabled);
   }
+
+  Future<void> clear() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    preferences.clear();
+  }
+
 }

@@ -24,13 +24,15 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
 
   @override
   void initState() {
-    Settings().getStartAfterDate().then((afterDate) {
-      Settings().getStartBeforeDate().then((beforeDate) {
-        Settings().getExploreMode().then((exploreModeEnabled) {
-          setState(() {
-            _startAfterDate = afterDate;
-            _startBeforeDate = beforeDate;
-            _isExploreModeEnabled = exploreModeEnabled;
+    Settings().clear().then((e) {
+      Settings().getStartAfterDate().then((afterDate) {
+        Settings().getStartBeforeDate().then((beforeDate) {
+          Settings().getExploreMode().then((exploreModeEnabled) {
+            setState(() {
+              _startAfterDate = afterDate;
+              _startBeforeDate = beforeDate;
+              _isExploreModeEnabled = exploreModeEnabled;
+            });
           });
         });
       });
@@ -78,11 +80,10 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                         lastDate:
                             DateTime.fromMillisecondsSinceEpoch(_startBeforeDate),
                       );
+                      if(selectedDate == null) return;
                       _startAfterDate = selectedDate.millisecondsSinceEpoch;
                       await Settings().setStartBeforeDate(_startAfterDate);
-                      var currentPosition =
-                          await Geolocator().getCurrentPosition();
-                      mapBloc.dispatch(RefreshMarkerData(currentPosition));
+                      mapBloc.dispatch(RefreshMarkerData());
                       setState(() {});
                     }),
                 Spacer(flex: 1),
@@ -124,11 +125,10 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                             DateTime.fromMillisecondsSinceEpoch(_startAfterDate)
                                 .add(Duration(days: 730)),
                       );
+                      if(selectedDate == null) return;
                       _startBeforeDate = selectedDate.millisecondsSinceEpoch;
                       await Settings().setStartBeforeDate(_startBeforeDate);
-                      var currentPosition =
-                          await Geolocator().getCurrentPosition();
-                      mapBloc.dispatch(RefreshMarkerData(currentPosition));
+                      mapBloc.dispatch(RefreshMarkerData());
                       setState(() {});
                     }),
                 Spacer(flex: 1),
@@ -154,6 +154,10 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                       mapBloc.dispatch(DisableLocationListening());
                     } else {
                       mapBloc.dispatch(EnableLocationListening());
+                      var currentPosition = await Geolocator().getCurrentPosition(
+                        desiredAccuracy: LocationAccuracy.medium,
+                      );
+                      mapBloc.dispatch(RefreshMarkerData(currentPosition));
                     }
                     await Settings().setExploreMode(isEnabled);
                     setState(() {
@@ -182,11 +186,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
-                var currentPosition = await Geolocator().getCurrentPosition();
                 animBloc.dispatch(DeselectAllPanels());
-                if(!_isExploreModeEnabled) {
-                  mapBloc.dispatch(RefreshMarkerData(currentPosition));
-                }
                 mapBloc.dispatch(UnlockMap());
               }),
         )

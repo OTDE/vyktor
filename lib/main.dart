@@ -15,8 +15,8 @@ class Vyktor extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: vyktorTheme.colorScheme.primaryVariant,
       statusBarColor: vyktorTheme.colorScheme.primaryVariant,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
     ));
     return MaterialApp(
       title: 'Vyktor',

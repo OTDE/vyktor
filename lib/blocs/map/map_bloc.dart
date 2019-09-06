@@ -23,6 +23,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   final LocationOptions _locationOptions =
       LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1000);
   StreamSubscription<Position> _currentPosition;
+  Position _lastKnownPosition;
 
   /// Initial state of the BLoC is loading the data. Will switch to [MapDataNotLoaded]
   /// on failure and [MapDataLoaded] on success.
@@ -35,6 +36,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     _currentPosition = _geolocator
         .getPositionStream(_locationOptions)
         .listen((Position position) {
+          _lastKnownPosition = position;
       dispatch(RefreshMarkerData(position));
     });
   }
@@ -64,14 +66,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   /// the first place.
   Stream<MapState> _mapRefreshMarkerDataToState(
       MapState currentState, RefreshMarkerData event) async* {
-    if (currentState is MapDataLoaded || currentState is MapDataLoading) {
+      final position = event.currentPosition ?? _lastKnownPosition;
+      _lastKnownPosition = event.currentPosition ?? _lastKnownPosition;
       try {
-        await _mapDataProvider.refresh(event.currentPosition);
+        await _mapDataProvider.refresh(position);
         final MapData mapDataToView = _mapDataProvider.mostRecentState;
         final Tournament tournamentToView = _mapDataProvider.selectedTournament;
         final CameraPosition initialCamera = CameraPosition(
           target: LatLng(
-              event.currentPosition.latitude, event.currentPosition.longitude),
+              position.latitude, position.longitude),
           zoom: 10.0,
         );
         yield MapDataLoaded(
@@ -87,7 +90,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         print(e.message);
         yield MapDataNotLoaded();
       }
-    }
   }
 
   /// Receives input from the selected marker and updates the [selectedTournament].

@@ -230,12 +230,12 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   }
 
   /// Builds a URL, given a smash.gg tournament [slug].
-  String _buildSmashggURL(String slug) => 'http://smash.gg/' + slug;
+  String _buildSmashggURL(String slug) => 'http://smash.gg/$slug';
 
   /// Builds a directions URL, given an [address], based on platform.
   String _buildDirectionsURL(String address) {
     if (isIOS) {
-      address.replaceAll(' ', '+');
+      address.replaceAll(' ', '%20');
       return 'https://maps.apple.com/?daddr=$address';
     } else {
       address.replaceAll(', ', '+2C');

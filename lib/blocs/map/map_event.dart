@@ -15,11 +15,11 @@ class RefreshMarkerData extends MapEvent {
   /// Otherwise, the phones's current location.
   final Position currentPosition;
 
-  RefreshMarkerData(this.currentPosition) : super([currentPosition]);
+  RefreshMarkerData([this.currentPosition]) : super([currentPosition]);
 
   @override
   String toString() =>
-      'Event triggered: refreshing map data at ${currentPosition.latitude}, ${currentPosition.longitude}';
+      'Event triggered: refreshing map data at ${currentPosition?.latitude ?? 'the same lat'}, ${currentPosition?.longitude ?? 'the same lng'}';
 }
 
 /// Given a [markerId], sets the MapData's selected tournament.
