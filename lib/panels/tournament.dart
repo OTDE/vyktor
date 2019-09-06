@@ -86,7 +86,23 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                     _launchURL(_buildDirectionsURL(
                                         state.selectedTournament.venueAddress));
                                   } catch (_) {
-                                    //TODO: dialog w/ 'not valid maps url' or somesuch
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('URL error'),
+                                            content: Text('URL is malformed or nonexistent'),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('OK'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                    );
                                   }
                                 },
                               )),
@@ -106,7 +122,23 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                     _launchURL(_buildSmashggURL(
                                         state.selectedTournament.slug));
                                   } catch (_) {
-                                    //TODO: dialog w/ 'cannot launch url' or somesuch
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('URL error'),
+                                          content: Text('URL is malformed or nonexistent'),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    );
                                   }
                                 },
                               ))
