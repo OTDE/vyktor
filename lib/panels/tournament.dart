@@ -82,6 +82,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
+                                  animBloc.dispatch(DeselectAllPanels());
+                                  await Future.delayed(Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildDirectionsURL(
                                         state.selectedTournament.venueAddress));
@@ -118,6 +120,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
+                                  animBloc.dispatch(DeselectAllPanels());
+                                  await Future.delayed(Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildSmashggURL(
                                         state.selectedTournament.slug));
