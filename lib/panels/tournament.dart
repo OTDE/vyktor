@@ -234,13 +234,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
 
   /// Builds a directions URL, given an [address], based on platform.
   String _buildDirectionsURL(String address) {
-    if (isIOS) {
-      address.replaceAll(' ', '%20');
-      return 'https://maps.apple.com/?daddr=$address';
-    } else {
       address.replaceAll(', ', '+2C');
       address.replaceAll(' ', '+');
       return 'https://www.google.com/maps/dir/?api=1&destination=$address';
-    }
   }
 }
