@@ -8,7 +8,6 @@ import 'exit_detector.dart';
 ///
 /// The [panel] spec determines if [child] is selected.
 class PanelAnimator extends StatefulWidget {
-
   final Widget child;
   final SelectedPanel panel;
   PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
@@ -43,21 +42,23 @@ class PanelAnimatorState extends State<PanelAnimator>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnimatorBloc, AnimationState>(builder: (context, state) {
-      if (state is AnimationPanelState) {
-        // Dictates when panel is shown.
-        _isSelected = state.selectedPanel == widget.panel;
-        if (_isSelected) {
-          if(!_controller.isAnimating && _controller.isDismissed) {
-            _controller.forward();
-          }
-        } else {
-          if(!_controller.isAnimating && _controller.isCompleted) {
-            _controller.reverse();
+    return BlocListener<AnimatorBloc, AnimationState>(
+      listener: (context, state) {
+        if (state is AnimationPanelState) {
+          // Dictates when panel is shown.
+          _isSelected = state.selectedPanel == widget.panel;
+          if (_isSelected) {
+            if (!_controller.isAnimating && _controller.isDismissed) {
+              _controller.forward();
+            }
+          } else {
+            if (!_controller.isAnimating && _controller.isCompleted) {
+              _controller.reverse();
+            }
           }
         }
-      }
-      return SlideTransition(
+      },
+      child: SlideTransition(
         textDirection: TextDirection.ltr,
         position: _offset,
         child: Stack(
@@ -96,7 +97,7 @@ class PanelAnimatorState extends State<PanelAnimator>
             )
           ],
         ),
-      );
-    });
+      ),
+    );
   }
 }

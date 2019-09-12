@@ -83,6 +83,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
                                   animBloc.dispatch(DeselectAllPanels());
+                                  mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildDirectionsURL(
@@ -121,6 +122,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
                                   animBloc.dispatch(DeselectAllPanels());
+                                  mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildSmashggURL(
@@ -238,8 +240,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
 
   /// Builds a directions URL, given an [address], based on platform.
   String _buildDirectionsURL(String address) {
-      address.replaceAll(', ', '+2C');
-      address.replaceAll(' ', '+');
+      address.replaceAll(',', '%2C');
+      address.replaceAll(' ', '%20');
       return 'https://www.google.com/maps/dir/?api=1&destination=$address';
   }
 }
