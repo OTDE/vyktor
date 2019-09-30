@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 import '../services/unicorn_dial_mod.dart';
 
 /// Vyktor's menu. Largely centered around the 'unicorn dial' code.
@@ -19,7 +20,6 @@ class VyktorMenuState extends State<VyktorMenu> {
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     final snackBarOnRefresh = SnackBar(
         backgroundColor: Theme.of(context).colorScheme.primaryVariant,
         content: Text(
@@ -60,7 +60,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "map",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectMapSettingsPanel());
+            TabBehavior().dispatch(SelectedPanel.mapSettings);
             _isMainButtonSelected = false;
           },
         ),
@@ -77,7 +77,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectSearchSettingsPanel());
+            TabBehavior().dispatch(SelectedPanel.searchSettings);
             _isMainButtonSelected = false;
           },
         ),
@@ -94,7 +94,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            animBloc.dispatch(SelectInfoPanel());
+            TabBehavior().dispatch(SelectedPanel.info);
             _isMainButtonSelected = false;
           },
         ),
@@ -117,7 +117,7 @@ class VyktorMenuState extends State<VyktorMenu> {
               return;
             }
             _inSelectionFunction = true;
-            animBloc.dispatch(DeselectAllPanels());
+            TabBehavior().dispatch(SelectedPanel.none);
             if (_isMainButtonSelected) {
               mapBloc.dispatch(UnlockMap());
               _isMainButtonSelected = false;

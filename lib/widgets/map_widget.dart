@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/blocs.dart';
 import '../models/map_model.dart';
+import '../models/tab_model.dart';
 import '../services/settings.dart';
 
 /// The page containing the map and its associated data.
@@ -42,7 +43,6 @@ class VyktorMapState extends State<VyktorMap> {
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       if (state is MapDataLoaded) {
         return IgnorePointer(
@@ -73,7 +73,7 @@ class VyktorMapState extends State<VyktorMap> {
               }
             },
             markers: _buildMarkerDataFrom(state.mapData,
-                state.selectedTournament, mapBloc, state, animBloc),
+                state.selectedTournament, mapBloc, state),
             rotateGesturesEnabled: state.isMapUnlocked ?? true,
             tiltGesturesEnabled: state.isMapUnlocked ?? true,
             scrollGesturesEnabled: state.isMapUnlocked ?? true,
@@ -137,8 +137,7 @@ class VyktorMapState extends State<VyktorMap> {
       MapData mapData,
       Tournament selectedTournament,
       MapBloc mapBloc,
-      MapDataLoaded state,
-      AnimatorBloc animBloc) {
+      MapDataLoaded state) {
     var markerData = Set<Marker>();
     if (selectedTournament != null) {
       if (!mapData.tournaments.contains(selectedTournament))
@@ -159,7 +158,7 @@ class VyktorMapState extends State<VyktorMap> {
           mapBloc.dispatch(UpdateSelectedTournament(id));
           mapBloc.dispatch(LockMap());
 
-          animBloc.dispatch(SelectTournamentPanel());
+          TabBehavior().dispatch(SelectedPanel.tournament);
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),
               11.0)); // Lock and load

@@ -47,15 +47,8 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBody() {
     if (_hasLocationPermissions) {
       BlocSupervisor.delegate = BasicBlocDelegate();
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider<MapBloc>(
-            builder: (context) => MapBloc(),
-          ),
-          BlocProvider<AnimatorBloc>(
-            builder: (context) => AnimatorBloc(),
-          ),
-        ],
+      return BlocProvider(
+        builder: (context) => MapBloc(),
         child: MapPage(),
       );
     }

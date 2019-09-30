@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 
 /// Panel dedicated to providing additional information about the app.
 class InfoPanel extends StatefulWidget {
@@ -14,7 +15,6 @@ class _InfoPanelState extends State<InfoPanel> {
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
         Column(
@@ -42,7 +42,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      animBloc.dispatch(DeselectAllPanels());
+                      TabBehavior().dispatch(SelectedPanel.none);
                       mapBloc.dispatch(UnlockMap());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/thatdeepends');
@@ -72,7 +72,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      animBloc.dispatch(DeselectAllPanels());
+                      TabBehavior().dispatch(SelectedPanel.none);
                       mapBloc.dispatch(UnlockMap());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/ceegearts');
@@ -107,7 +107,7 @@ class _InfoPanelState extends State<InfoPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                animBloc.dispatch(DeselectAllPanels());
+                TabBehavior().dispatch(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

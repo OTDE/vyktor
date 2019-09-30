@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 import '../services/settings.dart';
 
 /// Panel dedicated to handling map settings.
@@ -29,7 +29,6 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
         Column(
@@ -138,7 +137,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                animBloc.dispatch(DeselectAllPanels());
+                TabBehavior().dispatch(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

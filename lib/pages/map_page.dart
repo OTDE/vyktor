@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vyktor/widgets/map_widget.dart';
 import 'package:vyktor/widgets/menu_widget.dart';
 import 'package:vyktor/panels/panels.dart';
-import 'package:vyktor/blocs/blocs.dart';
+import '../models/tab_model.dart';
 
 /// The page with all the "stuff": map/menu widgets and all the panels.
 class MapPage extends StatefulWidget {

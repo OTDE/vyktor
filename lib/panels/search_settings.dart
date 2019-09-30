@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 import '../services/settings.dart';
 
 /// The panel dedicating to holding information search settings.
@@ -43,7 +44,6 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     return Stack(
       children: <Widget>[
         Column(
@@ -186,7 +186,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
-                animBloc.dispatch(DeselectAllPanels());
+                TabBehavior().dispatch(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         )

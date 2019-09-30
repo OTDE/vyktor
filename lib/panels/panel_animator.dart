@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 import 'exit_detector.dart';
 
 /// Animation wrapper for a [child] widget.
@@ -32,33 +32,21 @@ class PanelAnimatorState extends State<PanelAnimator>
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
+    TabBehavior().panelSubject.stream.listen((panel) {
+      _animatePanel(panel);
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    TabBehavior().dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnimatorBloc, AnimationState>(
-      listener: (context, state) {
-        if (state is AnimationPanelState) {
-          // Dictates when panel is shown.
-          _isSelected = state.selectedPanel == widget.panel;
-          if (_isSelected) {
-            if (!_controller.isAnimating && _controller.isDismissed) {
-              _controller.forward();
-            }
-          } else {
-            if (!_controller.isAnimating && _controller.isCompleted) {
-              _controller.reverse();
-            }
-          }
-        }
-      },
-      child: SlideTransition(
+    return SlideTransition(
         textDirection: TextDirection.ltr,
         position: _offset,
         child: Stack(
@@ -97,7 +85,20 @@ class PanelAnimatorState extends State<PanelAnimator>
             )
           ],
         ),
-      ),
-    );
+      );
   }
+
+  _animatePanel(SelectedPanel selectedPanel) {
+      _isSelected = selectedPanel == widget.panel;
+      if (_isSelected) {
+        if (!_controller.isAnimating && _controller.isDismissed) {
+          _controller.forward();
+        }
+      } else {
+        if (!_controller.isAnimating && _controller.isCompleted) {
+          _controller.reverse();
+        }
+      }
+    }
+
 }

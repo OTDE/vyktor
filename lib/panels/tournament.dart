@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../blocs/blocs.dart';
+import '../models/tab_model.dart';
 
 /// The panel dedicated to showing the selected tournament.
 class SelectedTournament extends StatefulWidget {
@@ -18,7 +19,6 @@ class _SelectedTournamentState extends State<SelectedTournament> {
 
   @override
   Widget build(BuildContext context) {
-    final animBloc = BlocProvider.of<AnimatorBloc>(context);
     final mapBloc = BlocProvider.of<MapBloc>(context);
     return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       if (state is MapDataLoaded) {
@@ -82,7 +82,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  animBloc.dispatch(DeselectAllPanels());
+                                  TabBehavior().dispatch(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(Duration(milliseconds: 300));
                                   try {
@@ -121,7 +121,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  animBloc.dispatch(DeselectAllPanels());
+                                  TabBehavior().dispatch(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(Duration(milliseconds: 300));
                                   try {
@@ -191,7 +191,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                     child: Icon(Icons.arrow_back),
                     onPressed: () async {
                       mapBloc.dispatch(UnlockMap());
-                      animBloc.dispatch(DeselectAllPanels());
+                      TabBehavior().dispatch(SelectedPanel.none);
                       await Future.delayed(Duration(seconds: 1));
                       mapBloc.dispatch(UpdateSelectedTournament());
                     }),
@@ -240,8 +240,12 @@ class _SelectedTournamentState extends State<SelectedTournament> {
 
   /// Builds a directions URL, given an [address], based on platform.
   String _buildDirectionsURL(String address) {
-      address.replaceAll(',', '%2C');
-      address.replaceAll(' ', '%20');
-      return 'https://www.google.com/maps/dir/?api=1&destination=$address';
+      if(isIOS) {
+
+      } else {
+        address.replaceAll(',', '%2C');
+        address.replaceAll(' ', '%20');
+        return 'https://www.google.com/maps/dir/?api=1&destination=$address';
+      }
   }
 }
