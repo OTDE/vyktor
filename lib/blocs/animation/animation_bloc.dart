@@ -57,4 +57,5 @@ class AnimatorBloc extends Bloc<AnimationEvent, AnimationState> {
       AnimationState currentState, DeselectAllPanels event) async* {
     yield AnimationPanelState(selectedPanel: SelectedPanel.none);
   }
+  
 }

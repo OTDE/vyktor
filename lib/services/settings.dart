@@ -10,9 +10,7 @@ class Settings {
 
   static const Settings _settings = Settings._internal();
 
-  factory Settings() {
-    return _settings;
-  }
+  factory Settings() => _settings;
 
   const Settings._internal();
 
