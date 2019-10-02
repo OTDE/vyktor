@@ -74,7 +74,7 @@ class VyktorMapState extends State<VyktorMap> {
             },
             markers: _buildMarkerDataFrom(state.mapData,
                 state.selectedTournament, mapBloc, state),
-            rotateGesturesEnabled: state.isMapUnlocked ?? true,
+            rotateGesturesEnabled: false,
             tiltGesturesEnabled: state.isMapUnlocked ?? true,
             scrollGesturesEnabled: state.isMapUnlocked ?? true,
             zoomGesturesEnabled: state.isMapUnlocked ?? true,
@@ -157,7 +157,6 @@ class VyktorMapState extends State<VyktorMap> {
           _selectingTournament = true;
           mapBloc.dispatch(UpdateSelectedTournament(id));
           mapBloc.dispatch(LockMap());
-
           TabBehavior().dispatch(SelectedPanel.tournament);
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),

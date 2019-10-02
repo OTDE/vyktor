@@ -12,6 +12,7 @@ dependencies:
   bloc: '^0.14.0'
   equatable: '^0.3.0'
   flutter_bloc: '^0.20.0'
+  flutter_secure_storage: '^3.3.1+1'
   geolocator: '^5.1.0'
   google_maps_flutter: '^0.5.19+2'
   graphql: '^2.0.0'
@@ -36,6 +37,7 @@ flutter:
   assets:
     - 'assets/images/in-app/mobile_logo_transparent.png'
     - 'assets/images/in-app/vyktor_logo.png'
+    - 'api.keys'
   fonts:
     - family: Computer Modern Bright
       fonts:

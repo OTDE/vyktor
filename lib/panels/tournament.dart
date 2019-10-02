@@ -84,17 +84,27 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 onPressed: () async {
                                   TabBehavior().dispatch(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
-                                  await Future.delayed(Duration(milliseconds: 300));
+                                  await Future.delayed(
+                                      Duration(milliseconds: 300));
                                   try {
-                                    _launchURL(_buildDirectionsURL(
-                                        state.selectedTournament.venueAddress));
+                                    var url;
+                                    if (isIOS) {
+                                      url = _buildAppleDirectionsURL(
+                                          state.selectedTournament.lat,
+                                          state.selectedTournament.lng);
+                                    } else {
+                                      url = _buildGoogleDirectionsURL(state
+                                          .selectedTournament.venueAddress);
+                                    }
+                                    _launchURL(url);
                                   } catch (_) {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
                                             title: Text('URL error'),
-                                            content: Text('URL is malformed or nonexistent'),
+                                            content: Text(
+                                                'URL is malformed or nonexistent'),
                                             actions: <Widget>[
                                               FlatButton(
                                                 child: Text('OK'),
@@ -104,8 +114,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                               ),
                                             ],
                                           );
-                                        }
-                                    );
+                                        });
                                   }
                                 },
                               )),
@@ -123,28 +132,29 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 onPressed: () async {
                                   TabBehavior().dispatch(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
-                                  await Future.delayed(Duration(milliseconds: 300));
+                                  await Future.delayed(
+                                      Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildSmashggURL(
                                         state.selectedTournament.slug));
                                   } catch (_) {
                                     showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text('URL error'),
-                                          content: Text('URL is malformed or nonexistent'),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text('OK'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      }
-                                    );
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('URL error'),
+                                            content: Text(
+                                                'URL is malformed or nonexistent'),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('OK'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
                                   }
                                 },
                               ))
@@ -218,8 +228,13 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   /// Assumes addresses are written like so:
   /// 0239 Example Street, City, State ZIP, Country
   String _toFormattedAddress(String address) {
+    if(!address.contains(',/s')) {
+      return address;
+    }
     var addressWords = address.split(', ');
-    return '${addressWords[0]}\n${addressWords[1]}, ${addressWords[2]}';
+    return '${addressWords[0]}\n${addressWords[1]}${() {
+      return addressWords.length > 2 ? ', ${addressWords[2]}' : '';
+    }()}';
   }
 
   /// Formats a unix [timestamp] into a formatted date/time string.
@@ -239,13 +254,11 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   String _buildSmashggURL(String slug) => 'http://smash.gg/$slug';
 
   /// Builds a directions URL, given an [address], based on platform.
-  String _buildDirectionsURL(String address) {
-      if(isIOS) {
-
-      } else {
-        address.replaceAll(',', '%2C');
-        address.replaceAll(' ', '%20');
-        return 'https://www.google.com/maps/dir/?api=1&destination=$address';
-      }
+  String _buildGoogleDirectionsURL(String address) {
+    address.replaceAll(',', '%2C');
+    address.replaceAll(' ', '%20');
+    return 'https://www.google.com/maps/dir/?api=1&destination=$address';
   }
+
+  String _buildAppleDirectionsURL(double lat, double lng) => 'http://maps.apple.com/?sll=$lat,$lng';
 }

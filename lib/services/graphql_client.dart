@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'smashgg_api_token.dart';
+import 'storage.dart';
 import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -16,7 +16,7 @@ final HttpLink _httpLink = HttpLink(
 
 /// The authentication token. (No peeking.)
 final AuthLink _authLink = AuthLink(
-  getToken: () async => 'Bearer $smashgg_api_token',
+  getToken: () async => 'Bearer ${await Storage().getValue('smashgg_api_key')}',
 );
 
 /// The final link used when making the query.
