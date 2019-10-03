@@ -12,6 +12,9 @@ class InfoPanel extends StatefulWidget {
 }
 
 class _InfoPanelState extends State<InfoPanel> {
+
+  TabBehavior _tabSelector = locator<TabBehavior>();
+
   @override
   Widget build(BuildContext context) {
     final mapBloc = BlocProvider.of<MapBloc>(context);
@@ -42,7 +45,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      TabBehavior().dispatch(SelectedPanel.none);
+                      TabBehavior().setPanel(SelectedPanel.none);
                       mapBloc.dispatch(UnlockMap());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/thatdeepends');
@@ -72,7 +75,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      TabBehavior().dispatch(SelectedPanel.none);
+                      TabBehavior().setPanel(SelectedPanel.none);
                       mapBloc.dispatch(UnlockMap());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/ceegearts');
@@ -107,7 +110,7 @@ class _InfoPanelState extends State<InfoPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                TabBehavior().dispatch(SelectedPanel.none);
+                _tabSelector.setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

@@ -14,6 +14,7 @@ class VyktorMenu extends StatefulWidget {
 }
 
 class VyktorMenuState extends State<VyktorMenu> {
+  TabBehavior _tabSelector = locator<TabBehavior>();
   bool _isMainButtonSelected = false;
   bool _inSelectionFunction = false;
 
@@ -60,7 +61,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "map",
           mini: true,
           onPressed: () async {
-            TabBehavior().dispatch(SelectedPanel.mapSettings);
+            _tabSelector.setPanel(SelectedPanel.mapSettings);
             _isMainButtonSelected = false;
           },
         ),
@@ -77,7 +78,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "search",
           mini: true,
           onPressed: () async {
-            TabBehavior().dispatch(SelectedPanel.searchSettings);
+            _tabSelector.setPanel(SelectedPanel.searchSettings);
             _isMainButtonSelected = false;
           },
         ),
@@ -94,7 +95,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "info",
           mini: true,
           onPressed: () async {
-            TabBehavior().dispatch(SelectedPanel.info);
+            _tabSelector.setPanel(SelectedPanel.info);
             _isMainButtonSelected = false;
           },
         ),
@@ -117,7 +118,7 @@ class VyktorMenuState extends State<VyktorMenu> {
               return;
             }
             _inSelectionFunction = true;
-            TabBehavior().dispatch(SelectedPanel.none);
+            _tabSelector.setPanel(SelectedPanel.none);
             if (_isMainButtonSelected) {
               mapBloc.dispatch(UnlockMap());
               _isMainButtonSelected = false;

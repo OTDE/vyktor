@@ -29,6 +29,7 @@ class VyktorMap extends StatefulWidget {
 /// don't force the map to reload at the user location,
 /// instead of wherever the map's camera previously was.
 class VyktorMapState extends State<VyktorMap> {
+  TabBehavior _tabSelector = locator<TabBehavior>();
   /// A future [GoogleMapController], to be completed [onMapCreated].
   GoogleMapController _mapController;
 
@@ -157,7 +158,7 @@ class VyktorMapState extends State<VyktorMap> {
           _selectingTournament = true;
           mapBloc.dispatch(UpdateSelectedTournament(id));
           mapBloc.dispatch(LockMap());
-          TabBehavior().dispatch(SelectedPanel.tournament);
+          _tabSelector.setPanel(SelectedPanel.tournament);
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),
               11.0)); // Lock and load

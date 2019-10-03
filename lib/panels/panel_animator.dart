@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/tab_model.dart';
 import 'exit_detector.dart';
@@ -21,6 +20,7 @@ class PanelAnimatorState extends State<PanelAnimator>
   Animation<Offset> _offset;
   AnimationController _controller;
   bool _isSelected = false;
+  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class PanelAnimatorState extends State<PanelAnimator>
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
-    TabBehavior().panelSubject.stream.listen((panel) {
+    _tabSelector.panelSubject.stream.listen((panel) {
       _animatePanel(panel);
     });
   }
@@ -40,7 +40,7 @@ class PanelAnimatorState extends State<PanelAnimator>
   @override
   void dispose() {
     _controller.dispose();
-    TabBehavior().dispose();
+    _tabSelector.dispose();
     super.dispose();
   }
 

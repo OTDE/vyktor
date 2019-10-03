@@ -16,6 +16,7 @@ class SelectedTournament extends StatefulWidget {
 
 class _SelectedTournamentState extends State<SelectedTournament> {
   final bool isIOS = Platform.isIOS;
+  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   Widget build(BuildContext context) {
@@ -82,21 +83,13 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  TabBehavior().dispatch(SelectedPanel.none);
+                                  _tabSelector.setPanel(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(
                                       Duration(milliseconds: 300));
                                   try {
-                                    var url;
-                                    if (isIOS) {
-                                      url = _buildAppleDirectionsURL(
-                                          state.selectedTournament.lat,
-                                          state.selectedTournament.lng);
-                                    } else {
-                                      url = _buildGoogleDirectionsURL(state
-                                          .selectedTournament.venueAddress);
-                                    }
-                                    _launchURL(url);
+                                    _launchURL(_buildDirectionsURL(state
+                                        .selectedTournament.venueAddress));
                                   } catch (_) {
                                     showDialog(
                                         context: context,
@@ -130,7 +123,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  TabBehavior().dispatch(SelectedPanel.none);
+                                  _tabSelector.setPanel(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(
                                       Duration(milliseconds: 300));
@@ -201,7 +194,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                     child: Icon(Icons.arrow_back),
                     onPressed: () async {
                       mapBloc.dispatch(UnlockMap());
-                      TabBehavior().dispatch(SelectedPanel.none);
+                      _tabSelector.setPanel(SelectedPanel.none);
                       await Future.delayed(Duration(seconds: 1));
                       mapBloc.dispatch(UpdateSelectedTournament());
                     }),
@@ -254,11 +247,17 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   String _buildSmashggURL(String slug) => 'http://smash.gg/$slug';
 
   /// Builds a directions URL, given an [address], based on platform.
-  String _buildGoogleDirectionsURL(String address) {
-    address.replaceAll(',', '%2C');
-    address.replaceAll(' ', '%20');
-    return 'https://www.google.com/maps/dir/?api=1&destination=$address';
+  ///
+  /// If the phone is on iOS, uses the coordinates to make a search.
+  String _buildDirectionsURL(String address, [int lat, int lng]) {
+    if(isIOS) {
+      address.replaceAll(', ', ',');
+      address.replaceAll(' ', '+');
+      return 'http://maps.apple.com/?daddr=$address';
+    } else {
+      address.replaceAll(' ', '%20');
+      address.replaceAll(',', '%2C');
+      return 'https://www.google.com/maps/dir/?api=1&destination=$address';
+    }
   }
-
-  String _buildAppleDirectionsURL(double lat, double lng) => 'http://maps.apple.com/?sll=$lat,$lng';
 }

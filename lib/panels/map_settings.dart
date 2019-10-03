@@ -15,6 +15,7 @@ class MapSettingsPanel extends StatefulWidget {
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
   int _radius = 50;
+  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -137,7 +138,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                TabBehavior().dispatch(SelectedPanel.none);
+                _tabSelector.setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         ),

@@ -1,22 +1,22 @@
+import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum SelectedPanel { tournament, mapSettings, searchSettings, info, none }
 
+GetIt locator = GetIt.instance;
+
+void setUpLocator() {
+  locator.registerSingleton<TabBehavior>(TabBehavior());
+}
+
 class TabBehavior {
 
-  BehaviorSubject<SelectedPanel> panelSubject;
+  final BehaviorSubject<SelectedPanel> panelSubject = BehaviorSubject<SelectedPanel>.seeded(SelectedPanel.none);
 
-  static final TabBehavior _subject = TabBehavior._internal();
-
-  TabBehavior._internal() {
-    panelSubject = BehaviorSubject<SelectedPanel>();
-    panelSubject.add(SelectedPanel.none);
-  }
-
-  factory TabBehavior() => _subject;
-
-  void dispatch(SelectedPanel panel) => panelSubject.add(panel);
+  void setPanel(SelectedPanel panel) => panelSubject.add(panel);
 
   void dispose() => panelSubject.close();
 
 }
+
+

@@ -22,6 +22,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
   // The maximum date before which a tournament starts.
   int _startBeforeDate = 0;
   bool _isExploreModeEnabled = false;
+  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -186,7 +187,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
-                TabBehavior().dispatch(SelectedPanel.none);
+                _tabSelector.setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         )

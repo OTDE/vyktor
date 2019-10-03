@@ -22,18 +22,22 @@ class _MapPageState extends State<MapPage> {
         VyktorMap(),
         VyktorMenu(),
         PanelAnimator(
+          key: UniqueKey(),
           child: SelectedTournament(),
           panel: SelectedPanel.tournament,
         ),
         PanelAnimator(
+          key: UniqueKey(),
           child: MapSettingsPanel(),
           panel: SelectedPanel.mapSettings,
         ),
         PanelAnimator(
+          key: UniqueKey(),
           child: SearchSettingsPanel(),
           panel: SelectedPanel.searchSettings,
         ),
         PanelAnimator(
+          key: UniqueKey(),
           child: InfoPanel(),
           panel: SelectedPanel.info,
         )
