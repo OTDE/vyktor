@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import '../models/tab_model.dart';
 import 'exit_detector.dart';
 
+import 'dart:async';
+
 /// Animation wrapper for a [child] widget.
 ///
 /// The [panel] spec determines if [child] is selected.
 class PanelAnimator extends StatefulWidget {
   final Widget child;
   final SelectedPanel panel;
+  final TabBehavior _tabSelector = locator<TabBehavior>();
+
   PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
 
   @override
   PanelAnimatorState createState() => PanelAnimatorState();
+
 }
 
 class PanelAnimatorState extends State<PanelAnimator>
@@ -20,7 +25,7 @@ class PanelAnimatorState extends State<PanelAnimator>
   Animation<Offset> _offset;
   AnimationController _controller;
   bool _isSelected = false;
-  TabBehavior _tabSelector = locator<TabBehavior>();
+  StreamSubscription<SelectedPanel> tabStream;
 
   @override
   void initState() {
@@ -32,15 +37,23 @@ class PanelAnimatorState extends State<PanelAnimator>
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
-    _tabSelector.panelSubject.stream.listen((panel) {
+    tabStream = widget._tabSelector.panelSubject.stream.listen((panel) {
       _animatePanel(panel);
     });
   }
 
   @override
+  void didUpdateWidget(PanelAnimator oldWidget) {
+    tabStream.cancel();
+    tabStream = widget._tabSelector.panelSubject.stream.listen((panel) {
+      _animatePanel(panel);
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
-    _controller.dispose();
-    _tabSelector.dispose();
+    tabStream.cancel();
     super.dispose();
   }
 

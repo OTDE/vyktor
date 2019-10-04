@@ -71,7 +71,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                     heroTag: 'editAfterDate',
                     shape: ContinuousRectangleBorder(),
                     mini: true,
-                    child: Icon(Icons.edit),
+                    child: Icon(Icons.calendar_today),
                     onPressed: () async {
                       var selectedDate = await showDatePicker(
                         context: context,
@@ -111,7 +111,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
                     heroTag: 'editBeforeDate',
                     shape: ContinuousRectangleBorder(),
                     mini: true,
-                    child: Icon(Icons.edit),
+                    child: Icon(Icons.calendar_today),
                     onPressed: () async {
                       // AfterDate picker invariant:
                       //
