@@ -58,28 +58,16 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
                           child: Container(
                             height: 180,
                             width: 240,
-                            child: IgnorePointer(
-                              ignoring: true,
-                              child: GoogleMap(
-                                circles: {
-                                  Circle(
-                                      center: LatLng(-44.493191 - 0.8, 168.446977 + 1.6),
-                                      circleId: CircleId('radiusString'),
-                                      radius: 1609.34 * _radius,
-                                      fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
-                                      strokeColor: Theme.of(context).colorScheme.primaryVariant,
-                                      strokeWidth: 5,
-                                  )
-                                },
-                                initialCameraPosition: CameraPosition(
-                                  target: LatLng(-44.493191, 168.446977),
-                                  zoom: 4.8,
+                            child: Align(
+                              alignment: Alignment(0.4, 0.2),
+                              child: IgnorePointer(
+                                ignoring: true,
+                                child: CustomPaint(
+                                  painter: MapCircle(
+                                    lineColor: Theme.of(context).colorScheme.secondary,
+                                    radius: _radius.toDouble() / 2.5,
+                                  ),
                                 ),
-                                myLocationButtonEnabled: false,
-                                scrollGesturesEnabled: false,
-                                tiltGesturesEnabled: false,
-                                zoomGesturesEnabled: false,
-                                rotateGesturesEnabled: false,
                               ),
                             ),
                           ),
@@ -121,7 +109,6 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               },
               onChangeEnd: (radius) async {
                 await Settings().setRadiusInMiles(radius.truncate());
-                mapBloc.dispatch(RefreshMarkerData());
               },
             ),
             Spacer(flex: 7),
@@ -140,10 +127,32 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               onPressed: () {
                 _tabSelector.setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
+                mapBloc.dispatch(RefreshMarkerData());
               }),
         ),
       ],
     );
   }
 
+}
+
+class MapCircle extends CustomPainter {
+  final Color lineColor;
+  final double radius;
+  Paint _paint;
+
+  MapCircle({this.lineColor, this.radius}) {
+    _paint = Paint()
+        ..color = lineColor
+        ..strokeWidth = 2.0
+        ..style = PaintingStyle.stroke;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawCircle(Offset(0.0, 0.0), radius, _paint);
+  }
+
+  @override
+  bool shouldRepaint(MapCircle oldDelegate) => this.radius != oldDelegate.radius;
 }
