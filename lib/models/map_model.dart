@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql/client.dart';
+import 'package:flutter/foundation.dart';
 
 import '../services/graphql_client.dart';
 import '../services/exceptions.dart';
@@ -37,7 +38,9 @@ class MapDataProvider {
     try {
       return getGraphQLClient()
           .query(await queryOptions(currentPosition))
-          .then(_toMapData);
+          .then((result) async {
+            return await compute(_toMapData, result);
+      });
     } catch (_) {
       throw InternetException('Could not connect.');
     }
@@ -49,7 +52,7 @@ class MapDataProvider {
   /// Assumes the JSON received will have a list of tournaments
   /// and throws the rest of the information away. Allows for null values
   /// in case there are, like, zero tournaments in the search.
-  MapData _toMapData(QueryResult queryResult) {
+  static MapData _toMapData(QueryResult queryResult) {
     if (queryResult.hasErrors) {
       throw BadRequestException(queryResult.errors.toString());
     }

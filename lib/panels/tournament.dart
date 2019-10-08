@@ -89,7 +89,8 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                       Duration(milliseconds: 300));
                                   try {
                                     _launchURL(_buildDirectionsURL(state
-                                        .selectedTournament.venueAddress));
+                                        .selectedTournament.venueAddress, state.selectedTournament.lat,
+                                    state.selectedTournament.lng));
                                   } catch (_) {
                                     showDialog(
                                         context: context,
@@ -249,11 +250,9 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   /// Builds a directions URL, given an [address], based on platform.
   ///
   /// If the phone is on iOS, uses the coordinates to make a search.
-  String _buildDirectionsURL(String address, [int lat, int lng]) {
+  String _buildDirectionsURL(String address, [double lat, double lng]) {
     if(isIOS) {
-      address.replaceAll(', ', ',');
-      address.replaceAll(' ', '+');
-      return 'http://maps.apple.com/?daddr=$address';
+      return 'http://maps.apple.com/?sll=$lat,$lng';
     } else {
       address.replaceAll(' ', '%20');
       address.replaceAll(',', '%2C');
