@@ -35,15 +35,17 @@ class MapDataProvider {
   /// Once the query is successful, the resulting JSON is parsed [_toMapData].
   /// Throws an [InternetException] on any kind of error caused by the query method.
   Future<MapData> _refreshMapData(Position currentPosition) async {
-    try {
       return getGraphQLClient()
           .query(await queryOptions(currentPosition))
           .then((result) async {
-            return await compute(_toMapData, result);
+            try {
+              return await compute(_toMapData, result);
+            } catch(_) {
+              return MapData(hasErrors: true);
+            }
+      }).catchError((_) {
+        return MapData(hasErrors: true);
       });
-    } catch (_) {
-      throw InternetException('Could not connect.');
-    }
   }
 
   /// Parses the [queryResult] into [MapData].
@@ -62,7 +64,7 @@ class MapDataProvider {
     List<Tournament> tournaments = tournamentList
         ?.map((tournament) => Tournament.fromJson(tournament))
         ?.toList();
-    return MapData(tournaments);
+    return MapData(tournaments: tournaments);
   }
 
   /// Sets the [selectedTournament] based on the [tournamentId].
@@ -84,10 +86,11 @@ class MapDataProvider {
 class MapData {
   /// The tournaments that will be fed to the BLoC.
   List<Tournament> tournaments;
+  bool hasErrors;
 
   /// Allows for null results.
-  MapData(List<Tournament> tournaments) {
-    this.tournaments = tournaments ?? [];
+  MapData({this.tournaments, this.hasErrors = false}) {
+    tournaments ??= [];
   }
 
   /// Retrieves a [Tournament] based on the value of its associated [MarkerId] value.

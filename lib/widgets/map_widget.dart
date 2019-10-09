@@ -89,11 +89,17 @@ class VyktorMapState extends State<VyktorMap> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Spacer(flex: 24),
-                Text(
-                  'Couldn\'t load map data. Try again.',
-                  style: Theme.of(context).primaryTextTheme.headline,
+                Container(
+                  height: 200,
+                  child: Image.asset('assets/images/in-app/mobile_logo_transparent.png'),
                 ),
-                Spacer(flex: 3),
+                Spacer(flex: 2),
+                Text(
+                  'Couldn\'t load map data.\nTry again.',
+                  style: Theme.of(context).primaryTextTheme.headline,
+                  textAlign: TextAlign.center,
+                ),
+                Spacer(flex: 2),
                 RaisedButton(
                   child: Text(
                     'Refresh',

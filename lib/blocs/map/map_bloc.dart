@@ -68,28 +68,24 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       MapState currentState, RefreshMarkerData event) async* {
       final position = event.currentPosition ?? _lastKnownPosition;
       _lastKnownPosition = event.currentPosition ?? _lastKnownPosition;
-      try {
         await _mapDataProvider.refresh(position);
         final MapData mapDataToView = _mapDataProvider.mostRecentState;
-        final Tournament tournamentToView = _mapDataProvider.selectedTournament;
-        final CameraPosition initialCamera = CameraPosition(
-          target: LatLng(
-              position.latitude, position.longitude),
-          zoom: 10.0,
-        );
-        yield MapDataLoaded(
-          tournamentToView,
-          mapDataToView,
-          initialPosition: initialCamera,
-          isMapUnlocked: true,
-        );
-      } on BadRequestException catch (e) {
-        print(e.message);
-        yield MapDataNotLoaded();
-      } on InternetException catch (e) {
-        print(e.message);
-        yield MapDataNotLoaded();
-      }
+        if(mapDataToView.hasErrors) {
+          yield MapDataNotLoaded();
+        } else {
+          final Tournament tournamentToView = _mapDataProvider.selectedTournament;
+          final CameraPosition initialCamera = CameraPosition(
+            target: LatLng(
+                position.latitude, position.longitude),
+            zoom: 10.0,
+          );
+          yield MapDataLoaded(
+            tournamentToView,
+            mapDataToView,
+            initialPosition: initialCamera,
+            isMapUnlocked: true,
+          );
+        }
   }
 
   /// Receives input from the selected marker and updates the [selectedTournament].
