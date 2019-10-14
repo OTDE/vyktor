@@ -222,10 +222,10 @@ class _SelectedTournamentState extends State<SelectedTournament> {
   /// Assumes addresses are written like so:
   /// 0239 Example Street, City, State ZIP, Country
   String _toFormattedAddress(String address) {
-    if(!address.contains(',/s')) {
+    if(!address.contains(',\s')) {
       return address;
     }
-    var addressWords = address.split(', ');
+    var addressWords = address.split(',\s');
     return '${addressWords[0]}\n${addressWords[1]}${() {
       return addressWords.length > 2 ? ', ${addressWords[2]}' : '';
     }()}';
