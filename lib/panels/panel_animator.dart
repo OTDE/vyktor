@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/tab_model.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'exit_detector.dart';
 
 import 'dart:async';
@@ -11,7 +11,7 @@ import 'dart:async';
 class PanelAnimator extends StatefulWidget {
   final Widget child;
   final SelectedPanel panel;
-  final TabBehavior _tabSelector = locator<TabBehavior>();
+
 
   PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
 
@@ -26,6 +26,7 @@ class PanelAnimatorState extends State<PanelAnimator>
   AnimationController _controller;
   bool _isSelected = false;
   StreamSubscription<SelectedPanel> tabStream;
+  final TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class PanelAnimatorState extends State<PanelAnimator>
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
-    tabStream = widget._tabSelector.panelSubject.stream.listen((panel) {
+    tabStream = _tabSelector.panelSubject.stream.listen((panel) {
       _animatePanel(panel);
     });
   }
@@ -45,7 +46,7 @@ class PanelAnimatorState extends State<PanelAnimator>
   @override
   void didUpdateWidget(PanelAnimator oldWidget) {
     tabStream.cancel();
-    tabStream = widget._tabSelector.panelSubject.stream.listen((panel) {
+    tabStream = _tabSelector.panelSubject.stream.listen((panel) {
       _animatePanel(panel);
     });
     super.didUpdateWidget(oldWidget);

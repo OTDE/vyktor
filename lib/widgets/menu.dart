@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../blocs/blocs.dart';
-import '../models/tab_model.dart';
-import '../services/unicorn_dial_mod.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
+import 'package:vyktor/widgets/narwhal_dial.dart';
 
 /// Vyktor's menu. Largely centered around the 'unicorn dial' code.
 class VyktorMenu extends StatefulWidget {
@@ -14,7 +14,7 @@ class VyktorMenu extends StatefulWidget {
 }
 
 class VyktorMenuState extends State<VyktorMenu> {
-  TabBehavior _tabSelector = locator<TabBehavior>();
+  final TabBehavior _tabSelector = locator<TabBehavior>();
   bool _isMainButtonSelected = false;
   bool _inSelectionFunction = false;
 

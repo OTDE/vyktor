@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'models/tab_model.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'pages/home_page.dart';
-import 'services/storage.dart';
+import 'package:vyktor/services/singletons/storage.dart';
 import 'theme.dart';
 
 import 'dart:async';

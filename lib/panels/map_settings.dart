@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/blocs.dart';
-import '../models/tab_model.dart';
-import '../services/settings.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
+import 'package:vyktor/services/singletons/settings.dart';
 
 /// Panel dedicated to handling map settings.
 class MapSettingsPanel extends StatefulWidget {

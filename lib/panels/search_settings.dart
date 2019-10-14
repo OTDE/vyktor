@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../blocs/blocs.dart';
-import '../models/tab_model.dart';
-import '../services/settings.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
+import 'package:vyktor/services/singletons/settings.dart';
 
 /// The panel dedicating to holding information search settings.
 class SearchSettingsPanel extends StatefulWidget {

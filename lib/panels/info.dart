@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../blocs/blocs.dart';
-import '../models/tab_model.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
 
 /// Panel dedicated to providing additional information about the app.
 class InfoPanel extends StatefulWidget {

@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql/client.dart';
 import 'package:flutter/foundation.dart';
 
-import '../services/graphql_client.dart';
+import 'package:vyktor/services/singletons/graphql_client.dart';
 import '../services/exceptions.dart';
 
 /// A class for providing [MapData] to the MapDataBloc.

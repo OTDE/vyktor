@@ -57,7 +57,7 @@ const String tournamentLocationQuery = r'''
               total
             }
           }
-          images(type:"profile"){
+          images(type:"profile") {
             url
           }
         }

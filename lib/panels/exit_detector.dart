@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/blocs.dart';
-import '../models/tab_model.dart';
+import 'package:vyktor/services/singletons/tab_selector.dart';
 
 /// Utility widget designed to allow Vyktor's panels to be dismissed.
 class ExitDetector extends StatefulWidget {
