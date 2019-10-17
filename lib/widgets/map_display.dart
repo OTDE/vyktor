@@ -10,6 +10,7 @@ import '../blocs/blocs.dart';
 import '../models/map_model.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'package:vyktor/services/singletons/settings.dart';
+import 'package:vyktor/services/singletons/loading.dart';
 
 /// The page containing the map and its associated data.
 class VyktorMap extends StatefulWidget {
@@ -29,7 +30,6 @@ class VyktorMap extends StatefulWidget {
 /// don't force the map to reload at the user location,
 /// instead of wherever the map's camera previously was.
 class VyktorMapState extends State<VyktorMap> {
-  TabBehavior _tabSelector = locator<TabBehavior>();
   /// A future [GoogleMapController], to be completed [onMapCreated].
   GoogleMapController _mapController;
 
@@ -46,6 +46,7 @@ class VyktorMapState extends State<VyktorMap> {
     final mapBloc = BlocProvider.of<MapBloc>(context);
     return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
       if (state is MapDataLoaded) {
+        Future.delayed(Duration(milliseconds: 1200), () => Loading().isNow(false));
         return IgnorePointer(
           ignoring: !state.isMapUnlocked,
           child: GoogleMap(
@@ -66,6 +67,7 @@ class VyktorMapState extends State<VyktorMap> {
             onLongPress: (pressLocation) async {
               var exploreModeEnabled = await Settings().getExploreMode();
               if (exploreModeEnabled) {
+                Loading().isNow(true);
                 mapBloc.dispatch(RefreshMarkerData(Position(
                     latitude: pressLocation.latitude,
                     longitude: pressLocation.longitude)));
@@ -119,13 +121,9 @@ class VyktorMapState extends State<VyktorMap> {
           ),
         );
       }
+      Loading().isNow(true);
       return Container(
         color: Theme.of(context).primaryColor,
-        child: Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Theme.of(context).canvasColor,
-          ),
-        ),
       );
     });
   }
@@ -164,7 +162,7 @@ class VyktorMapState extends State<VyktorMap> {
           _selectingTournament = true;
           mapBloc.dispatch(UpdateSelectedTournament(id));
           mapBloc.dispatch(LockMap());
-          _tabSelector.setPanel(SelectedPanel.tournament);
+          TabBehavior().setPanel(SelectedPanel.tournament);
           _mapController.animateCamera(CameraUpdate.newLatLngZoom(
               LatLng(tournament.lat - 0.069, tournament.lng),
               11.0)); // Lock and load

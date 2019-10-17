@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vyktor/widgets/map_display.dart';
 import 'package:vyktor/widgets/menu.dart';
+import 'package:vyktor/widgets/loading_indicator.dart';
 import 'package:vyktor/panels/panels.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 
@@ -40,7 +41,8 @@ class _MapPageState extends State<MapPage> {
           key: UniqueKey(),
           child: InfoPanel(),
           panel: SelectedPanel.info,
-        )
+        ),
+        LoadingIndicator(),
       ],
     ));
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'pages/home_page.dart';
 import 'package:vyktor/services/singletons/storage.dart';
 import 'theme.dart';
@@ -13,7 +12,6 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Storage().init();
-  setUpLocator();
   runApp(Vyktor());
 }
 

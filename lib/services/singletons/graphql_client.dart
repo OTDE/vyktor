@@ -72,8 +72,8 @@ Future<QueryOptions> queryOptions(Position position) async {
   var lat = position.latitude;
   var lng = position.longitude;
   var radius = await Settings().getRadiusInMiles();
-  var afterDate = await Settings().getStartAfterDate().then(_formatForQuery);
-  var beforeDate = await Settings().getStartBeforeDate().then(_formatForQuery);
+  var afterDate = await Settings().getStartAfterDate().then(_toSecondsSinceEpoch);
+  var beforeDate = await Settings().getStartBeforeDate().then(_toSecondsSinceEpoch);
   return QueryOptions(
     document: tournamentLocationQuery,
     variables: <String, dynamic> {
@@ -88,7 +88,7 @@ Future<QueryOptions> queryOptions(Position position) async {
 /// Converts from milliseconds since unix epoch to seconds.
 ///
 /// (Since Dart doesn't do seconds. WHY?)
-int _formatForQuery(int fromSettings) => (fromSettings / 1000).round();
+int _toSecondsSinceEpoch(int fromSettings) => (fromSettings / 1000).round();
 
 /// The GraphQL client being used by the app to send queries.
 GraphQLClient _client;

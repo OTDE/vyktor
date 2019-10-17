@@ -12,7 +12,6 @@ class ExitDetector extends StatefulWidget {
 
 class _ExitDetectorState extends State<ExitDetector> {
 
-  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class _ExitDetectorState extends State<ExitDetector> {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         mapBloc.dispatch(UnlockMap());
-        _tabSelector.setPanel(SelectedPanel.none);
+        TabBehavior().setPanel(SelectedPanel.none);
         await Future.delayed(Duration(seconds: 1));
         mapBloc.dispatch(UpdateSelectedTournament());
       },

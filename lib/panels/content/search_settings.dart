@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../blocs/blocs.dart';
+import '../../blocs/blocs.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'package:vyktor/services/singletons/settings.dart';
 
@@ -22,7 +22,6 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
   // The maximum date before which a tournament starts.
   int _startBeforeDate = 0;
   bool _isExploreModeEnabled = false;
-  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -187,7 +186,7 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
-                _tabSelector.setPanel(SelectedPanel.none);
+                TabBehavior().setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         )

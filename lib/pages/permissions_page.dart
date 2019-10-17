@@ -44,7 +44,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
             ),
             Spacer(flex: 1),
             Text(
-              'Enable location tracking to coninue.',
+              'Enable location tracking to continue.',
               style: Theme.of(context).primaryTextTheme.body1,
             ),
             Spacer(flex: 3),

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../blocs/blocs.dart';
+import '../../blocs/blocs.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 
 /// The panel dedicated to showing the selected tournament.
@@ -16,7 +16,6 @@ class SelectedTournament extends StatefulWidget {
 
 class _SelectedTournamentState extends State<SelectedTournament> {
   final bool isIOS = Platform.isIOS;
-  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  _tabSelector.setPanel(SelectedPanel.none);
+                                  TabBehavior().setPanel(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(
                                       Duration(milliseconds: 300));
@@ -124,7 +123,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                                 textColor:
                                     Theme.of(context).colorScheme.onSurface,
                                 onPressed: () async {
-                                  _tabSelector.setPanel(SelectedPanel.none);
+                                  TabBehavior().setPanel(SelectedPanel.none);
                                   mapBloc.dispatch(UnlockMap());
                                   await Future.delayed(
                                       Duration(milliseconds: 300));
@@ -195,7 +194,7 @@ class _SelectedTournamentState extends State<SelectedTournament> {
                     child: Icon(Icons.arrow_back),
                     onPressed: () async {
                       mapBloc.dispatch(UnlockMap());
-                      _tabSelector.setPanel(SelectedPanel.none);
+                      TabBehavior().setPanel(SelectedPanel.none);
                       await Future.delayed(Duration(seconds: 1));
                       mapBloc.dispatch(UpdateSelectedTournament());
                     }),

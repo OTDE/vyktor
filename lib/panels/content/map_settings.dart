@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../blocs/blocs.dart';
+import '../../blocs/blocs.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 import 'package:vyktor/services/singletons/settings.dart';
 
@@ -15,7 +14,6 @@ class MapSettingsPanel extends StatefulWidget {
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
   int _radius = 50;
-  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   void initState() {
@@ -125,7 +123,7 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                _tabSelector.setPanel(SelectedPanel.none);
+                TabBehavior().setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
                 mapBloc.dispatch(RefreshMarkerData());
               }),

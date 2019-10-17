@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../models/map_model.dart';
 import '../../services/exceptions.dart';
+import '../../services/singletons/loading.dart';
 import 'map.dart';
 
 /// The [Bloc] that regulates the state of Vyktor's map data.

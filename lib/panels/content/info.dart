@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../blocs/blocs.dart';
+import '../../blocs/blocs.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 
 /// Panel dedicated to providing additional information about the app.
@@ -12,8 +12,6 @@ class InfoPanel extends StatefulWidget {
 }
 
 class _InfoPanelState extends State<InfoPanel> {
-
-  TabBehavior _tabSelector = locator<TabBehavior>();
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +108,7 @@ class _InfoPanelState extends State<InfoPanel> {
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
-                _tabSelector.setPanel(SelectedPanel.none);
+                TabBehavior().setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
               }),
         ),
