@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/blocs.dart';
-import 'package:vyktor/services/singletons/tab_selector.dart';
-import 'package:vyktor/services/singletons/settings.dart';
+import '../../services/services.dart';
 
 /// Panel dedicated to handling map settings.
 class MapSettingsPanel extends StatefulWidget {
@@ -14,6 +15,8 @@ class MapSettingsPanel extends StatefulWidget {
 class _MapSettingsPanelState extends State<MapSettingsPanel> {
 
   int _radius = 50;
+  bool _loading = false;
+  StreamSubscription<bool> _loadingListener;
 
   @override
   void initState() {
@@ -22,7 +25,18 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
         _radius = value;
       });
     });
+    _loadingListener = Loading().isLoading.stream.listen((bool loading) {
+      setState(() {
+        _loading = loading;
+      });
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _loadingListener.cancel();
+    super.dispose();
   }
 
   @override
@@ -93,21 +107,26 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               ],
             ),
             Spacer(flex: 1),
-            Slider(
-              activeColor: Theme.of(context).accentColor,
-              inactiveColor: Theme.of(context).primaryColor,
-              value: _radius.toDouble(),
-              min: 5,
-              max: 150,
-              divisions: 58,
-              onChanged: (radius) {
-                setState(() {
-                  _radius = radius.truncate();
-                });
-              },
-              onChangeEnd: (radius) async {
-                await Settings().setRadiusInMiles(radius.truncate());
-              },
+            IgnorePointer(
+              ignoring: _loading,
+              child: Slider(
+                activeColor: Theme.of(context).accentColor,
+                inactiveColor: Theme.of(context).primaryColor,
+                value: _radius.toDouble(),
+                min: 5,
+                max: 150,
+                divisions: 58,
+                onChanged: (radius) {
+                  setState(() {
+                    _radius = radius.truncate();
+                  });
+                },
+                onChangeEnd: (radius) async {
+                  await Settings().setRadiusInMiles(radius.truncate());
+                  Loading().isNow(true);
+                  mapBloc.dispatch(RefreshMarkerData());
+                },
+              ),
             ),
             Spacer(flex: 7),
           ],
@@ -125,7 +144,6 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               onPressed: () {
                 TabBehavior().setPanel(SelectedPanel.none);
                 mapBloc.dispatch(UnlockMap());
-                mapBloc.dispatch(RefreshMarkerData());
               }),
         ),
       ],

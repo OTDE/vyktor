@@ -23,6 +23,40 @@ final vyktorTheme = ThemeData(
   primaryTextTheme: vyktorPrimaryTextTheme,
 );
 
+final datePickerTheme = vyktorTheme.copyWith(
+  brightness: Brightness.dark,
+  primaryColorBrightness: Brightness.dark,
+  dialogBackgroundColor: vyktorColorScheme.primary,
+  colorScheme: vyktorColorScheme.copyWith(
+    brightness: Brightness.dark,
+    background: vyktorColorScheme.primaryVariant,
+    primary: vyktorColorScheme.primary,
+  ),
+  backgroundColor: vyktorColorScheme.primaryVariant,
+  buttonTheme: ButtonThemeData(
+    textTheme: ButtonTextTheme.accent,
+    buttonColor: vyktorColorScheme.primaryVariant,
+  ),
+  textTheme: vyktorPrimaryTextTheme.copyWith(
+    body1: vyktorPrimaryTextTheme.body2.copyWith(
+      color: vyktorColorScheme.onBackground,
+      fontSize: 18,
+    ),
+    subhead: vyktorPrimaryTextTheme.button,
+  ),
+  primaryTextTheme: vyktorPrimaryTextTheme,
+  accentTextTheme: vyktorPrimaryTextTheme.copyWith(
+    body2: vyktorPrimaryTextTheme.body2.copyWith(
+      color: vyktorColorScheme.primaryVariant,
+      fontSize: 18,
+    ),
+  ),
+  iconTheme: IconThemeData(
+    color: vyktorColorScheme.secondary,
+    size: 2.0,
+  ),
+);
+
 /// Vyktor's [ColorScheme].
 final vyktorColorScheme = ColorScheme(
   background: primary,
@@ -114,7 +148,7 @@ final vyktorPrimaryTextTheme = TextTheme(
   ),
   body2: TextStyle(
     color: vyktorColorScheme.secondary,
-    fontFamily: 'Computer Modern Serif',
+    fontFamily: 'Computer Modern Typewriter',
     fontSize: 16,
     fontWeight: FontWeight.bold,
   ),

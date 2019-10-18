@@ -1,17 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import 'package:vyktor/services/singletons/tab_selector.dart';
-import 'exit_detector.dart';
-
-import 'dart:async';
+import '../services/services.dart';
+import 'panels.dart';
 
 /// Animation wrapper for a [child] widget.
 ///
 /// The [panel] spec determines if [child] is selected.
 class PanelAnimator extends StatefulWidget {
+
   final Widget child;
   final SelectedPanel panel;
-
 
   PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
 

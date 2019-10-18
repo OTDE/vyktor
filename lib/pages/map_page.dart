@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vyktor/widgets/map_display.dart';
-import 'package:vyktor/widgets/menu.dart';
-import 'package:vyktor/widgets/loading_indicator.dart';
-import 'package:vyktor/panels/panels.dart';
-import 'package:vyktor/services/singletons/tab_selector.dart';
+
+import '../components/components.dart';
+import '../panels/panels.dart';
+import '../services/services.dart';
 
 /// The page with all the "stuff": map/menu widgets and all the panels.
 class MapPage extends StatefulWidget {
@@ -42,7 +41,6 @@ class _MapPageState extends State<MapPage> {
           child: InfoPanel(),
           panel: SelectedPanel.info,
         ),
-        LoadingIndicator(),
       ],
     ));
   }

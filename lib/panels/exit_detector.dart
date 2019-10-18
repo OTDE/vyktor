@@ -5,13 +5,7 @@ import '../blocs/blocs.dart';
 import 'package:vyktor/services/singletons/tab_selector.dart';
 
 /// Utility widget designed to allow Vyktor's panels to be dismissed.
-class ExitDetector extends StatefulWidget {
-  @override
-  _ExitDetectorState createState() => _ExitDetectorState();
-}
-
-class _ExitDetectorState extends State<ExitDetector> {
-
+class ExitDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -31,4 +25,5 @@ class _ExitDetectorState extends State<ExitDetector> {
       ),
     );
   }
+
 }

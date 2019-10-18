@@ -6,7 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../blocs/blocs.dart';
-import 'package:vyktor/services/singletons/tab_selector.dart';
+import '../../services/services.dart';
 
 /// The panel dedicated to showing the selected tournament.
 class SelectedTournament extends StatefulWidget {

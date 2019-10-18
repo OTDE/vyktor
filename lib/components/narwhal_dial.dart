@@ -26,6 +26,8 @@ import 'package:vector_math/vector_math_64.dart' as vector;
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// TODO: replace with my package, when I build it.
+
 class UnicornOrientation {
   static const HORIZONTAL = 0;
   static const VERTICAL = 1;

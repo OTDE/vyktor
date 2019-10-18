@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import '../services/singletons/loading.dart';
-
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import '../services/services.dart';
+
 
 class LoadingIndicator extends StatefulWidget {
   @override

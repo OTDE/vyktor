@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 
-import '../../models/map_model.dart';
+import '../../models/models.dart';
 
 /// Base class for every map state in this BLoC.
 @immutable

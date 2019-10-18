@@ -1,11 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'pages/home_page.dart';
-import 'package:vyktor/services/singletons/storage.dart';
+import 'pages/pages.dart';
+import 'components/components.dart';
+import 'services/services.dart';
 import 'theme.dart';
-
-import 'dart:async';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,15 +23,21 @@ class Vyktor extends StatelessWidget {
   Widget build(BuildContext context) {
     // Set the status bar color.
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: vyktorTheme.colorScheme.primaryVariant,
-      statusBarColor: vyktorTheme.colorScheme.primaryVariant,
-      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: vyktorTheme.colorScheme.primary,
+      statusBarColor: vyktorTheme.colorScheme.primary,
+      statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.light,
     ));
     return MaterialApp(
       title: 'Vyktor',
       theme: vyktorTheme,
-      home: HomePage(),
+      home: Stack(
+        children: <Widget>[
+          HomePage(),
+          LoadingIndicator(),
+        ],
+      ),
     );
   }
+
 }

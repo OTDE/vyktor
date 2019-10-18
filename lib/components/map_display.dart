@@ -8,9 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/blocs.dart';
 import '../models/map_model.dart';
-import 'package:vyktor/services/singletons/tab_selector.dart';
-import 'package:vyktor/services/singletons/settings.dart';
-import 'package:vyktor/services/singletons/loading.dart';
+import '../services/services.dart';
 
 /// The page containing the map and its associated data.
 class VyktorMap extends StatefulWidget {

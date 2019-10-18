@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'storage.dart';
 import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'settings.dart';
+import 'singletons.dart';
 
 /// This file contains variables and functions related
 /// to making GraphQL queries to the smash.gg API.
