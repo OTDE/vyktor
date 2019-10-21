@@ -1,47 +1,41 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../components/components.dart';
-import '../panels/panels.dart';
 import '../services/services.dart';
 
-/// The page with all the "stuff": map/menu widgets and all the panels.
 class MapPage extends StatefulWidget {
-  MapPage({Key key}) : super(key: key);
-
   @override
-  State<MapPage> createState() => _MapPageState();
+  _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
 
+  StreamSubscription<bool> _mapLockListener;
+  bool _isMapLocked = false;
+
+  @override
+  void initState() {
+    _mapLockListener = MapLocker().isLocked.stream.listen((isLocked) {
+      setState(() {
+        _isMapLocked = isLocked;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _mapLockListener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Stack(
-      children: <Widget>[
-        VyktorMap(),
-        VyktorMenu(),
-        PanelAnimator(
-          key: UniqueKey(),
-          child: SelectedTournament(),
-          panel: SelectedPanel.tournament,
-        ),
-        PanelAnimator(
-          key: UniqueKey(),
-          child: MapSettingsPanel(),
-          panel: SelectedPanel.mapSettings,
-        ),
-        PanelAnimator(
-          key: UniqueKey(),
-          child: SearchSettingsPanel(),
-          panel: SelectedPanel.searchSettings,
-        ),
-        PanelAnimator(
-          key: UniqueKey(),
-          child: InfoPanel(),
-          panel: SelectedPanel.info,
-        ),
-      ],
-    ));
+    return IgnorePointer(
+      ignoring: _isMapLocked,
+      child: LoadedMap(),
+    );
   }
 }

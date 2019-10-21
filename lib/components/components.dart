@@ -1,4 +1,6 @@
-export 'loading_indicator.dart';
-export 'map_display.dart';
+export 'loaded_map.dart';
+export 'loading_icon.dart';
+export 'loading_switcher.dart';
+export 'map_switcher.dart';
 export 'menu.dart';
 export 'narwhal_dial.dart';

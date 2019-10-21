@@ -33,6 +33,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           heroTag: "refresh",
           mini: true,
           onPressed: () async {
+            MapLocker().unlock();
             if(await Settings().getExploreMode() == true) {
               mapBloc.dispatch(RefreshMarkerData());
             } else {
@@ -105,7 +106,7 @@ class VyktorMenuState extends State<VyktorMenu> {
           childButtons: childButtons,
           finalButtonIcon: Icon(Icons.cancel),
           onBackgroundPressed: () async {
-            mapBloc.dispatch(UnlockMap());
+            MapLocker().unlock();
             _isMainButtonSelected = false;
           },
           onMainButtonPressed: () async {
@@ -115,10 +116,10 @@ class VyktorMenuState extends State<VyktorMenu> {
             _inSelectionFunction = true;
             TabBehavior().setPanel(SelectedPanel.none);
             if (_isMainButtonSelected) {
-              mapBloc.dispatch(UnlockMap());
+              MapLocker().unlock();
               _isMainButtonSelected = false;
             } else {
-              mapBloc.dispatch(LockMap());
+              MapLocker().lock();
               _isMainButtonSelected = true;
             }
             _inSelectionFunction = false;

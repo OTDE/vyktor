@@ -33,12 +33,9 @@ class MapDataLoaded extends MapState {
   /// The [CameraPosition] used for the first build of the [GoogleMap] widget.
   final CameraPosition initialPosition;
 
-  /// If the [GoogleMap] is locked.
-  final bool isMapUnlocked;
-
   MapDataLoaded(this.selectedTournament, this.mapData,
-      {this.initialPosition, this.isMapUnlocked})
-      : super([selectedTournament, mapData, initialPosition, isMapUnlocked]);
+      {this.initialPosition})
+      : super([selectedTournament, mapData, initialPosition]);
 
   @override
   String toString() => 'Map data loaded';

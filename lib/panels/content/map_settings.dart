@@ -137,13 +137,13 @@ class _MapSettingsPanelState extends State<MapSettingsPanel> {
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primaryVariant,
               elevation: 0.0,
-              heroTag: 'cancelTournament',
+              heroTag: 'cancelMapSettings',
               shape: ContinuousRectangleBorder(),
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
                 TabBehavior().setPanel(SelectedPanel.none);
-                mapBloc.dispatch(UnlockMap());
+                MapLocker().unlock();
               }),
         ),
       ],

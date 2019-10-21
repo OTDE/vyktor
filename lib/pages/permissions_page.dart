@@ -16,8 +16,6 @@ class PermissionsPage extends StatefulWidget {
 
 /// Uses [_permissions] to get the status of location permissions for this app.
 class _PermissionsPageState extends State<PermissionsPage> {
-  /// The object used to calculate location [PermissionStatus].
-  Map<PermissionGroup, PermissionStatus> _permissions;
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +67,10 @@ class _PermissionsPageState extends State<PermissionsPage> {
   /// If [result] is enabled, invokes the [onLocationEnabled]
   /// callback function to the parent widget.
   _getPermissions() async {
-    _permissions = await PermissionHandler()
-        .requestPermissions([PermissionGroup.location]);
+    await PermissionHandler()
+        .requestPermissions([PermissionGroup.locationWhenInUse]);
     var result = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.location);
+        .checkPermissionStatus(PermissionGroup.locationWhenInUse);
     if (result == PermissionStatus.granted) widget.onLocationEnabled();
   }
 

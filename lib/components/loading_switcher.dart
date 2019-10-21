@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../components/components.dart';
 import '../services/services.dart';
 
 
@@ -43,24 +44,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator> {
             scale: animation,
           );
         },
-        child: Container(
-          key: ValueKey(_loading),
-          width: _loading ? 60.0 : 0.0,
-          height: _loading ? 60.0 : 0.0,
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(15.0),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.primaryVariant,
-              style: BorderStyle.solid,
-              width: 4.0,
-            ),
-          ),
-          child: CircularProgressIndicator(
-            backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
-          ),
-        ),
+        child: _loading ? LoadingIcon() : Container(),
       ),
     );
   }

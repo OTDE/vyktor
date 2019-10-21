@@ -54,19 +54,3 @@ class EnableLocationListening extends MapEvent {
   String toString() =>
       'Event triggered: enabled listening to phone\'s location';
 }
-
-/// Locks the [GoogleMap].
-class LockMap extends MapEvent {
-  LockMap() : super();
-
-  @override
-  String toString() => 'Event triggered: locking map';
-}
-
-/// Unlocks the [GoogleMap].
-class UnlockMap extends MapEvent {
-  UnlockMap() : super();
-
-  @override
-  String toString() => 'Event triggered: unlocking map';
-}

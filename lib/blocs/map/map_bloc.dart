@@ -36,7 +36,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     _currentPosition = _geolocator
         .getPositionStream(_locationOptions)
         .listen((Position position) {
-          _lastKnownPosition = position;
+      _lastKnownPosition = position;
       dispatch(RefreshMarkerData(position));
     });
   }
@@ -52,10 +52,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       yield* _mapEnableLocationListeningToState(currentState, event);
     } else if (event is DisableLocationListening) {
       yield* _mapDisableLocationListeningToState(currentState, event);
-    } else if (event is LockMap) {
-      yield* _mapLockMapToState(currentState, event);
-    } else if (event is UnlockMap) {
-      yield* _mapUnlockMapToState(currentState, event);
     }
   }
 
@@ -66,26 +62,25 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   /// the first place.
   Stream<MapState> _mapRefreshMarkerDataToState(
       MapState currentState, RefreshMarkerData event) async* {
-      final position = event.currentPosition ?? _lastKnownPosition;
-      _lastKnownPosition = event.currentPosition ?? _lastKnownPosition;
-        await _mapDataProvider.refresh(position);
-        final MapData mapDataToView = _mapDataProvider.mostRecentState;
-        if(mapDataToView.hasErrors) {
-          yield MapDataNotLoaded();
-        } else {
-          final Tournament tournamentToView = _mapDataProvider.selectedTournament;
-          final CameraPosition initialCamera = CameraPosition(
-            target: LatLng(
-                position.latitude, position.longitude),
-            zoom: 10.0,
-          );
-          yield MapDataLoaded(
-            tournamentToView,
-            mapDataToView,
-            initialPosition: initialCamera,
-            isMapUnlocked: true,
-          );
-        }
+    Loading().isNow(true);
+    final position = event.currentPosition ?? _lastKnownPosition;
+    _lastKnownPosition = event.currentPosition ?? _lastKnownPosition;
+    await _mapDataProvider.refresh(position);
+    final MapData mapDataToView = _mapDataProvider.mostRecentState;
+    if (mapDataToView.hasErrors) {
+      yield MapDataNotLoaded();
+    } else {
+      final Tournament tournamentToView = _mapDataProvider.selectedTournament;
+      final CameraPosition initialCamera = CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 10.0,
+      );
+      yield MapDataLoaded(
+        tournamentToView,
+        mapDataToView,
+        initialPosition: initialCamera,
+      );
+    }
   }
 
   /// Receives input from the selected marker and updates the [selectedTournament].
@@ -98,7 +93,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       yield MapDataLoaded(
         tournamentToView,
         mapDataToView,
-        isMapUnlocked: currentState.isMapUnlocked,
       );
     }
   }
@@ -119,26 +113,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       MapState currentState, DisableLocationListening event) async* {
     if (!_currentPosition.isPaused) _currentPosition.pause();
     yield currentState;
-  }
-
-  /// Locks the Google Map so the user can't interact with it.
-  ///
-  /// Used when selecting panels, accessing the menu, etc.
-  Stream<MapState> _mapLockMapToState(
-      MapState currentState, LockMap event) async* {
-    if (currentState is MapDataLoaded) {
-      yield MapDataLoaded(currentState.selectedTournament, currentState.mapData,
-          isMapUnlocked: false);
-    }
-  }
-
-  /// Unlocks the Google Map so the user can interact with it again.
-  Stream<MapState> _mapUnlockMapToState(
-      MapState currentState, UnlockMap event) async* {
-    if (currentState is MapDataLoaded) {
-      yield MapDataLoaded(currentState.selectedTournament, currentState.mapData,
-          isMapUnlocked: true);
-    }
   }
 
   /// Gotta have one of these so we can dispose of the subscription if necessary.

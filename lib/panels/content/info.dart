@@ -44,7 +44,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     child: Icon(Icons.launch),
                     onPressed: () async {
                       TabBehavior().setPanel(SelectedPanel.none);
-                      mapBloc.dispatch(UnlockMap());
+                      MapLocker().unlock();
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/thatdeepends');
                     }),
@@ -74,7 +74,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     child: Icon(Icons.launch),
                     onPressed: () async {
                       TabBehavior().setPanel(SelectedPanel.none);
-                      mapBloc.dispatch(UnlockMap());
+                      MapLocker().unlock();
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/ceegearts');
                     }),
@@ -103,13 +103,13 @@ class _InfoPanelState extends State<InfoPanel> {
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primaryVariant,
               elevation: 0.0,
-              heroTag: 'cancelTournament',
+              heroTag: 'cancelInfo',
               shape: ContinuousRectangleBorder(),
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () {
                 TabBehavior().setPanel(SelectedPanel.none);
-                mapBloc.dispatch(UnlockMap());
+                MapLocker().unlock();
               }),
         ),
       ],

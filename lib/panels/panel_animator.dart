@@ -8,23 +8,19 @@ import 'panels.dart';
 /// Animation wrapper for a [child] widget.
 ///
 /// The [panel] spec determines if [child] is selected.
-class PanelAnimator extends StatefulWidget {
-
-  final Widget child;
-  final SelectedPanel panel;
-
-  PanelAnimator({Key key, this.child, this.panel}) : super(key: key);
+class AnimatedPanels extends StatefulWidget {
 
   @override
-  PanelAnimatorState createState() => PanelAnimatorState();
+  AnimatedPanelsState createState() => AnimatedPanelsState();
 
 }
 
-class PanelAnimatorState extends State<PanelAnimator>
+class AnimatedPanelsState extends State<AnimatedPanels>
     with SingleTickerProviderStateMixin {
   Animation<Offset> _offset;
   AnimationController _controller;
   bool _isSelected = false;
+  SelectedPanel _selectedPanel;
   StreamSubscription<SelectedPanel> tabStream;
 
   @override
@@ -38,14 +34,20 @@ class PanelAnimatorState extends State<PanelAnimator>
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
     tabStream = TabBehavior().panelSubject.stream.listen((panel) {
+      setState(() {
+        _selectedPanel = panel;
+      });
       _animatePanel(panel);
     });
   }
 
   @override
-  void didUpdateWidget(PanelAnimator oldWidget) {
+  void didUpdateWidget(AnimatedPanels oldWidget) {
     tabStream.cancel();
     tabStream = TabBehavior().panelSubject.stream.listen((panel) {
+      setState(() {
+        _selectedPanel = panel;
+      });
       _animatePanel(panel);
     });
     super.didUpdateWidget(oldWidget);
@@ -62,47 +64,12 @@ class PanelAnimatorState extends State<PanelAnimator>
     return SlideTransition(
         textDirection: TextDirection.ltr,
         position: _offset,
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: ExitDetector(),
-            ),
-            Positioned(
-              bottom: 15,
-              child: SizedBox(
-                width: 300,
-                height: 400,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                        blurRadius: 5,
-                        offset: Offset.fromDirection(1, 2),
-                      )
-                    ],
-                    shape: BoxShape.rectangle,
-                  ),
-                  position: DecorationPosition.background,
-                  child: Container(
-                    width: 300,
-                    height: 400,
-                    margin: EdgeInsets.all(20.0)
-                        .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
-                    child: widget.child,
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
+        child: PanelFrame(panel: _selectedPanel),
       );
   }
 
   _animatePanel(SelectedPanel selectedPanel) {
-      _isSelected = selectedPanel == widget.panel;
+      _isSelected = selectedPanel != SelectedPanel.none;
       if (_isSelected) {
         if (!_controller.isAnimating && _controller.isDismissed) {
           _controller.forward();

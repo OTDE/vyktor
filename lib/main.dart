@@ -33,7 +33,7 @@ class Vyktor extends StatelessWidget {
       theme: vyktorTheme,
       home: Stack(
         children: <Widget>[
-          HomePage(),
+          RootPage(),
           LoadingIndicator(),
         ],
       ),

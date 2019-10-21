@@ -221,13 +221,13 @@ class _SearchSettingsPanelState extends State<SearchSettingsPanel> {
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primaryVariant,
               elevation: 0.0,
-              heroTag: 'cancelTournament',
+              heroTag: 'cancelSearchSettings',
               shape: ContinuousRectangleBorder(),
               mini: true,
               child: Icon(Icons.arrow_back),
               onPressed: () async {
                 TabBehavior().setPanel(SelectedPanel.none);
-                mapBloc.dispatch(UnlockMap());
+                MapLocker().unlock();
               }),
         )
       ],
