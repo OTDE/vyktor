@@ -12,8 +12,8 @@ class Settings {
 
   // Settings keys
   static const String _radius = 'distanceFromCenter';
-  static const String _earlyDate = 'earliestTournamentDate';
-  static const String _lateDate = 'latestTournamentDate';
+  static const String _afterDate = 'earliestTournamentDate';
+  static const String _beforeDate = 'latestTournamentDate';
   static const String _explore = 'exploreEnabled';
 
   // Default values for the settings.
@@ -41,25 +41,25 @@ class Settings {
   Future<int> getStartAfterDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.getInt(_earlyDate) ?? _defaultAfterDate;
+    return preferences.getInt(_afterDate) ?? _defaultAfterDate;
   }
 
   Future<bool> setStartAfterDate(int date) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.setInt(_earlyDate, date);
+    return preferences.setInt(_afterDate, date);
   }
 
   Future<int> getStartBeforeDate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.getInt(_lateDate) ?? _defaultBeforeDate;
+    return preferences.getInt(_beforeDate) ?? _defaultBeforeDate;
   }
 
   Future<bool> setStartBeforeDate(int date) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    return preferences.setInt(_lateDate, date);
+    return preferences.setInt(_beforeDate, date);
   }
 
   Future<bool> getExploreMode() async {
@@ -78,6 +78,14 @@ class Settings {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
 
     preferences.clear();
+  }
+
+  Future<void> clearStartAfterDate() async {
+    await setStartAfterDate(_defaultAfterDate);
+  }
+
+  Future<void> clearStartBeforeDate() async {
+    await setStartBeforeDate(_defaultBeforeDate);
   }
 
 }

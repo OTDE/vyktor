@@ -83,15 +83,18 @@ class _LoadedMapState extends State<LoadedMap> {
   Set<Marker> _buildMarkerDataFrom(MapBloc mapBloc, MapDataLoaded state) {
     final mapData = state.mapData;
     final selectedTournament = state.selectedTournament;
+
+    final isTabOpen = TabBehavior().panelSubject.value == SelectedPanel.tournament;
+    final isAbsentFromMapData = !mapData.tournaments.contains(selectedTournament);
+    final isNotNull = selectedTournament != null;
+    final shouldAddToMarkerSet = isTabOpen && isAbsentFromMapData && isNotNull;
+    if (shouldAddToMarkerSet) mapData.tournaments.add(selectedTournament);
+
     var markerData = Set<Marker>();
-    if (selectedTournament != null) {
-      if (!mapData.tournaments.contains(selectedTournament))
-        mapData.tournaments.add(selectedTournament);
-    }
     for (Tournament tournament in mapData.tournaments) {
-      var id = MarkerId(tournament.id.toString());
-      var attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
-      var mapMarker = Marker(
+      final id = MarkerId(tournament.id.toString());
+      final attendeeColor = _toMarkerHue(tournament.participants.pageInfo.total);
+      final mapMarker = Marker(
         markerId: id,
         icon: BitmapDescriptor.defaultMarkerWithHue(attendeeColor),
         position: LatLng(tournament.lat, tournament.lng),
@@ -110,7 +113,7 @@ class _LoadedMapState extends State<LoadedMap> {
     mapBloc.dispatch(UpdateSelectedTournament(id));
     TabBehavior().setPanel(SelectedPanel.tournament);
     _mapController.animateCamera(CameraUpdate.newLatLngZoom(
-        LatLng(tournament.lat - 0.069, tournament.lng), 11.0));
+        LatLng(tournament.lat - 0.09, tournament.lng), 11.0));
   }
 
   /// Uses a log function to plot the color of each marker.

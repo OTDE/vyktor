@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'panels.dart';
 import '../services/services.dart';
 
+/// TODO: refactor into a separate panel selector.
 class PanelFrame extends StatelessWidget {
   
   PanelFrame({this.panel});
@@ -18,7 +19,7 @@ class PanelFrame extends StatelessWidget {
           bottom: 15,
           child: SizedBox(
             width: 300,
-            height: 400,
+            height: 500,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -37,9 +38,14 @@ class PanelFrame extends StatelessWidget {
                 height: 400,
                 margin: EdgeInsets.all(20.0)
                     .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 500),
-                  child: _fromPanel(panel),
+                child: Stack(
+                  children: <Widget>[
+                    AnimatedSwitcher(
+                      duration: Duration(milliseconds: 500),
+                      child: _fromPanel(panel),
+                    ),
+                    ExitButton(),
+                  ],
                 ),
               ),
             ),

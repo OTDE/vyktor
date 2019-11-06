@@ -9,6 +9,7 @@ import '../../../services/services.dart';
 import 'tournament.dart';
 
 /// The panel dedicated to showing the selected tournament.
+/// TODO: refactor components.
 class SelectedTournament extends StatelessWidget {
 
   @override
@@ -18,9 +19,7 @@ class SelectedTournament extends StatelessWidget {
     final tournament = state.selectedTournament;
     final numEntrants = tournament?.participants?.pageInfo?.total;
     return tournament != null
-        ? Stack(
-            children: <Widget>[
-              Column(
+        ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -106,25 +105,7 @@ class SelectedTournament extends StatelessWidget {
                   ),
                   Spacer(flex: 15),
                 ],
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryVariant,
-                    elevation: 0.0,
-                    heroTag: 'cancelTournament',
-                    shape: ContinuousRectangleBorder(),
-                    mini: true,
-                    child: Icon(Icons.arrow_back),
-                    onPressed: () async {
-                      MapLocker().unlock();
-                      TabBehavior().setPanel(SelectedPanel.none);
-                    }),
               )
-            ],
-          )
         : Container();
   }
 

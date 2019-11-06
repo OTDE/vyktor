@@ -13,6 +13,7 @@ import 'pages.dart';
 /// More of a hub for getting things set up than anything else.
 /// Once location permissions are given, the user probably won't
 /// see the opening screen ever again.
+/// TODO: refactor background to avoid rebuilding container/stack.
 class RootPage extends StatefulWidget {
   RootPage({Key key}) : super(key: key);
 
