@@ -23,14 +23,14 @@ class Vyktor extends StatelessWidget {
   Widget build(BuildContext context) {
     // Set the status bar color.
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: vyktorTheme.colorScheme.primary,
-      statusBarColor: vyktorTheme.colorScheme.primary,
+      systemNavigationBarColor: VyktorTheme.mainTheme.colorScheme.primary,
+      statusBarColor: VyktorTheme.mainTheme.colorScheme.primary,
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.light,
     ));
     return MaterialApp(
       title: 'Vyktor',
-      theme: vyktorTheme,
+      theme: VyktorTheme.mainTheme,
       home: Stack(
         children: <Widget>[
           RootPage(),

@@ -11,11 +11,11 @@ import 'panels.dart';
 class AnimatedPanels extends StatefulWidget {
 
   @override
-  AnimatedPanelsState createState() => AnimatedPanelsState();
+  _AnimatedPanelsState createState() => _AnimatedPanelsState();
 
 }
 
-class AnimatedPanelsState extends State<AnimatedPanels>
+class _AnimatedPanelsState extends State<AnimatedPanels>
     with SingleTickerProviderStateMixin {
   Animation<Offset> _offset;
   AnimationController _controller;

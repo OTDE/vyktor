@@ -38,6 +38,7 @@ api.keys
 **/android/key.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/app/proguardrules.pro
+**/android/app/src/main/AndroidManifest.xml
 android/app/src/main/gen/com/sethchapman/vyktor/Manifest.java
 android/app/src/main/gen/com/sethchapman/vyktor/R.java
 vyktor_android.zip

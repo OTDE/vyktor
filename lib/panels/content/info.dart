@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../blocs/blocs.dart';
 import '../../services/services.dart';
 
 /// Panel dedicated to providing additional information about the app.
+/// TODO: refactor into smaller components.
 class InfoPanel extends StatefulWidget {
   @override
   _InfoPanelState createState() => _InfoPanelState();
@@ -15,10 +14,7 @@ class _InfoPanelState extends State<InfoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapBloc>(context);
-    return Stack(
-      children: <Widget>[
-        Column(
+    return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -96,27 +92,9 @@ class _InfoPanelState extends State<InfoPanel> {
             ),
             Spacer(flex: 10),
           ],
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: FloatingActionButton(
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-              elevation: 0.0,
-              heroTag: 'cancelInfo',
-              shape: ContinuousRectangleBorder(),
-              mini: true,
-              child: Icon(Icons.arrow_back),
-              onPressed: () {
-                TabBehavior().setPanel(SelectedPanel.none);
-                MapLocker().unlock();
-              }),
-        ),
-      ],
-    );
+        );
   }
-
-  ///
+  
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);

@@ -10,10 +10,10 @@ import 'components.dart';
 class VyktorMenu extends StatefulWidget {
   VyktorMenu({Key key}) : super(key: key);
 
-  VyktorMenuState createState() => VyktorMenuState();
+  _VyktorMenuState createState() => _VyktorMenuState();
 }
 
-class VyktorMenuState extends State<VyktorMenu> {
+class _VyktorMenuState extends State<VyktorMenu> {
   bool _isMainButtonSelected = false;
   bool _inSelectionFunction = false;
 
@@ -129,8 +129,12 @@ class VyktorMenuState extends State<VyktorMenu> {
           parentButtonBackground: Theme.of(context).primaryColor,
           parentButtonForeground: Theme.of(context).colorScheme.onPrimary,
         ));
-    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
-      return (state is MapDataLoaded) ? menuDial : Container();
-    });
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 500),
+      switchInCurve: Curves.linearToEaseOut,
+      child: BlocBuilder<MapBloc, MapState>(builder: (context, state) {
+        return (state is MapDataLoaded) ? menuDial : Container();
+      }),
+    );
   }
 }
