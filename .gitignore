@@ -67,6 +67,7 @@ vyktor_android.zip
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Runner/AppDelegate.m
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
