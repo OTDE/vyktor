@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
         child: Stack(
       children: <Widget>[
         VyktorMap(),
-        VyktorMenu(),
+        AnimatedMenu(),
         AnimatedPanels(),
       ],
     ));
