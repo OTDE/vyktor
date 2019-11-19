@@ -112,6 +112,14 @@ class _MaterialSpeedDialState extends State<MaterialSpeedDial>
     return SafeArea(
       child: Stack(
         children: <Widget>[
+          SpeedDialModal(
+            listenable: _animation,
+            onTap: () async {
+              widget.menu.openButton.onPressed();
+              _onClose();
+            },
+            isOpen: _isOpen,
+          ),
           CustomMultiChildLayout(
             delegate: _SpeedDialLayoutDelegate(
               dialDirection: widget.dialDirection,

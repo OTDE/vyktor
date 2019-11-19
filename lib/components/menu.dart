@@ -22,7 +22,7 @@ class _MenuState extends State<Menu> {
         closedButton: FloatingActionButton(
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            heroTag: 'main-menu',
+            heroTag: 'main-menu-open',
             onPressed: () async {
               MapLocker().lock();
             }
@@ -30,6 +30,7 @@ class _MenuState extends State<Menu> {
         openButton: FloatingActionButton(
             backgroundColor: Theme.of(context).colorScheme.primaryVariant,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            heroTag: 'main-menu-closed',
             onPressed: () async {
               MapLocker().unlock();
             }

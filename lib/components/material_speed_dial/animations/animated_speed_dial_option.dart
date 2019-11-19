@@ -17,8 +17,14 @@ class AnimatedSpeedDialOption extends AnimatedWidget {
     return ScaleTransition(
       scale: CurvedAnimation(
         parent: listenable,
-        curve: Interval(delay, 1.0),
-        reverseCurve: Interval(delay, 1.0),
+        curve: Interval(
+            delay, 1.0,
+            curve: Curves.linearToEaseOut
+        ),
+        reverseCurve: Interval(
+            delay, 1.0,
+            curve: Curves.linearToEaseOut
+        ),
       ),
       child: child,
     );
