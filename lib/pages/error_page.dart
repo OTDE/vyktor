@@ -8,7 +8,6 @@ import '../services/services.dart';
 class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapBloc>(context);
     return Container(
       color: Theme.of(context).primaryColor,
       child: Center(
@@ -38,7 +37,7 @@ class ErrorPage extends StatelessWidget {
                 Loading().isNow(true);
                 var currentPosition =
                 await Geolocator().getCurrentPosition();
-                mapBloc.dispatch(RefreshMarkerData(currentPosition));
+                BlocProvider.of<MarkerBloc>(context).add((RefreshMarkerData(currentPosition)));
               },
             ),
             Spacer(flex: 20),

@@ -40,7 +40,6 @@ class _RadiusSettingsState extends State<RadiusSettings> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapBloc>(context);
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +63,7 @@ class _RadiusSettingsState extends State<RadiusSettings> {
                   onChangeEnd: (radius) async {
                     await Settings().setRadiusInMiles(radius.truncate());
                     Loading().isNow(true);
-                    mapBloc.dispatch(RefreshMarkerData());
+                    BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
                   },
                 ),
               ),

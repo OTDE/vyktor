@@ -56,7 +56,6 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
 
   @override
   Widget build(BuildContext context) {
-    final mapBloc = BlocProvider.of<MapBloc>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +77,7 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
             _startAfterDate = selectedDate.millisecondsSinceEpoch;
             await Settings().setStartBeforeDate(_startAfterDate);
             Loading().isNow(true);
-            mapBloc.dispatch(RefreshMarkerData());
+            BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
             setState(() {});
           },
         ),
@@ -102,7 +101,7 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
             _startBeforeDate = selectedDate.millisecondsSinceEpoch;
             await Settings().setStartBeforeDate(_startBeforeDate);
             Loading().isNow(true);
-            mapBloc.dispatch(RefreshMarkerData());
+            BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
             setState(() {});
           },
         )

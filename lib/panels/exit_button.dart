@@ -4,7 +4,7 @@ import '../services/services.dart';
 
 class ExitButton extends StatelessWidget {
 
-  const ExitButton();
+  static final _locker = MapLocker();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,8 @@ class ExitButton extends StatelessWidget {
           mini: true,
           child: Icon(Icons.arrow_back),
           onPressed: () async {
-            MapLocker().unlock();
             TabBehavior().setPanel(SelectedPanel.none);
+            _locker.unlock();
           }),
     );
   }

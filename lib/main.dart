@@ -12,7 +12,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  await Storage().init();
+  await KeyStorage().init();
+  PhoneLocation().init();
   runApp(Vyktor());
 }
 

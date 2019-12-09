@@ -1,2 +1,3 @@
-// Currently, just the one, but may add another few for future data manipulation.
-export 'map_model.dart';
+export '../services/singletons/tournament_client.dart';
+export 'tournament_model.dart';
+export 'tournament.dart';

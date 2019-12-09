@@ -1,1 +1,2 @@
-export 'map/map.dart';
+export 'markers/markers.dart';
+export 'tournaments/tournaments.dart';

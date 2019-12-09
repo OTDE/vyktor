@@ -10,9 +10,9 @@ class MapLocker {
 
   final isLocked = BehaviorSubject<bool>.seeded(false);
 
-  void lock() => isLocked.add(true);
+  lock() => isLocked.add(true);
 
-  void unlock() => isLocked.add(false);
+  unlock() => isLocked.add(false);
 
-  void dispose() => isLocked.close();
+  dispose() => isLocked.close();
 }

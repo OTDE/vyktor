@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'explore_mode_switch.dart';
+import 'explore_mode_switch_wrapper.dart';
 
 class ExploreMode extends StatelessWidget {
 
@@ -16,7 +17,7 @@ class ExploreMode extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.headline,
           ),
           Spacer(flex: 1),
-          ExploreModeSwitch(),
+          LoadWrapper(child: ExploreModeSwitch()),
         ]),
         Text(
           '(Press and hold on the map)',

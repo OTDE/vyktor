@@ -5,12 +5,14 @@ import '../blocs/blocs.dart';
 import '../pages/pages.dart';
 import '../services/services.dart';
 
+import 'components.dart';
+
 /// The page containing the map and its associated data.
 class VyktorMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
+    return BlocBuilder<MarkerBloc, MarkerState>(builder: (context, state) {
       return AnimatedSwitcher(
         duration: Duration(seconds: 3),
         switchInCurve: Curves.linearToEaseOut,
@@ -19,13 +21,13 @@ class VyktorMap extends StatelessWidget {
     });
   }
 
-  Widget _getChildFromState(MapState state) {
-    if(state is MapDataLoaded) {
+  Widget _getChildFromState(MarkerState state) {
+    if(state is MarkerDataLoaded) {
       Future.delayed(Duration(seconds: 2), () {
         Loading().isNow(false);
       });
-      return MapPage();
-    } else if (state is MapDataNotLoaded) {
+      return MapPage(child: LoadedMap());
+    } else if (state is MarkerDataNotLoaded) {
       return ErrorPage();
     }
     return SizedBox.shrink();

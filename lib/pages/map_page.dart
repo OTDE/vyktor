@@ -6,6 +6,11 @@ import '../components/components.dart';
 import '../services/services.dart';
 
 class MapPage extends StatefulWidget {
+
+  final Widget child;
+
+  MapPage({this.child}) : super();
+
   @override
   _MapPageState createState() => _MapPageState();
 }
@@ -35,7 +40,7 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: _isMapLocked,
-      child: LoadedMap(),
+      child: widget.child,
     );
   }
 }

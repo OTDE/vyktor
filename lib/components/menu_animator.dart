@@ -17,8 +17,8 @@ class _AnimatedMenuState extends State<AnimatedMenu> {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 500),
       switchInCurve: Curves.linearToEaseOut,
-      child: BlocBuilder<MapBloc, MapState>(builder: (context, state) {
-        return (state is MapDataLoaded) ? Menu() : Container();
+      child: BlocBuilder<MarkerBloc, MarkerState>(builder: (context, state) {
+        return (state is MarkerDataLoaded) ? Menu() : Container();
       }),
     );
   }

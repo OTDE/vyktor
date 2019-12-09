@@ -4,4 +4,3 @@ export 'loading_switcher.dart';
 export 'map_switcher.dart';
 export 'menu.dart';
 export 'menu_animator.dart';
-export 'narwhal_dial.dart';

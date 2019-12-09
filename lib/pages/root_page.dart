@@ -63,8 +63,15 @@ class _RootPageState extends State<RootPage> {
     }
     if (_hasLocationPermissions) {
       BlocSupervisor.delegate = BasicBlocDelegate();
-      return BlocProvider(
-        builder: (context) => MapBloc(),
+      return MultiBlocProvider(
+        providers:[
+          BlocProvider<MarkerBloc>(
+            create: (context) => MarkerBloc(),
+          ),
+          BlocProvider<TournamentBloc>(
+            create: (context) => TournamentBloc(),
+          ),
+        ],
         child: HomePage(),
       );
     }

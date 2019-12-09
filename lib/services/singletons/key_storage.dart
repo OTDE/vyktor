@@ -4,15 +4,15 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-class Storage {
+class KeyStorage {
 
   final _secureStorage = FlutterSecureStorage();
 
-  static final Storage _storage = Storage._internal();
+  static final KeyStorage _storage = KeyStorage._internal();
 
-  Storage._internal();
+  KeyStorage._internal();
 
-  factory Storage() => _storage;
+  factory KeyStorage() => _storage;
 
   Future<void> init() async {
     final Map<String, String> apiKeys = await readApiKeys('api.keys');
