@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'material_speed_dial/material_speed_dial.dart';
-import '../services/services.dart';
+import '../blocs/blocs.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -24,7 +25,6 @@ class _MenuState extends State<Menu> {
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             heroTag: 'main-menu-open',
             onPressed: () async {
-              MapLocker().lock();
             }
           ),
         openButton: FloatingActionButton(
@@ -32,12 +32,11 @@ class _MenuState extends State<Menu> {
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             heroTag: 'main-menu-closed',
             onPressed: () async {
-              MapLocker().unlock();
             }
         )
       ),
       options: <SpeedDialOption>[
-        for (SelectedPanel panel in SelectedPanel.values.sublist(1, 4).reversed)
+        for (SelectedPanel panel in SelectedPanel.values.sublist(1).reversed)
           SpeedDialOption(
               button: FloatingActionButton(
                   child: Icon(withIconFrom(panel)),
@@ -46,7 +45,7 @@ class _MenuState extends State<Menu> {
                   heroTag: panel.toString(),
                   mini: true,
                   onPressed: () async {
-                    TabBehavior().setPanel(panel);
+                    BlocProvider.of<PanelSelectorBloc>(context).add(SelectPanel(panel: panel));
                   }
               ),
             label: OutlineButton(
@@ -59,7 +58,7 @@ class _MenuState extends State<Menu> {
                 ),
                 color: Theme.of(context).colorScheme.primaryVariant,
                 onPressed: () async {
-                  TabBehavior().setPanel(panel);
+                  BlocProvider.of<PanelSelectorBloc>(context).add(SelectPanel(panel: panel));
                 }
             )
           ),

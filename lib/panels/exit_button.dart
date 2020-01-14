@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../services/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vyktor/blocs/blocs.dart';
 
 class ExitButton extends StatelessWidget {
-
-  static final _locker = MapLocker();
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +18,7 @@ class ExitButton extends StatelessWidget {
           mini: true,
           child: Icon(Icons.arrow_back),
           onPressed: () async {
-            TabBehavior().setPanel(SelectedPanel.none);
-            _locker.unlock();
+            BlocProvider.of<PanelSelectorBloc>(context).add(HidePanel());
           }),
     );
   }

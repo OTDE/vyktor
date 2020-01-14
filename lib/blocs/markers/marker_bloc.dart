@@ -65,7 +65,6 @@ class MarkerBloc extends Bloc<MarkerEvent, MarkerState> {
       yield MarkerDataNotLoaded();
     }
   }
-
   /// Gotta have one of these so we can dispose of the subscription if necessary.
   @override
   Future<void> close() {

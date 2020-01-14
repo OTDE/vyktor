@@ -5,11 +5,8 @@ import 'package:bloc/bloc.dart';
 import '../../models/models.dart';
 import 'tournaments.dart';
 
-/// The [Bloc] that regulates the state of Vyktor's map data.
 class TournamentBloc extends Bloc<TournamentEvent, TournamentState> {
 
-  /// Initial state of the BLoC is loading the data. Will switch to [MarkerDataNotLoaded]
-  /// on failure and [MarkerDataLoaded] on success.
   @override
   TournamentState get initialState => TournamentLoading();
 

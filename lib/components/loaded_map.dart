@@ -16,6 +16,7 @@ class LoadedMap extends StatefulWidget {
 
   @override
   _LoadedMapState createState() => _LoadedMapState();
+
 }
 
 class _LoadedMapState extends State<LoadedMap> {
@@ -97,9 +98,8 @@ class _LoadedMapState extends State<LoadedMap> {
 
   Future<void> _onMarkerTap(
       int id, Tournament tournament, BuildContext context) async {
-    MapLocker().lock();
     BlocProvider.of<TournamentBloc>(context).add(SelectTournament(id));
-    TabBehavior().setPanel(SelectedPanel.tournament);
+    BlocProvider.of<PanelSelectorBloc>(context).add(SelectPanel(panel: SelectedPanel.tournament));
     _mapController.animateCamera(CameraUpdate.newLatLngZoom(
         LatLng(tournament.lat - 0.09, tournament.lng), 11.0));
   }

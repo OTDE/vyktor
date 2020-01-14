@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../services/services.dart';
+import '../../../blocs/blocs.dart';
 
 class TournamentLaunchButton extends StatelessWidget {
   final String label;
@@ -27,8 +28,7 @@ class TournamentLaunchButton extends StatelessWidget {
   }
 
   Future<void> _onPressed(BuildContext context) async {
-      TabBehavior().setPanel(SelectedPanel.none);
-      MapLocker().unlock();
+      BlocProvider.of<PanelSelectorBloc>(context).add(HidePanel());
       await Future.delayed(Duration(milliseconds: 300));
       try {
         _launchURL(url);

@@ -1,27 +1,26 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../services/services.dart';
-import 'panels.dart';
+import '../blocs/blocs.dart';
 
 /// Animation wrapper for a [child] widget.
 ///
 /// The [panel] spec determines if [child] is selected.
-class AnimatedPanels extends StatefulWidget {
+class AnimatedPanel extends StatefulWidget {
+
+  final Widget child;
+
+  AnimatedPanel({Key key, this.child}): super(key: key);
 
   @override
-  _AnimatedPanelsState createState() => _AnimatedPanelsState();
+  _AnimatedPanelState createState() => _AnimatedPanelState();
 
 }
 
-class _AnimatedPanelsState extends State<AnimatedPanels>
+class _AnimatedPanelState extends State<AnimatedPanel>
     with SingleTickerProviderStateMixin {
   Animation<Offset> _offset;
   AnimationController _controller;
-  bool _isSelected = false;
-  SelectedPanel _selectedPanel;
-  StreamSubscription<SelectedPanel> tabStream;
 
   @override
   void initState() {
@@ -33,30 +32,6 @@ class _AnimatedPanelsState extends State<AnimatedPanels>
     _offset = Tween<Offset>(begin: Offset(-1.0, 0), end: Offset(-0.005, 0))
         .chain(new CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller);
-    tabStream = TabBehavior().panelSubject.stream.listen((panel) {
-      setState(() {
-        _selectedPanel = panel;
-      });
-      _animatePanel(panel);
-    });
-  }
-
-  @override
-  void didUpdateWidget(AnimatedPanels oldWidget) {
-    tabStream.cancel();
-    tabStream = TabBehavior().panelSubject.stream.listen((panel) {
-      setState(() {
-        _selectedPanel = panel;
-      });
-      _animatePanel(panel);
-    });
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    tabStream.cancel();
-    super.dispose();
   }
 
   @override
@@ -64,21 +39,23 @@ class _AnimatedPanelsState extends State<AnimatedPanels>
     return SlideTransition(
         textDirection: TextDirection.ltr,
         position: _offset,
-        child: PanelFrame(panel: _selectedPanel),
+        child: BlocListener<PanelSelectorBloc, PanelSelectorState>(
+          listener: (context, state) {
+            if (state is PanelHidden && _shouldHidePanel()) {
+              _controller.reverse();
+            } else if (state is PanelSelected && _shouldDisplayPanel()) {
+              _controller.forward();
+            }
+          },
+          child: widget.child,
+        ),
       );
   }
 
-  _animatePanel(SelectedPanel selectedPanel) {
-      _isSelected = selectedPanel != SelectedPanel.none;
-      if (_isSelected) {
-        if (!_controller.isAnimating && _controller.isDismissed) {
-          _controller.forward();
-        }
-      } else {
-        if (!_controller.isAnimating && _controller.isCompleted) {
-          _controller.reverse();
-        }
-      }
-    }
+  bool _isNotAnimating() => !_controller.isAnimating;
+
+  bool _shouldDisplayPanel() => _isNotAnimating() && _controller.isDismissed;
+
+  bool _shouldHidePanel() => _isNotAnimating() && _controller.isCompleted;
 
 }

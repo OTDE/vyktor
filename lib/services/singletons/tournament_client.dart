@@ -100,7 +100,7 @@ class TournamentClient {
     var afterDate = await Settings().getStartAfterDate().then(_toSecondsSinceEpoch);
     var beforeDate = await Settings().getStartBeforeDate().then(_toSecondsSinceEpoch);
     return QueryOptions(
-      document: tournamentLocationQuery,
+      documentNode: gql(tournamentLocationQuery),
       variables: <String, dynamic> {
         "coordinates": "$lat,$lng",
         "radius": "${radius}mi",

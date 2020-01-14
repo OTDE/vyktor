@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vyktor/blocs/blocs.dart';
 
 import 'panels.dart';
-import '../services/services.dart';
 
-/// TODO: refactor into a separate panel selector.
 class PanelFrame extends StatelessWidget {
-  
-  PanelFrame({this.panel});
-  
-  final SelectedPanel panel;
   
   @override
   Widget build(BuildContext context) {
@@ -40,9 +36,13 @@ class PanelFrame extends StatelessWidget {
                     .add(EdgeInsets.fromLTRB(1, 0, 0, 0)),
                 child: Stack(
                   children: <Widget>[
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 500),
-                      child: _fromPanel(panel),
+                      BlocBuilder<PanelSelectorBloc, PanelSelectorState>(
+                        builder: (context, state) {
+                          return AnimatedSwitcher(
+                            duration: Duration(milliseconds: 500),
+                            child: _selectPanelFromState(state),
+                          );
+                        },
                     ),
                     ExitButton(),
                   ],
@@ -55,20 +55,23 @@ class PanelFrame extends StatelessWidget {
     );
   }
 
+  Widget _selectPanelFromState(PanelSelectorState state) {
+    if (state is PanelSelected) return _fromPanel(state.panel);
+    return SizedBox.shrink();
+  }
+
   Widget _fromPanel(SelectedPanel panel) {
-    switch (panel) {
-      case SelectedPanel.tournament:
-        return SelectedTournament();
-      case SelectedPanel.mapSettings:
-        return MapSettingsPanel();
-      case SelectedPanel.searchSettings:
-        return SearchSettingsPanel();
-      case SelectedPanel.info:
-        return InfoPanel();
-      case SelectedPanel.none:
-      default:
-        return Container();
-    }
+      switch (panel) {
+        case SelectedPanel.tournament:
+          return SelectedTournament();
+        case SelectedPanel.mapSettings:
+          return MapSettingsPanel();
+        case SelectedPanel.searchSettings:
+          return SearchSettingsPanel();
+        case SelectedPanel.info:
+          return InfoPanel();
+      }
+      return SizedBox.shrink();
   }
   
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../services/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../blocs/blocs.dart';
 
 /// Utility widget designed to allow Vyktor's panels to be dismissed.
 class ExitDetector extends StatelessWidget {
@@ -14,8 +16,7 @@ class ExitDetector extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () async {
-          MapLocker().unlock();
-          TabBehavior().setPanel(SelectedPanel.none);
+          BlocProvider.of<PanelSelectorBloc>(context).add(HidePanel());
         },
         child: Container(
           alignment: Alignment.center,

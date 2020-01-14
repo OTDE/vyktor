@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../services/services.dart';
+import '../../blocs/blocs.dart';
 
 /// Panel dedicated to providing additional information about the app.
 /// TODO: refactor into smaller components.
@@ -39,8 +40,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      TabBehavior().setPanel(SelectedPanel.none);
-                      MapLocker().unlock();
+                      BlocProvider.of<PanelSelectorBloc>(context).add(HidePanel());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/thatdeepends');
                     }),
@@ -69,8 +69,7 @@ class _InfoPanelState extends State<InfoPanel> {
                     mini: true,
                     child: Icon(Icons.launch),
                     onPressed: () async {
-                      TabBehavior().setPanel(SelectedPanel.none);
-                      MapLocker().unlock();
+                      BlocProvider.of<PanelSelectorBloc>(context).add(HidePanel());
                       await Future.delayed(Duration(milliseconds: 600));
                       _launchURL('https://mobile.twitter.com/ceegearts');
                     }),

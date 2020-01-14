@@ -71,6 +71,9 @@ class _RootPageState extends State<RootPage> {
           BlocProvider<TournamentBloc>(
             create: (context) => TournamentBloc(),
           ),
+          BlocProvider<PanelSelectorBloc>(
+            create: (context) => PanelSelectorBloc(),
+          ),
         ],
         child: HomePage(),
       );
