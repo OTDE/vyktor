@@ -1,22 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../blocs/blocs.dart';
 
 /// Page that displays when location is disabled for this app.
 ///
 /// When location is enabled, calls the [onLocationEnabled] callback function.
-class PermissionsPage extends StatefulWidget {
-  /// The callback function [PermissionsPage] calls on receipt of location permission.
-  final Function onLocationEnabled;
-
-  PermissionsPage({Key key, @required this.onLocationEnabled}) : super(key: key);
-
-  @override
-  State<PermissionsPage> createState() => _PermissionsPageState();
-}
-
-/// Uses [_permissions] to get the status of location permissions for this app.
-class _PermissionsPageState extends State<PermissionsPage> {
-
+class PermissionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +17,8 @@ class _PermissionsPageState extends State<PermissionsPage> {
             Spacer(flex: 24),
             Container(
               height: 200,
-              child: Image.asset('assets/images/in-app/mobile_logo_transparent.png'),
+              child: Image.asset(
+                  'assets/images/in-app/mobile_logo_transparent.png'),
             ),
             Spacer(flex: 2),
             Text(
@@ -48,12 +38,15 @@ class _PermissionsPageState extends State<PermissionsPage> {
             Spacer(flex: 3),
             RaisedButton(
               child: Text(
-                  'Enable',
+                'Enable',
                 style: Theme.of(context).primaryTextTheme.button,
               ),
               color: Theme.of(context).colorScheme.surface,
               textColor: Theme.of(context).colorScheme.onSurface,
-              onPressed: () => _getPermissions(),
+              onPressed: () {
+                BlocProvider.of<PermissionBloc>(context)
+                    .add(RequestLocationPermissions());
+              },
             ),
             Spacer(flex: 20),
           ],
@@ -61,17 +54,4 @@ class _PermissionsPageState extends State<PermissionsPage> {
       ),
     );
   }
-
-  /// Requests permissions, then checks [result].
-  ///
-  /// If [result] is enabled, invokes the [onLocationEnabled]
-  /// callback function to the parent widget.
-  _getPermissions() async {
-    await PermissionHandler()
-        .requestPermissions([PermissionGroup.locationWhenInUse]);
-    var result = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.locationWhenInUse);
-    if (result == PermissionStatus.granted) widget.onLocationEnabled();
-  }
-
 }

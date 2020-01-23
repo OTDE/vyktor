@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/blocs.dart';
 import '../models/models.dart';
-import '../services/services.dart';
 
 class LoadedMap extends StatefulWidget {
 
@@ -29,22 +28,22 @@ class _LoadedMapState extends State<LoadedMap> {
 
   @override
   Widget build(BuildContext context) {
-    final state = BlocProvider.of<MarkerBloc>(context).state as MarkerDataLoaded;
+    final markers = BlocProvider.of<MarkerBloc>(context).state as MarkerDataLoaded;
+    final location = BlocProvider.of<LocationBloc>(context).state as LocationLoaded;
     return GoogleMap(
       mapToolbarEnabled: false,
       mapType: MapType.normal,
-      initialCameraPosition:
-      _lastRecordedPosition ?? state.initialPosition,
+      initialCameraPosition: _lastRecordedPosition,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       onCameraMove: _onCameraMove,
       onMapCreated: (controller) {
-        _onMapCreated(controller, state);
+        _onMapCreated(controller, location);
       },
       onLongPress: (pressLocation) async {
         _onLongPress(pressLocation, context);
       },
-      markers: _buildMarkerDataFrom(context, state),
+      markers: _buildMarkerDataFrom(context, markers),
       rotateGesturesEnabled: false,
       tiltGesturesEnabled: true,
       scrollGesturesEnabled: true,
@@ -57,19 +56,18 @@ class _LoadedMapState extends State<LoadedMap> {
     _lastRecordedPosition = position;
   }
 
-  void _onMapCreated(GoogleMapController controller, MarkerDataLoaded state) {
+  void _onMapCreated(GoogleMapController controller, LocationLoaded state) {
     _mapController = controller;
-    _lastRecordedPosition ??= state.initialPosition;
+    _lastRecordedPosition ??= CameraPosition(
+        target: LatLng(state.position.latitude, state.position.longitude),
+        zoom: 10.0,
+    );
   }
 
   Future<void> _onLongPress(LatLng pressLocation, BuildContext context) async {
-    var exploreModeEnabled = await Settings().getExploreMode();
-    if (exploreModeEnabled) {
-      Loading().isNow(true);
-      BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData(Position(
+      BlocProvider.of<MarkerBloc>(context).add(FetchMarkersAt(Position(
           latitude: pressLocation.latitude,
           longitude: pressLocation.longitude)));
-    }
   }
 
   /// Creates markers with attributes and fields pulled from [markerData].

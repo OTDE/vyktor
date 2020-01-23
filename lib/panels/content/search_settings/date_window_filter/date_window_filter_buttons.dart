@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/blocs.dart';
-import '../../../../services/services.dart';
-
 import 'date_window_filter_chip.dart';
 
 class DateWindowFilterButtons extends StatefulWidget {
@@ -19,40 +17,6 @@ class DateWindowFilterButtons extends StatefulWidget {
 class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
   int _startAfterDate = 0;
   int _startBeforeDate = 0;
-
-  @override
-  void initState() {
-    // Date invariants:
-    //
-    // - After date must not be before now
-    // - Before date must not be before the after date
-    Settings().getStartAfterDate().then((afterDate) {
-      if(_isBeforeNow(afterDate)) {
-        Settings().clearStartAfterDate().then((e) {
-          Settings().getStartAfterDate().then((newDate) {
-            afterDate = newDate;
-          });
-        });
-        Settings().getStartBeforeDate().then((beforeDate) {
-          if(beforeDate < afterDate) {
-            Settings().clearStartBeforeDate().then((e) {
-              Settings().getStartBeforeDate().then((newDate) {
-                beforeDate = newDate;
-              });
-            });
-          }
-            setState(() {
-              _startBeforeDate = beforeDate;
-            });
-        });
-      }
-      setState(() {
-        _startAfterDate = afterDate;
-      });
-    });
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +39,7 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
             );
             if (selectedDate == null) return;
             _startAfterDate = selectedDate.millisecondsSinceEpoch;
-            await Settings().setStartBeforeDate(_startAfterDate);
-            Loading().isNow(true);
+            BlocProvider.of<SettingsBloc>(context).add(SetAfterDate(selectedDate));
             BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
             setState(() {});
           },
@@ -99,8 +62,7 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
             );
             if (selectedDate == null) return;
             _startBeforeDate = selectedDate.millisecondsSinceEpoch;
-            await Settings().setStartBeforeDate(_startBeforeDate);
-            Loading().isNow(true);
+            BlocProvider.of<SettingsBloc>(context).add(SetBeforeDate(selectedDate));
             BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
             setState(() {});
           },
@@ -115,5 +77,4 @@ class _DateWindowFilterButtonsState extends State<DateWindowFilterButtons> {
     return '${date.month}/${date.day}/${date.year}';
   }
 
-  bool _isBeforeNow(int timestamp) => timestamp < DateTime.now().millisecondsSinceEpoch;
 }

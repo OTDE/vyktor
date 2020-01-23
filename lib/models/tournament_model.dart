@@ -13,4 +13,5 @@ class TournamentModel {
   Tournament select(int id) => tournamentMap[id];
 
   List<Tournament> get tournaments => tournamentMap.values.toList();
+
 }

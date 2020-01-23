@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../blocs/blocs.dart';
-import '../../../../services/services.dart';
 
 class ExploreModeSwitch extends StatefulWidget {
   @override
@@ -10,36 +9,18 @@ class ExploreModeSwitch extends StatefulWidget {
 }
 
 class _ExploreModeSwitchState extends State<ExploreModeSwitch> {
-
-  bool _isExploreModeEnabled = false;
-
-  @override
-  void initState() {
-    Settings().getExploreMode().then((isEnabled) {
-      setState(() {
-        _isExploreModeEnabled = isEnabled;
-      });
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final settings = BlocProvider.of<SettingsBloc>(context) as SettingsLoaded;
     return Switch(
-      value: _isExploreModeEnabled,
+      value: settings.exploreModeEnabled,
       onChanged: (isEnabled) async {
-        await Settings().setExploreMode(isEnabled);
+        BlocProvider.of<SettingsBloc>(context)
+            .add(SetExploreModeEnabled(isEnabled));
         if (!isEnabled) {
-          Loading().isNow(true);
-          BlocProvider.of<MarkerBloc>(context).add(
-              RefreshMarkerData(PhoneLocation().location)
-          );
+          BlocProvider.of<MarkerBloc>(context).add(RefreshMarkerData());
         }
-        setState(() {
-          _isExploreModeEnabled = isEnabled;
-        });
       },
     );
   }
-
 }

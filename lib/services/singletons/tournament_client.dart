@@ -1,11 +1,9 @@
 import 'dart:async';
-
-import 'package:geolocator/geolocator.dart';
 import 'package:graphql/client.dart';
 
 import '../services.dart';
-import '../../models/tournament_model.dart';
 import '../../models/tournament.dart';
+import '../../blocs/blocs.dart';
 
 
 class TournamentClient {
@@ -70,34 +68,27 @@ class TournamentClient {
     return _graphQLClient;
   }
 
-
-  Future<void> refreshMarkerData(Position currentPosition) async {
-    TournamentModel().tournamentMap = await fetchMarkerData(currentPosition);
-  }
-
-
-  Future<Map<int, Tournament>> fetchMarkerData(Position currentPosition) async {
-      var result = await getGraphQLClient().query(await queryOptions(currentPosition));
+  Future<List<Tournament>> fetchMarkerData({SettingsLoaded settings, LocationLoaded location}) async {
+      var options = assembleQueryOptions(settings: settings, location: location);
+      var result = await getGraphQLClient().query(options);
       var data = _toTournamentMap(result);
       return data;
   }
 
-  static Map<int, Tournament> _toTournamentMap(queryResult) {
-    if(queryResult.hasErrors) {
+  static List<Tournament> _toTournamentMap(queryResult) {
+    if(queryResult.hasException) {
       throw BadRequestException(queryResult.errors.toString());
     }
     final tournamentData = queryResult.data["tournaments"]["nodes"] as List<dynamic>;
-    final tournamentList = (tournamentData?.map((tournament) => Tournament.fromJson(tournament)) ?? []).toList();
-    final ids = tournamentList.map((tournament) => tournament.id);
-    return Map.fromIterables(ids, tournamentList);
+    return (tournamentData?.map((tournament) => Tournament.fromJson(tournament)) ?? []).toList();
   }
 
-  Future<QueryOptions> queryOptions(Position position) async {
-    var lat = position.latitude;
-    var lng = position.longitude;
-    var radius = await Settings().getRadiusInMiles();
-    var afterDate = await Settings().getStartAfterDate().then(_toSecondsSinceEpoch);
-    var beforeDate = await Settings().getStartBeforeDate().then(_toSecondsSinceEpoch);
+  QueryOptions assembleQueryOptions({SettingsLoaded settings, LocationLoaded location}) {
+    var lat = location.position.latitude;
+    var lng = location.position.longitude;
+    var radius = settings.radius;
+    var afterDate = settings.afterDate.millisecondsSinceEpoch ~/ 1000;
+    var beforeDate = settings.beforeDate.millisecondsSinceEpoch ~/ 1000;
     return QueryOptions(
       documentNode: gql(tournamentLocationQuery),
       variables: <String, dynamic> {
@@ -108,7 +99,5 @@ class TournamentClient {
       },
     );
   }
-
-  int _toSecondsSinceEpoch(int fromSettings) => (fromSettings / 1000).round();
 }
 

@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../blocs/blocs.dart';
 import '../services/services.dart';
@@ -35,9 +34,7 @@ class ErrorPage extends StatelessWidget {
               textColor: Theme.of(context).colorScheme.onSurface,
               onPressed: () async {
                 Loading().isNow(true);
-                var currentPosition =
-                await Geolocator().getCurrentPosition();
-                BlocProvider.of<MarkerBloc>(context).add((RefreshMarkerData(currentPosition)));
+                BlocProvider.of<MarkerBloc>(context).add((RefreshMarkerData()));
               },
             ),
             Spacer(flex: 20),

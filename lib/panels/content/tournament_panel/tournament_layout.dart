@@ -2,11 +2,9 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:vyktor/components/components.dart';
 
 import '../../../blocs/blocs.dart';
-import '../../../services/services.dart';
 import 'tournament_panel.dart';
 
 class SelectedTournament extends StatelessWidget {

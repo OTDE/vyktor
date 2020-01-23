@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 
 /// The base class for receiving BLoC events.
@@ -12,18 +11,22 @@ abstract class MarkerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-/// Refreshes the set of [Marker] widgets to be displayed on-screen.
 class RefreshMarkerData extends MarkerEvent {
-  /// In Explore Mode, wherever the user tapped on the map.
-  /// Otherwise, the phones's current location.
+
+  @override
+  String toString() =>
+      'Refreshing marker data at user location';
+}
+
+class FetchMarkersAt extends MarkerEvent {
   final Position position;
 
-  const RefreshMarkerData([this.position]);
+  const FetchMarkersAt([this.position]);
 
   @override
   List<Object> get props => [position];
 
   @override
   String toString() =>
-      'Refreshing marker data at ${position?.latitude ?? 'the same lat'}, ${position?.longitude ?? 'the same lng'}';
+      'Fetching marker data at ${position?.latitude ?? 'the same lat'}, ${position?.longitude ?? 'the same lng'}';
 }

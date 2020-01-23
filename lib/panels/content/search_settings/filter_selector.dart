@@ -77,5 +77,4 @@ class _FilterSelectorState extends State<FilterSelector> {
     );
   }
 
-  bool _isSelected(SelectedFilter filter) => filter == _filter;
 }

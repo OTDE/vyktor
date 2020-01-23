@@ -1,25 +1,18 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:meta/meta.dart';
 
 import '../../models/models.dart';
 import '../../services/services.dart';
-import 'markers.dart';
+import '../blocs.dart';
 
 /// The [Bloc] that regulates the state of Vyktor's map data.
 class MarkerBloc extends Bloc<MarkerEvent, MarkerState> {
 
-  static final _geolocator = Geolocator();
-
-  final Stream<Position>_locationStream = _geolocator.getPositionStream(
-      LocationOptions(
-          accuracy: LocationAccuracy.medium,
-          distanceFilter: 1000
-      ));
-
-  StreamSubscription<Position> _subscription;
+  final LocationBloc locationBloc;
+  StreamSubscription _locationBlocSubscription;
+  final SettingsBloc settingsBloc;
 
   /// Initial state of the BLoC is loading the data. Will switch to [MarkerDataNotLoaded]
   /// on failure and [MarkerDataLoaded] on success.
@@ -28,12 +21,11 @@ class MarkerBloc extends Bloc<MarkerEvent, MarkerState> {
 
   /// On constructing this BLoC, it listens to a stream of the phone's position, and
   /// then fires a [RefreshMarkerData] event when it receives new data.
-  MarkerBloc() {
-    _geolocator.getCurrentPosition().then((position) {
-      this.add(RefreshMarkerData(position));
-    });
-    _subscription = _locationStream.listen((position) {
-      this.add(RefreshMarkerData(position));
+  MarkerBloc({@required this.settingsBloc, @required this.locationBloc}) {
+    _locationBlocSubscription = locationBloc.listen((state) {
+      if (state is LocationLoaded) {
+       this.add(RefreshMarkerData());
+      }
     });
   }
 
@@ -47,28 +39,20 @@ class MarkerBloc extends Bloc<MarkerEvent, MarkerState> {
   Stream<MarkerState> _mapRefreshMarkerDataToState(
       MarkerState state, RefreshMarkerData event) async* {
     Loading().isNow(true);
-    try {
-      final position = event.position;
-      await TournamentClient().refreshMarkerData(position);
-      final markerData = TournamentModel().tournaments;
-      Loading().isNow(false);
-      yield MarkerDataLoaded(
-          markerData,
-          initialPosition: CameraPosition(
-            target: LatLng(
-              position.latitude, position.longitude
-            ),
-            zoom: 10.0,
-          ));
-    } catch(_) {
-      Loading().isNow(false);
-      yield MarkerDataNotLoaded();
+    if (locationBloc.state is LocationLoaded && settingsBloc.state is SettingsLoaded) {
+      try {
+        final markerData = await TournamentClient().fetchMarkerData(
+          settings: settingsBloc.state,
+          location: locationBloc.state,
+        );
+        Loading().isNow(false);
+        yield MarkerDataLoaded(markerData);
+      } catch(_) {
+        Loading().isNow(false);
+        yield MarkerDataNotLoaded();
+      }
     }
+    yield MarkerDataNotLoaded();
   }
-  /// Gotta have one of these so we can dispose of the subscription if necessary.
-  @override
-  Future<void> close() {
-    _subscription.cancel();
-    return super.close();
-  }
+
 }
